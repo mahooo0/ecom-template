@@ -86,13 +86,13 @@ Plans:
 **Plans**: 7 plans
 
 Plans:
-- [ ] 03-00-PLAN.md — Wave 0: Install Vitest, create test configuration, setup file with Prisma mocks, and 10 placeholder test files for all requirements
-- [ ] 03-01-PLAN.md — Zod validation schemas (discriminated union for all 5 product types) and expanded server product API with type-aware CRUD, slug generation, status management
-- [ ] 03-02-PLAN.md — Cloudinary signed upload endpoint and reusable ImageManager component with drag-and-drop reordering
-- [ ] 03-03-PLAN.md — Admin product list page with TanStack Table (sorting, filtering, search, pagination, status badges, row actions, bulk operations)
-- [ ] 03-04-PLAN.md — Admin product creation/edit form with React Hook Form, Zod discriminated union validation, all 5 type-specific field groups, and image manager integration
-- [ ] 03-05-PLAN.md — Client product listing page with responsive grid, product cards (image, name, price, rating, add-to-cart), sorting, and pagination
-- [ ] 03-06-PLAN.md — Bulk product operations: CSV import with Papa Parse streaming validation, multer upload middleware
+- [x] 03-00-PLAN.md — Wave 0: Install Vitest, create test configuration, setup file with Prisma mocks, and 10 placeholder test files for all requirements
+- [x] 03-01-PLAN.md — Zod validation schemas (discriminated union for all 5 product types) and expanded server product API with type-aware CRUD, slug generation, status management
+- [x] 03-02-PLAN.md — Cloudinary signed upload endpoint and reusable ImageManager component with drag-and-drop reordering
+- [x] 03-03-PLAN.md — Admin product list page with TanStack Table (sorting, filtering, search, pagination, status badges, row actions, bulk operations)
+- [x] 03-04-PLAN.md — Admin product creation/edit form with React Hook Form, Zod discriminated union validation, all 5 type-specific field groups, and image manager integration
+- [x] 03-05-PLAN.md — Client product listing page with responsive grid, product cards (image, name, price, rating, add-to-cart), sorting, and pagination
+- [x] 03-06-PLAN.md — Bulk product operations: CSV import with Papa Parse streaming validation, multer upload middleware
 
 ### Phase 4: Categories & Navigation
 **Goal**: Products are organized in an infinite-depth category tree with collections, brands, and tags, and customers can navigate via mega menu and breadcrumbs

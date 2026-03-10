@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-04-PLAN.md
-last_updated: "2026-03-10T22:02:09.223Z"
-last_activity: "2026-03-10 -- Completed plan 03-05: Client Product Listing Page"
+stopped_at: Completed 03-06-PLAN.md
+last_updated: "2026-03-10T22:09:28Z"
+last_activity: "2026-03-10 -- Completed plan 03-06: Bulk Product Operations"
 progress:
   total_phases: 21
   completed_phases: 2
   total_plans: 21
-  completed_plans: 15
-  percent: 67
+  completed_plans: 16
+  percent: 71
 ---
 
 # Project State
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-03-10)
 ## Current Position
 
 Phase: 3 of 21 (Product Catalog - In Progress)
-Plan: 4 of 7 in current phase (03-04 completed)
+Plan: 6 of 7 in current phase (03-06 completed)
 Status: In Progress
-Last activity: 2026-03-10 -- Completed plan 03-04: Admin Product Forms
+Last activity: 2026-03-10 -- Completed plan 03-06: Bulk Product Operations
 
 Progress: [███████░░░] 71%
 
@@ -71,6 +71,7 @@ Progress: [███████░░░] 71%
 | Phase 03 P03 | 4.4m | 2 tasks | 5 files |
 | Phase 03 P05 | 5m | 2 tasks | 10 files |
 | Phase 03 P04 | 520 | 2 tasks | 10 files |
+| Phase 03 P06 | 364 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -135,6 +136,11 @@ Recent decisions affecting current work:
 - [Phase 03]: Use any type for React Hook Form to handle discriminated union complexity
 - [Phase 03]: Cast Zod error messages to string for React rendering compatibility
 - [Phase 03]: Fetch reference data server-side in Next.js Server Components for optimal performance
+- [Phase 03-06]: Use multer memoryStorage instead of diskStorage for CSV imports - files stored in buffer for streaming parse
+- [Phase 03-06]: Reject VARIABLE products in CSV import - too complex with nested variants, use admin form instead
+- [Phase 03-06]: Process CSV rows sequentially not in parallel - avoid overwhelming database with concurrent creates
+- [Phase 03-06]: Parse price strings with decimal detection - support both dollar format ($12.99) and cents (1299)
+- [Phase 03-06]: Use pipe-separated values for array fields in CSV - standard approach for multi-value columns
 
 ### Pending Todos
 
@@ -146,6 +152,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-10T22:02:09.221Z
-Stopped at: Completed 03-04-PLAN.md
+Last session: 2026-03-10T22:09:28Z
+Stopped at: Completed 03-06-PLAN.md
 Resume file: None
