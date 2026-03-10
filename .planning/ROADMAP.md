@@ -83,17 +83,15 @@ Plans:
   3. Admin can set product status (draft, active, archived) and control visibility, with only active products showing on the client
   4. Client app displays paginated product listings sortable by price, name, date, and popularity, with product cards showing image, name, price, rating, and quick-add-to-cart
   5. Admin can perform bulk operations: CSV import, bulk status change, and bulk delete
-**Plans**: TBD (estimated 8-10)
+**Plans**: 6 plans
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
-- [ ] 03-03: TBD
-- [ ] 03-04: TBD
-- [ ] 03-05: TBD
-- [ ] 03-06: TBD
-- [ ] 03-07: TBD
-- [ ] 03-08: TBD
+- [ ] 03-01-PLAN.md — Zod validation schemas (discriminated union for all 5 product types) and expanded server product API with type-aware CRUD, slug generation, status management
+- [ ] 03-02-PLAN.md — Cloudinary signed upload endpoint and reusable ImageManager component with drag-and-drop reordering
+- [ ] 03-03-PLAN.md — Admin product list page with TanStack Table (sorting, filtering, search, pagination, status badges, row actions, bulk operations)
+- [ ] 03-04-PLAN.md — Admin product creation/edit form with React Hook Form, Zod discriminated union validation, all 5 type-specific field groups, and image manager integration
+- [ ] 03-05-PLAN.md — Client product listing page with responsive grid, product cards (image, name, price, rating, add-to-cart), sorting, and pagination
+- [ ] 03-06-PLAN.md — Bulk product operations: CSV import with Papa Parse streaming validation, multer upload middleware
 
 ### Phase 4: Categories & Navigation
 **Goal**: Products are organized in an infinite-depth category tree with collections, brands, and tags, and customers can navigate via mega menu and breadcrumbs
@@ -463,7 +461,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 |-------|----------------|--------|-----------|
 | 1. Database Schema Design | 0/4 | Planning complete | - |
 | 2. Authentication System | 0/5 | Planning complete | - |
-| 3. Product Catalog | 0/8 | Not started | - |
+| 3. Product Catalog | 0/6 | Planning complete | - |
 | 4. Categories & Navigation | 0/6 | Not started | - |
 | 5. Search System | 0/5 | Not started | - |
 | 6. Filter System | 0/6 | Not started | - |
