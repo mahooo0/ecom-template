@@ -285,14 +285,13 @@ Plans:
   3. Admin can add tracking numbers to orders with carrier selection (USPS, FedEx, UPS, DHL, etc.)
   4. Customer can track shipment status from the order detail page on the client app
   5. Free shipping threshold is configurable per zone and correctly applies when cart total exceeds the threshold
-**Plans**: TBD (estimated 5-7)
+**Plans**: 4 plans
 
 Plans:
-- [ ] 13-01: TBD
-- [ ] 13-02: TBD
-- [ ] 13-03: TBD
-- [ ] 13-04: TBD
-- [ ] 13-05: TBD
+- [ ] 13-01-PLAN.md — Server shipping module: Zod validation, zone/method CRUD service, zone matching algorithm, rate calculation engine, REST API endpoints
+- [ ] 13-02-PLAN.md — Order tracking: addTracking method on OrderService, order.shipped event, PATCH /orders/:id/tracking endpoint
+- [ ] 13-03-PLAN.md — Admin shipping zone/method management UI: zone list, zone detail with methods, create/edit forms for both
+- [ ] 13-04-PLAN.md — Admin order tracking form and client order tracking display with carrier-specific tracking URLs
 
 ### Phase 14: Inventory Management
 **Goal**: Stock is tracked at the variant/SKU level across multiple warehouses with atomic reservations preventing overselling
@@ -472,7 +471,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 10. Checkout | 0/7 | Not started | - |
 | 11. Payments | 0/5 | Not started | - |
 | 12. Order System | 0/7 | Not started | - |
-| 13. Shipping | 0/5 | Not started | - |
+| 13. Shipping | 0/4 | Planning complete | - |
 | 14. Inventory Management | 0/6 | Not started | - |
 | 15. Promotions & Discounts | 0/7 | Not started | - |
 | 16. Reviews & Ratings | 0/5 | Not started | - |
