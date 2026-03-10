@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { productController } from './product.controller.js';
 import { requireAdmin } from '../../common/middleware/auth.middleware.js';
 import { validate } from '../../common/middleware/validate.js';
+import { csvUpload } from '../../middleware/upload.middleware.js';
 import {
   createProductSchema,
   updateProductRequestSchema,
@@ -16,6 +17,14 @@ const router = Router();
 router.get('/', (req, res, next) => productController.getAll(req, res, next));
 router.get('/slug/:slug', (req, res, next) => productController.getBySlug(req, res, next));
 router.get('/:id', (req, res, next) => productController.getById(req, res, next));
+
+// Admin routes - CSV import (must come before /:id routes)
+router.post(
+  '/import',
+  requireAdmin,
+  csvUpload,
+  (req, res, next) => productController.importProducts(req, res, next)
+);
 
 // Admin routes - bulk operations (must come before /:id routes)
 router.patch(

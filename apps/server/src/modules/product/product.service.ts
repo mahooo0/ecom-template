@@ -3,7 +3,9 @@ import { eventBus } from '../../common/events/event-bus.js';
 import { AppError } from '../../common/middleware/error-handler.js';
 import { generateUniqueSlug } from '../../utils/slug.utils.js';
 import type { ProductFormData, ProductUpdateData } from '@repo/types/product-schemas';
+import { productSchema } from '@repo/types/product-schemas';
 import type { ProductStatus } from '@repo/types';
+import Papa from 'papaparse';
 
 interface GetAllOptions {
   page?: number;
@@ -13,6 +15,13 @@ interface GetAllOptions {
   search?: string;
   sortBy?: 'createdAt' | 'name' | 'price' | 'updatedAt';
   sortOrder?: 'asc' | 'desc';
+}
+
+interface ImportResult {
+  total: number;
+  imported: number;
+  failed: number;
+  errors: Array<{ row: number; field?: string; message: string }>;
 }
 
 export class ProductService {
@@ -416,6 +425,153 @@ export class ProductService {
   async delete(id: string) {
     await prisma.product.delete({ where: { id } });
     eventBus.emit('product.deleted', { productId: id });
+  }
+
+  async importFromCsv(fileBuffer: Buffer): Promise<ImportResult> {
+    const csvString = fileBuffer.toString('utf-8');
+
+    // Parse CSV with Papa Parse
+    const parseResult = Papa.parse(csvString, {
+      header: true,
+      skipEmptyLines: true,
+      transformHeader: (h) => h.trim().toLowerCase(),
+    });
+
+    const rows = parseResult.data as any[];
+    const result: ImportResult = {
+      total: rows.length,
+      imported: 0,
+      failed: 0,
+      errors: [],
+    };
+
+    // Helper to parse price strings ($12.99 -> 1299 cents, or direct integer)
+    const parsePrice = (priceStr: string): number => {
+      if (!priceStr) return 0;
+      const cleaned = priceStr.replace(/[$,]/g, '').trim();
+      const num = parseFloat(cleaned);
+      // If it has decimal places, assume it's dollars and convert to cents
+      if (cleaned.includes('.')) {
+        return Math.round(num * 100);
+      }
+      // Otherwise, assume it's already in cents
+      return parseInt(cleaned, 10);
+    };
+
+    // Helper to split pipe-separated values
+    const splitPipes = (value: string): string[] => {
+      if (!value || !value.trim()) return [];
+      return value.split('|').map((v) => v.trim()).filter((v) => v);
+    };
+
+    // Process each row sequentially
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const rowNumber = i + 2; // +2 because row 1 is headers and arrays are 0-indexed
+
+      try {
+        // Build ProductFormData from CSV row
+        const productType = row.producttype?.toUpperCase();
+
+        // Skip VARIABLE products (not supported in CSV import)
+        if (productType === 'VARIABLE') {
+          result.failed++;
+          result.errors.push({
+            row: rowNumber,
+            message: 'VARIABLE product type is not supported in CSV import. Use the admin form to create variable products.',
+          });
+          continue;
+        }
+
+        // Parse common fields
+        const images = splitPipes(row.images);
+        const price = parsePrice(row.price);
+
+        const productData: any = {
+          name: row.name,
+          description: row.description,
+          price,
+          sku: row.sku,
+          productType,
+          categoryId: row.categoryid,
+          brandId: row.brandid || undefined,
+          status: row.status?.toUpperCase() || 'DRAFT',
+          images,
+          attributes: {},
+          isActive: true,
+        };
+
+        // Add type-specific fields
+        if (productType === 'WEIGHTED') {
+          productData.weightedMeta = {
+            unit: row.unit?.toUpperCase() || 'KG',
+            pricePerUnit: parsePrice(row.priceperunit),
+            minWeight: row.minweight ? parseFloat(row.minweight) : undefined,
+            maxWeight: row.maxweight ? parseFloat(row.maxweight) : undefined,
+            stepWeight: row.stepweight ? parseFloat(row.stepweight) : undefined,
+          };
+        }
+
+        if (productType === 'DIGITAL') {
+          productData.digitalMeta = {
+            fileUrl: row.fileurl,
+            fileName: row.filename,
+            fileSize: row.filesize ? parseInt(row.filesize, 10) : 0,
+            fileFormat: row.fileformat,
+            maxDownloads: row.maxdownloads ? parseInt(row.maxdownloads, 10) : undefined,
+            accessDuration: row.accessduration ? parseInt(row.accessduration, 10) : undefined,
+          };
+        }
+
+        if (productType === 'BUNDLED') {
+          const bundleProductIds = splitPipes(row.bundleproductids);
+          const bundleQuantities = splitPipes(row.bundlequantities);
+          const bundleDiscounts = splitPipes(row.bundlediscounts || '');
+
+          if (bundleProductIds.length >= 2) {
+            productData.bundleItems = bundleProductIds.map((productId, idx) => ({
+              productId,
+              quantity: bundleQuantities[idx] ? parseInt(bundleQuantities[idx], 10) : 1,
+              discount: bundleDiscounts[idx] ? parseInt(bundleDiscounts[idx], 10) : 0,
+            }));
+          }
+        }
+
+        // Validate with Zod schema
+        const validated = productSchema.safeParse(productData);
+
+        if (!validated.success) {
+          result.failed++;
+          const firstError = validated.error.errors[0];
+          result.errors.push({
+            row: rowNumber,
+            field: firstError?.path.join('.'),
+            message: firstError?.message || 'Validation error',
+          });
+          continue;
+        }
+
+        // Create product
+        try {
+          await this.create(validated.data as ProductFormData);
+          result.imported++;
+        } catch (dbError: any) {
+          result.failed++;
+          result.errors.push({
+            row: rowNumber,
+            message: dbError.message || 'Database error while creating product',
+          });
+        }
+      } catch (error: any) {
+        result.failed++;
+        result.errors.push({
+          row: rowNumber,
+          message: error.message || 'Unexpected error processing row',
+        });
+      }
+    }
+
+    return result;
   }
 }
 

@@ -105,6 +105,19 @@ export class ProductController {
       next(error);
     }
   }
+
+  async importProducts(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ success: false, message: 'No file uploaded' });
+      }
+
+      const result = await productService.importFromCsv(req.file.buffer);
+      res.json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const productController = new ProductController();

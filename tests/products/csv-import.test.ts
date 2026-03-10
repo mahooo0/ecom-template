@@ -12,26 +12,6 @@ describe('CSV Bulk Import', () => {
 Simple Product,A good simple product description,$19.99,SKU-001,SIMPLE,cat-1,DRAFT,https://example.com/img1.jpg
 Digital Product,A comprehensive digital product guide,$29.99,SKU-002,DIGITAL,cat-2,ACTIVE,https://example.com/img2.jpg|https://example.com/img3.jpg`);
 
-    // Mock prisma.product.create to return successfully
-    (prisma.product.create as any).mockResolvedValue({
-      id: 'prod-1',
-      name: 'Simple Product',
-      slug: 'simple-product',
-      description: 'A good simple product description',
-      price: 1999,
-      sku: 'SKU-001',
-      productType: 'SIMPLE',
-      status: 'DRAFT',
-      images: ['https://example.com/img1.jpg'],
-      isActive: true,
-      categoryId: 'cat-1',
-      brandId: null,
-      compareAtPrice: null,
-      attributes: {},
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as any);
-
     const result = await productService.importFromCsv(csvBuffer);
 
     expect(result.total).toBe(2);
@@ -60,25 +40,6 @@ Invalid Product,Bad,not-a-price,SKU-002,SIMPLE,cat-2,ACTIVE,`);
 Valid Product,This is a good product description,$19.99,SKU-001,SIMPLE,cat-1,DRAFT,https://example.com/img1.jpg
 ,Short description,10,SKU-002,SIMPLE,cat-2,DRAFT,`);
 
-    (prisma.product.create as any).mockResolvedValue({
-      id: 'prod-1',
-      name: 'Valid Product',
-      slug: 'valid-product',
-      description: 'This is a good product description',
-      price: 1999,
-      sku: 'SKU-001',
-      productType: 'SIMPLE',
-      status: 'DRAFT',
-      images: ['https://example.com/img1.jpg'],
-      isActive: true,
-      categoryId: 'cat-1',
-      brandId: null,
-      compareAtPrice: null,
-      attributes: {},
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as any);
-
     const result = await productService.importFromCsv(csvBuffer);
 
     expect(result.total).toBe(2);
@@ -91,25 +52,6 @@ Valid Product,This is a good product description,$19.99,SKU-001,SIMPLE,cat-1,DRA
     const csvBuffer = Buffer.from(`name,description,price,sku,productType,categoryId,status,images
 Product One,Good product description here,$12.99,SKU-001,SIMPLE,cat-1,DRAFT,https://example.com/img1.jpg
 Product Two,Another good product description,1599,SKU-002,SIMPLE,cat-2,ACTIVE,https://example.com/img2.jpg`);
-
-    (prisma.product.create as any).mockResolvedValue({
-      id: 'prod-1',
-      name: 'Product One',
-      slug: 'product-one',
-      description: 'Good product description here',
-      price: 1299,
-      sku: 'SKU-001',
-      productType: 'SIMPLE',
-      status: 'DRAFT',
-      images: ['https://example.com/img1.jpg'],
-      isActive: true,
-      categoryId: 'cat-1',
-      brandId: null,
-      compareAtPrice: null,
-      attributes: {},
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as any);
 
     const result = await productService.importFromCsv(csvBuffer);
 
@@ -127,25 +69,6 @@ Weighted Product,Fresh organic apples sold by weight,0,SKU-002,WEIGHTED,cat-2,AC
 Digital Product,Comprehensive TypeScript guide,$29.99,SKU-003,DIGITAL,cat-3,ACTIVE,https://example.com/img2.jpg,,,https://cdn.example.com/file.pdf,file.pdf,1024000,PDF,,
 Bundle Product,Complete starter bundle,$49.99,SKU-004,BUNDLED,cat-4,ACTIVE,,,,,,,,"prod-1|prod-2","2|1"`);
 
-    (prisma.product.create as any).mockResolvedValue({
-      id: 'prod-1',
-      name: 'Simple Product',
-      slug: 'simple-product',
-      description: 'A good simple product description',
-      price: 1999,
-      sku: 'SKU-001',
-      productType: 'SIMPLE',
-      status: 'DRAFT',
-      images: ['https://example.com/img1.jpg'],
-      isActive: true,
-      categoryId: 'cat-1',
-      brandId: null,
-      compareAtPrice: null,
-      attributes: {},
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as any);
-
     const result = await productService.importFromCsv(csvBuffer);
 
     expect(result.total).toBe(4);
@@ -156,25 +79,6 @@ Bundle Product,Complete starter bundle,$49.99,SKU-004,BUNDLED,cat-4,ACTIVE,,,,,,
   it('returns total, imported, and failed counts', async () => {
     const csvBuffer = Buffer.from(`name,description,price,sku,productType,categoryId,status,images
 Valid Product,This is a good product description,$19.99,SKU-001,SIMPLE,cat-1,DRAFT,https://example.com/img1.jpg`);
-
-    (prisma.product.create as any).mockResolvedValue({
-      id: 'prod-1',
-      name: 'Valid Product',
-      slug: 'valid-product',
-      description: 'This is a good product description',
-      price: 1999,
-      sku: 'SKU-001',
-      productType: 'SIMPLE',
-      status: 'DRAFT',
-      images: ['https://example.com/img1.jpg'],
-      isActive: true,
-      categoryId: 'cat-1',
-      brandId: null,
-      compareAtPrice: null,
-      attributes: {},
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as any);
 
     const result = await productService.importFromCsv(csvBuffer);
 
