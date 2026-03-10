@@ -19,16 +19,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <UserButton />
               </div>
               <nav className="flex flex-col gap-2">
-                <a href="/" className="rounded-md px-3 py-2 text-sm hover:bg-gray-100">
+                <a href="/dashboard" className="rounded-md px-3 py-2 text-sm hover:bg-gray-100">
                   Dashboard
                 </a>
-                <a href="/products" className="rounded-md px-3 py-2 text-sm hover:bg-gray-100">
+                <a href="/dashboard/products" className="rounded-md px-3 py-2 text-sm hover:bg-gray-100">
                   Products
                 </a>
-                <a href="/orders" className="rounded-md px-3 py-2 text-sm hover:bg-gray-100">
+                <a href="/dashboard/orders" className="rounded-md px-3 py-2 text-sm hover:bg-gray-100">
                   Orders
                 </a>
-                <a href="/users" className="rounded-md px-3 py-2 text-sm hover:bg-gray-100">
+                <a href="/dashboard/users" className="rounded-md px-3 py-2 text-sm hover:bg-gray-100">
                   Users
                 </a>
               </nav>
