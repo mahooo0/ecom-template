@@ -46,15 +46,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Running `prisma db seed` populates the database with realistic sample data covering all product types, categories at multiple depths, and related entities
   4. JSONB columns on Product have GIN indexes and Category model uses materialized path string for tree hierarchy
   5. All schemas have proper cascading deletes, unique constraints, and validation (no orphaned records possible)
-**Plans**: TBD (estimated 6-8)
+**Plans**: 4 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
-- [ ] 01-04: TBD
-- [ ] 01-05: TBD
-- [ ] 01-06: TBD
+- [ ] 01-01-PLAN.md — Prisma schema: Product catalog domain (Product with type discriminator, Category with materialized path, Variant EAV system, Brand/Tag/Collection)
+- [ ] 01-02-PLAN.md — Mongoose schemas: Order with full lifecycle and Cart with TTL expiration
+- [ ] 01-03-PLAN.md — Prisma schema: User/Commerce domain (User with SUPER_ADMIN, Address, Wishlist, Review, Coupon, Promotion, Shipping, Warehouse, Inventory)
+- [ ] 01-04-PLAN.md — Seed data factories, seed script for both databases, and shared types update
 
 ### Phase 2: Authentication System
 **Goal**: Users can securely register, login, and manage their accounts via Clerk, with role-based access controlling admin panel entry
@@ -465,7 +463,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Database Schema Design | 0/6 | Not started | - |
+| 1. Database Schema Design | 0/4 | Planning complete | - |
 | 2. Authentication System | 0/7 | Not started | - |
 | 3. Product Catalog | 0/8 | Not started | - |
 | 4. Categories & Navigation | 0/6 | Not started | - |
