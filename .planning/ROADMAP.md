@@ -64,16 +64,14 @@ Plans:
   3. Admin app rejects access for users without ADMIN or SUPER_ADMIN role, showing an unauthorized page
   4. User can view and edit their profile (name, email, avatar) and manage saved addresses (add, edit, delete, set default) on the client app
   5. Admin can view the user list, view user details, change user roles, and disable accounts from the admin panel
-**Plans**: TBD (estimated 7-9)
+**Plans**: 5 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
-- [ ] 02-03: TBD
-- [ ] 02-04: TBD
-- [ ] 02-05: TBD
-- [ ] 02-06: TBD
-- [ ] 02-07: TBD
+- [ ] 02-01-PLAN.md — Install Clerk SDKs, configure ClerkProvider in both Next.js apps, set up clerkMiddleware and auth helpers
+- [ ] 02-02-PLAN.md — Integrate Clerk Express middleware in server, implement webhook-based user sync with Svix verification
+- [ ] 02-03-PLAN.md — Create client sign-in/sign-up pages, admin sign-in page and unauthorized landing page
+- [ ] 02-04-PLAN.md — Client user profile view/edit and address management (CRUD with default setting)
+- [ ] 02-05-PLAN.md — Admin user management panel (user list, detail, role change, account disable/enable)
 
 ### Phase 3: Product Catalog
 **Goal**: Admins can create and manage all five product types through the admin panel, and customers can browse product listings with sorting and pagination on the client app
@@ -464,7 +462,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Database Schema Design | 0/4 | Planning complete | - |
-| 2. Authentication System | 0/7 | Not started | - |
+| 2. Authentication System | 0/5 | Planning complete | - |
 | 3. Product Catalog | 0/8 | Not started | - |
 | 4. Categories & Navigation | 0/6 | Not started | - |
 | 5. Search System | 0/5 | Not started | - |
