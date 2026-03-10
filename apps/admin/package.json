@@ -16,6 +16,7 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^5.2.2",
+    "@repo/db": "workspace:^",
     "@repo/types": "workspace:*",
     "@tanstack/react-table": "^8.21.3",
     "cloudinary": "^2.9.0",
