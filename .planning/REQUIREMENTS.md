@@ -18,8 +18,8 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 - [x] **SCHEMA-07**: Prisma schema includes Brand, Tag, Collection models for product organization
 - [ ] **SCHEMA-08**: Prisma schema includes Address, Wishlist, Review, Coupon, Promotion models
 - [ ] **SCHEMA-09**: Prisma schema includes Shipping (zones, methods, rates), Warehouse, InventoryItem models
-- [ ] **SCHEMA-10**: Mongoose schema includes Order document with full lifecycle, line items, payment info, shipping info, status history
-- [ ] **SCHEMA-11**: Mongoose schema includes Cart document supporting guest and authenticated users with TTL
+- [x] **SCHEMA-10**: Mongoose schema includes Order document with full lifecycle, line items, payment info, shipping info, status history
+- [x] **SCHEMA-11**: Mongoose schema includes Cart document supporting guest and authenticated users with TTL
 - [ ] **SCHEMA-12**: All schemas have proper indexes, relations, cascading deletes, and validation constraints
 - [ ] **SCHEMA-13**: Database seeds exist with realistic sample data for all entity types
 
@@ -287,8 +287,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SCHEMA-07 | Phase 1: Database Schema Design | Complete |
 | SCHEMA-08 | Phase 1: Database Schema Design | Pending |
 | SCHEMA-09 | Phase 1: Database Schema Design | Pending |
-| SCHEMA-10 | Phase 1: Database Schema Design | Pending |
-| SCHEMA-11 | Phase 1: Database Schema Design | Pending |
+| SCHEMA-10 | Phase 1: Database Schema Design | Complete |
+| SCHEMA-11 | Phase 1: Database Schema Design | Complete |
 | SCHEMA-12 | Phase 1: Database Schema Design | Pending |
 | SCHEMA-13 | Phase 1: Database Schema Design | Pending |
 | AUTH-01 | Phase 2: Authentication System | Pending |
