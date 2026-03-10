@@ -37,16 +37,16 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 
 ### Product Catalog
 
-- [ ] **PROD-01**: Admin can create simple products with name, description, price, images, SKU
-- [ ] **PROD-02**: Admin can create variable products with option groups (size, color, material) and variant combinations
-- [ ] **PROD-03**: Admin can create weighted products with unit pricing (per kg/lb/piece)
-- [ ] **PROD-04**: Admin can create digital products with downloadable file attachments and access rules
-- [ ] **PROD-05**: Admin can create bundled products composed of multiple other products with bundle pricing
+- [x] **PROD-01**: Admin can create simple products with name, description, price, images, SKU
+- [x] **PROD-02**: Admin can create variable products with option groups (size, color, material) and variant combinations
+- [x] **PROD-03**: Admin can create weighted products with unit pricing (per kg/lb/piece)
+- [x] **PROD-04**: Admin can create digital products with downloadable file attachments and access rules
+- [x] **PROD-05**: Admin can create bundled products composed of multiple other products with bundle pricing
 - [x] **PROD-06**: Admin can upload and manage product images via Cloudinary (drag-drop, reorder, crop)
-- [ ] **PROD-07**: Admin can set product status (draft, active, archived) and visibility
-- [ ] **PROD-08**: Client app displays product listings with pagination, sorting (price, name, date, popularity)
-- [ ] **PROD-09**: Client app displays product cards with image, name, price, rating, quick-add-to-cart
-- [ ] **PROD-10**: API supports bulk product operations (import CSV, bulk status change, bulk delete)
+- [x] **PROD-07**: Admin can set product status (draft, active, archived) and visibility
+- [x] **PROD-08**: Client app displays product listings with pagination, sorting (price, name, date, popularity)
+- [x] **PROD-09**: Client app displays product cards with image, name, price, rating, quick-add-to-cart
+- [x] **PROD-10**: API supports bulk product operations (import CSV, bulk status change, bulk delete)
 
 ### Categories & Navigation
 
@@ -300,16 +300,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-07 | Phase 2: Authentication System | Complete |
 | AUTH-08 | Phase 2: Authentication System | Complete |
 | AUTH-09 | Phase 2: Authentication System | Complete |
-| PROD-01 | Phase 3: Product Catalog | Pending |
-| PROD-02 | Phase 3: Product Catalog | Pending |
-| PROD-03 | Phase 3: Product Catalog | Pending |
-| PROD-04 | Phase 3: Product Catalog | Pending |
-| PROD-05 | Phase 3: Product Catalog | Pending |
+| PROD-01 | Phase 3: Product Catalog | Complete |
+| PROD-02 | Phase 3: Product Catalog | Complete |
+| PROD-03 | Phase 3: Product Catalog | Complete |
+| PROD-04 | Phase 3: Product Catalog | Complete |
+| PROD-05 | Phase 3: Product Catalog | Complete |
 | PROD-06 | Phase 3: Product Catalog | Complete |
-| PROD-07 | Phase 3: Product Catalog | Pending |
-| PROD-08 | Phase 3: Product Catalog | Pending |
-| PROD-09 | Phase 3: Product Catalog | Pending |
-| PROD-10 | Phase 3: Product Catalog | Pending |
+| PROD-07 | Phase 3: Product Catalog | Complete |
+| PROD-08 | Phase 3: Product Catalog | Complete |
+| PROD-09 | Phase 3: Product Catalog | Complete |
+| PROD-10 | Phase 3: Product Catalog | Complete |
 | CAT-01 | Phase 4: Categories & Navigation | Pending |
 | CAT-02 | Phase 4: Categories & Navigation | Pending |
 | CAT-03 | Phase 4: Categories & Navigation | Pending |
