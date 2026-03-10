@@ -83,9 +83,10 @@ Plans:
   3. Admin can set product status (draft, active, archived) and control visibility, with only active products showing on the client
   4. Client app displays paginated product listings sortable by price, name, date, and popularity, with product cards showing image, name, price, rating, and quick-add-to-cart
   5. Admin can perform bulk operations: CSV import, bulk status change, and bulk delete
-**Plans**: 6 plans
+**Plans**: 7 plans
 
 Plans:
+- [ ] 03-00-PLAN.md — Wave 0: Install Vitest, create test configuration, setup file with Prisma mocks, and 10 placeholder test files for all requirements
 - [ ] 03-01-PLAN.md — Zod validation schemas (discriminated union for all 5 product types) and expanded server product API with type-aware CRUD, slug generation, status management
 - [ ] 03-02-PLAN.md — Cloudinary signed upload endpoint and reusable ImageManager component with drag-and-drop reordering
 - [ ] 03-03-PLAN.md — Admin product list page with TanStack Table (sorting, filtering, search, pagination, status badges, row actions, bulk operations)
@@ -461,7 +462,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 |-------|----------------|--------|-----------|
 | 1. Database Schema Design | 0/4 | Planning complete | - |
 | 2. Authentication System | 0/5 | Planning complete | - |
-| 3. Product Catalog | 0/6 | Planning complete | - |
+| 3. Product Catalog | 0/7 | Planning complete | - |
 | 4. Categories & Navigation | 0/6 | Not started | - |
 | 5. Search System | 0/5 | Not started | - |
 | 6. Filter System | 0/6 | Not started | - |
