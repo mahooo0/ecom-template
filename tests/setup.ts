@@ -1,0 +1,156 @@
+import '@testing-library/jest-dom';
+import { vi } from 'vitest';
+
+// Mock @repo/db prisma client
+vi.mock('@repo/db', () => ({
+  prisma: {
+    product: {
+      findMany: vi.fn(),
+      findUnique: vi.fn(),
+      findFirst: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      updateMany: vi.fn(),
+      delete: vi.fn(),
+      deleteMany: vi.fn(),
+      count: vi.fn(),
+    },
+    productVariant: { createMany: vi.fn(), deleteMany: vi.fn() },
+    digitalMeta: { create: vi.fn(), upsert: vi.fn() },
+    weightedMeta: { create: vi.fn(), upsert: vi.fn() },
+    bundleItem: { createMany: vi.fn(), deleteMany: vi.fn() },
+    $transaction: vi.fn((fns) => Promise.all(fns.map((fn: Function) => fn()))),
+  },
+}));
+
+// Export shared mock product fixtures
+export const mockSimpleProduct = {
+  id: 'prod-1',
+  name: 'Test Product',
+  slug: 'test-product',
+  description: 'A test product description here',
+  price: 1999,
+  sku: 'TEST-001',
+  productType: 'SIMPLE',
+  status: 'DRAFT',
+  images: [],
+  isActive: true,
+  categoryId: 'cat-1',
+  createdAt: new Date('2024-01-01T00:00:00Z'),
+  updatedAt: new Date('2024-01-01T00:00:00Z'),
+};
+
+export const mockVariableProduct = {
+  id: 'prod-2',
+  name: 'Variable T-Shirt',
+  slug: 'variable-t-shirt',
+  description: 'T-shirt with size and color variants',
+  price: 2499,
+  sku: 'VAR-001',
+  productType: 'VARIABLE',
+  status: 'ACTIVE',
+  images: [],
+  isActive: true,
+  categoryId: 'cat-1',
+  createdAt: new Date('2024-01-01T00:00:00Z'),
+  updatedAt: new Date('2024-01-01T00:00:00Z'),
+  variants: [
+    {
+      id: 'var-1',
+      productId: 'prod-2',
+      sku: 'VAR-001-S-RED',
+      price: 2499,
+      stock: 10,
+      options: { size: 'S', color: 'Red' },
+    },
+    {
+      id: 'var-2',
+      productId: 'prod-2',
+      sku: 'VAR-001-M-BLUE',
+      price: 2499,
+      stock: 15,
+      options: { size: 'M', color: 'Blue' },
+    },
+  ],
+};
+
+export const mockWeightedProduct = {
+  id: 'prod-3',
+  name: 'Organic Apples',
+  slug: 'organic-apples',
+  description: 'Fresh organic apples sold by weight',
+  price: 399,
+  sku: 'WEIGHT-001',
+  productType: 'WEIGHTED',
+  status: 'ACTIVE',
+  images: [],
+  isActive: true,
+  categoryId: 'cat-2',
+  createdAt: new Date('2024-01-01T00:00:00Z'),
+  updatedAt: new Date('2024-01-01T00:00:00Z'),
+  weightedMeta: {
+    id: 'wm-1',
+    productId: 'prod-3',
+    weightUnit: 'KG',
+    pricePerUnit: 399,
+    minWeight: 100,
+    maxWeight: 5000,
+    stepWeight: 100,
+  },
+};
+
+export const mockDigitalProduct = {
+  id: 'prod-4',
+  name: 'E-Book: Learn TypeScript',
+  slug: 'learn-typescript-ebook',
+  description: 'Comprehensive TypeScript guide',
+  price: 1999,
+  sku: 'DIGITAL-001',
+  productType: 'DIGITAL',
+  status: 'ACTIVE',
+  images: [],
+  isActive: true,
+  categoryId: 'cat-3',
+  createdAt: new Date('2024-01-01T00:00:00Z'),
+  updatedAt: new Date('2024-01-01T00:00:00Z'),
+  digitalMeta: {
+    id: 'dm-1',
+    productId: 'prod-4',
+    fileUrl: 'https://cdn.example.com/typescript-guide.pdf',
+    fileName: 'typescript-guide.pdf',
+    maxDownloads: 5,
+    accessDuration: 30,
+  },
+};
+
+export const mockBundleProduct = {
+  id: 'prod-5',
+  name: 'Starter Bundle',
+  slug: 'starter-bundle',
+  description: 'Complete starter kit with 3 products',
+  price: 4999,
+  sku: 'BUNDLE-001',
+  productType: 'BUNDLE',
+  status: 'ACTIVE',
+  images: [],
+  isActive: true,
+  categoryId: 'cat-1',
+  createdAt: new Date('2024-01-01T00:00:00Z'),
+  updatedAt: new Date('2024-01-01T00:00:00Z'),
+  bundleItems: [
+    {
+      id: 'bi-1',
+      bundleId: 'prod-5',
+      productId: 'prod-1',
+      quantity: 2,
+      discount: 10,
+    },
+    {
+      id: 'bi-2',
+      bundleId: 'prod-5',
+      productId: 'prod-4',
+      quantity: 1,
+      discount: 5,
+    },
+  ],
+};
