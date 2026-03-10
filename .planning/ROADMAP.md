@@ -49,9 +49,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 4 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Prisma schema: Product catalog domain (Product with type discriminator, Category with materialized path, Variant EAV system, Brand/Tag/Collection)
-- [ ] 01-02-PLAN.md — Mongoose schemas: Order with full lifecycle and Cart with TTL expiration
-- [ ] 01-03-PLAN.md — Prisma schema: User/Commerce domain (User with SUPER_ADMIN, Address, Wishlist, Review, Coupon, Promotion, Shipping, Warehouse, Inventory)
+- [x] 01-01-PLAN.md — Prisma schema: Product catalog domain (Product with type discriminator, Category with materialized path, Variant EAV system, Brand/Tag/Collection)
+- [x] 01-02-PLAN.md — Mongoose schemas: Order with full lifecycle and Cart with TTL expiration
+- [x] 01-03-PLAN.md — Prisma schema: User/Commerce domain (User with SUPER_ADMIN, Address, Wishlist, Review, Coupon, Promotion, Shipping, Warehouse, Inventory)
 - [ ] 01-04-PLAN.md — Seed data factories, seed script for both databases, and shared types update
 
 ### Phase 2: Authentication System

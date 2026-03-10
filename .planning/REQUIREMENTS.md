@@ -9,18 +9,18 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 
 ### Database Schema
 
-- [ ] **SCHEMA-01**: Prisma schema includes complete User model with roles (CUSTOMER, ADMIN, SUPER_ADMIN), profile fields, and address relations
+- [x] **SCHEMA-01**: Prisma schema includes complete User model with roles (CUSTOMER, ADMIN, SUPER_ADMIN), profile fields, and address relations
 - [x] **SCHEMA-02**: Prisma schema includes Product model supporting all types (simple, variable, weighted, digital, bundled) via discriminator field
 - [x] **SCHEMA-03**: Prisma schema includes Category model with materialized path for infinite depth tree
 - [x] **SCHEMA-04**: Prisma schema includes ProductVariant model with option combinations (size/color/material) and independent pricing/stock
 - [x] **SCHEMA-05**: Prisma schema includes dynamic attributes as JSONB columns with GIN indexes for filterable properties per category
 - [x] **SCHEMA-06**: Prisma schema includes CategoryAttribute model defining which filterable attributes belong to each category
 - [x] **SCHEMA-07**: Prisma schema includes Brand, Tag, Collection models for product organization
-- [ ] **SCHEMA-08**: Prisma schema includes Address, Wishlist, Review, Coupon, Promotion models
-- [ ] **SCHEMA-09**: Prisma schema includes Shipping (zones, methods, rates), Warehouse, InventoryItem models
+- [x] **SCHEMA-08**: Prisma schema includes Address, Wishlist, Review, Coupon, Promotion models
+- [x] **SCHEMA-09**: Prisma schema includes Shipping (zones, methods, rates), Warehouse, InventoryItem models
 - [x] **SCHEMA-10**: Mongoose schema includes Order document with full lifecycle, line items, payment info, shipping info, status history
 - [x] **SCHEMA-11**: Mongoose schema includes Cart document supporting guest and authenticated users with TTL
-- [ ] **SCHEMA-12**: All schemas have proper indexes, relations, cascading deletes, and validation constraints
+- [x] **SCHEMA-12**: All schemas have proper indexes, relations, cascading deletes, and validation constraints
 - [ ] **SCHEMA-13**: Database seeds exist with realistic sample data for all entity types
 
 ### Authentication
