@@ -21,7 +21,7 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 - [x] **SCHEMA-10**: Mongoose schema includes Order document with full lifecycle, line items, payment info, shipping info, status history
 - [x] **SCHEMA-11**: Mongoose schema includes Cart document supporting guest and authenticated users with TTL
 - [x] **SCHEMA-12**: All schemas have proper indexes, relations, cascading deletes, and validation constraints
-- [ ] **SCHEMA-13**: Database seeds exist with realistic sample data for all entity types
+- [x] **SCHEMA-13**: Database seeds exist with realistic sample data for all entity types
 
 ### Authentication
 
@@ -289,8 +289,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SCHEMA-09 | Phase 1: Database Schema Design | Pending |
 | SCHEMA-10 | Phase 1: Database Schema Design | Complete |
 | SCHEMA-11 | Phase 1: Database Schema Design | Complete |
-| SCHEMA-12 | Phase 1: Database Schema Design | Pending |
-| SCHEMA-13 | Phase 1: Database Schema Design | Pending |
+| SCHEMA-12 | Phase 1: Database Schema Design | Complete |
+| SCHEMA-13 | Phase 1: Database Schema Design | Complete |
 | AUTH-01 | Phase 2: Authentication System | Pending |
 | AUTH-02 | Phase 2: Authentication System | Pending |
 | AUTH-03 | Phase 2: Authentication System | Pending |
