@@ -10,12 +10,12 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 ### Database Schema
 
 - [ ] **SCHEMA-01**: Prisma schema includes complete User model with roles (CUSTOMER, ADMIN, SUPER_ADMIN), profile fields, and address relations
-- [ ] **SCHEMA-02**: Prisma schema includes Product model supporting all types (simple, variable, weighted, digital, bundled) via discriminator field
-- [ ] **SCHEMA-03**: Prisma schema includes Category model with materialized path for infinite depth tree
-- [ ] **SCHEMA-04**: Prisma schema includes ProductVariant model with option combinations (size/color/material) and independent pricing/stock
-- [ ] **SCHEMA-05**: Prisma schema includes dynamic attributes as JSONB columns with GIN indexes for filterable properties per category
-- [ ] **SCHEMA-06**: Prisma schema includes CategoryAttribute model defining which filterable attributes belong to each category
-- [ ] **SCHEMA-07**: Prisma schema includes Brand, Tag, Collection models for product organization
+- [x] **SCHEMA-02**: Prisma schema includes Product model supporting all types (simple, variable, weighted, digital, bundled) via discriminator field
+- [x] **SCHEMA-03**: Prisma schema includes Category model with materialized path for infinite depth tree
+- [x] **SCHEMA-04**: Prisma schema includes ProductVariant model with option combinations (size/color/material) and independent pricing/stock
+- [x] **SCHEMA-05**: Prisma schema includes dynamic attributes as JSONB columns with GIN indexes for filterable properties per category
+- [x] **SCHEMA-06**: Prisma schema includes CategoryAttribute model defining which filterable attributes belong to each category
+- [x] **SCHEMA-07**: Prisma schema includes Brand, Tag, Collection models for product organization
 - [ ] **SCHEMA-08**: Prisma schema includes Address, Wishlist, Review, Coupon, Promotion models
 - [ ] **SCHEMA-09**: Prisma schema includes Shipping (zones, methods, rates), Warehouse, InventoryItem models
 - [ ] **SCHEMA-10**: Mongoose schema includes Order document with full lifecycle, line items, payment info, shipping info, status history
@@ -279,12 +279,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | SCHEMA-01 | Phase 1: Database Schema Design | Pending |
-| SCHEMA-02 | Phase 1: Database Schema Design | Pending |
-| SCHEMA-03 | Phase 1: Database Schema Design | Pending |
-| SCHEMA-04 | Phase 1: Database Schema Design | Pending |
-| SCHEMA-05 | Phase 1: Database Schema Design | Pending |
-| SCHEMA-06 | Phase 1: Database Schema Design | Pending |
-| SCHEMA-07 | Phase 1: Database Schema Design | Pending |
+| SCHEMA-02 | Phase 1: Database Schema Design | Complete |
+| SCHEMA-03 | Phase 1: Database Schema Design | Complete |
+| SCHEMA-04 | Phase 1: Database Schema Design | Complete |
+| SCHEMA-05 | Phase 1: Database Schema Design | Complete |
+| SCHEMA-06 | Phase 1: Database Schema Design | Complete |
+| SCHEMA-07 | Phase 1: Database Schema Design | Complete |
 | SCHEMA-08 | Phase 1: Database Schema Design | Pending |
 | SCHEMA-09 | Phase 1: Database Schema Design | Pending |
 | SCHEMA-10 | Phase 1: Database Schema Design | Pending |
