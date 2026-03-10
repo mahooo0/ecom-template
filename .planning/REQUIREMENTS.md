@@ -31,9 +31,9 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 - [x] **AUTH-04**: User session persists across browser refresh on both client and admin apps
 - [x] **AUTH-05**: Admin app restricts access to ADMIN and SUPER_ADMIN roles only
 - [x] **AUTH-06**: Server middleware validates Clerk JWT tokens and attaches user to request
-- [ ] **AUTH-07**: User can view and edit profile (name, email, avatar) on client app
-- [ ] **AUTH-08**: User can manage saved addresses (add, edit, delete, set default)
-- [ ] **AUTH-09**: Admin can manage users (view list, view details, change roles, disable accounts)
+- [x] **AUTH-07**: User can view and edit profile (name, email, avatar) on client app
+- [x] **AUTH-08**: User can manage saved addresses (add, edit, delete, set default)
+- [x] **AUTH-09**: Admin can manage users (view list, view details, change roles, disable accounts)
 
 ### Product Catalog
 
@@ -297,9 +297,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-04 | Phase 2: Authentication System | Complete |
 | AUTH-05 | Phase 2: Authentication System | Complete |
 | AUTH-06 | Phase 2: Authentication System | Complete |
-| AUTH-07 | Phase 2: Authentication System | Pending |
-| AUTH-08 | Phase 2: Authentication System | Pending |
-| AUTH-09 | Phase 2: Authentication System | Pending |
+| AUTH-07 | Phase 2: Authentication System | Complete |
+| AUTH-08 | Phase 2: Authentication System | Complete |
+| AUTH-09 | Phase 2: Authentication System | Complete |
 | PROD-01 | Phase 3: Product Catalog | Pending |
 | PROD-02 | Phase 3: Product Catalog | Pending |
 | PROD-03 | Phase 3: Product Catalog | Pending |

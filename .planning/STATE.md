@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-03-PLAN.md (Authentication Pages)
-last_updated: "2026-03-10T20:26:24.472Z"
+stopped_at: Completed 02-04-PLAN.md (Profile and Address Management)
+last_updated: "2026-03-10T20:32:55.998Z"
 last_activity: "2026-03-10 -- Completed plan 02-03: Authentication Pages"
 progress:
   total_phases: 21
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 9
-  completed_plans: 7
+  completed_plans: 9
   percent: 78
 ---
 
@@ -63,6 +63,8 @@ Progress: [████████░░] 78%
 | Phase 02 P02 | 111 | 2 tasks | 6 files |
 | Phase 02 P01 | 3 | 2 tasks | 14 files |
 | Phase 02 P03 | 100 | 2 tasks | 5 files |
+| Phase 02 P05 | 169 | 2 tasks | 8 files |
+| Phase 02 P04 | 170 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -99,6 +101,12 @@ Recent decisions affecting current work:
 - [Phase 02]: Use catch-all route segments [[...catch-all]] for Clerk auth pages - required for multi-step flows
 - [Phase 02]: Create separate (auth) layout for admin app - auth pages should not show sidebar
 - [Phase 02]: Add SignOut button on unauthorized page - enables account switching for non-admin users
+- [Phase 02]: Separate client components for role and status forms - enables interactive form state
+- [Phase 02]: Update both Clerk and local DB on role/status changes - provides immediate consistency
+- [Phase 02]: Use Clerk ban/unban API instead of custom flag - leverages automatic session invalidation
+- [Phase 02]: Use server actions instead of API routes for profile and address operations - better App Router integration
+- [Phase 02]: Update Clerk user data directly instead of storing in database - Clerk is source of truth with webhook sync
+- [Phase 02]: Separate client components for form interactivity from server components for data fetching - optimal Next.js App Router pattern
 
 ### Pending Todos
 
@@ -110,6 +118,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-10T20:26:24.470Z
-Stopped at: Completed 02-03-PLAN.md (Authentication Pages)
+Last session: 2026-03-10T20:32:55.996Z
+Stopped at: Completed 02-04-PLAN.md (Profile and Address Management)
 Resume file: None
