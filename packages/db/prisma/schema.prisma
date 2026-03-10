@@ -1,0 +1,334 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// USER & AUTH DOMAIN (handled by Plan 03)
+// ============================================================================
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  email     String   @unique
+  firstName String
+  lastName  String
+  role      Role     @default(CUSTOMER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+// ============================================================================
+// PRODUCT CATALOG DOMAIN
+// ============================================================================
+
+enum ProductType {
+  SIMPLE
+  VARIABLE
+  WEIGHTED
+  DIGITAL
+  BUNDLED
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum WeightUnit {
+  KG
+  LB
+  OZ
+  G
+}
+
+enum AttributeType {
+  SELECT
+  RANGE
+  BOOLEAN
+  TEXT
+}
+
+model Product {
+  id              String   @id @default(cuid())
+  name            String
+  slug            String   @unique
+  description     String   @db.Text
+  price           Int      // cents
+  compareAtPrice  Int?     // optional original price for sale display
+  images          String[] // array of URLs
+  sku             String   @unique
+  productType     ProductType @default(SIMPLE)
+  status          ProductStatus @default(DRAFT)
+  attributes      Json     @default("{}") // JSONB for dynamic attributes
+  isActive        Boolean  @default(true)
+
+  // Relations
+  categoryId      String
+  category        Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  brandId         String?
+  brand           Brand?   @relation(fields: [brandId], references: [id], onDelete: SetNull)
+
+  variants        ProductVariant[]
+  tags            ProductTag[]
+  collections     ProductCollection[]
+
+  // Type-specific metadata
+  digitalMeta     DigitalMeta?
+  weightedMeta    WeightedMeta?
+  bundleItems     BundleItem[] @relation("BundleProduct")
+  includedInBundles BundleItem[] @relation("BundledProduct")
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Indexes
+  @@index([categoryId])
+  @@index([brandId])
+  @@index([sku])
+  @@index([productType])
+  @@index([status])
+  @@index([attributes], type: Gin)
+  @@map("products")
+}
+
+model DigitalMeta {
+  id              String   @id @default(cuid())
+  productId       String   @unique
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  fileUrl         String   // Cloudinary URL
+  fileName        String
+  fileSize        Int      // bytes
+  fileFormat      String   // e.g., "pdf", "zip", "mp3"
+  maxDownloads    Int?     // null = unlimited
+  accessDuration  Int?     // days, null = lifetime
+
+  @@map("digital_metas")
+}
+
+model WeightedMeta {
+  id              String     @id @default(cuid())
+  productId       String     @unique
+  product         Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  unit            WeightUnit
+  pricePerUnit    Int        // cents
+  minWeight       Float?     // minimum order weight
+  maxWeight       Float?     // maximum order weight
+  stepWeight      Float?     // increment step, e.g., 0.1 for 100g steps
+
+  @@map("weighted_metas")
+}
+
+model BundleItem {
+  id              String   @id @default(cuid())
+  bundleProductId String
+  bundleProduct   Product  @relation("BundleProduct", fields: [bundleProductId], references: [id], onDelete: Cascade)
+  productId       String
+  product         Product  @relation("BundledProduct", fields: [productId], references: [id], onDelete: Cascade)
+  quantity        Int      @default(1)
+  discount        Int      @default(0) // cents off per item in bundle
+
+  @@unique([bundleProductId, productId])
+  @@index([bundleProductId])
+  @@index([productId])
+  @@map("bundle_items")
+}
+
+// ============================================================================
+// CATEGORY DOMAIN
+// ============================================================================
+
+model Category {
+  id              String     @id @default(cuid())
+  name            String
+  slug            String     @unique
+  description     String?    @db.Text
+  image           String?    // category image URL
+  path            String     // materialized path: "/electronics/phones/smartphones"
+  depth           Int        @default(0)
+  position        Int        @default(0) // sort order among siblings
+
+  // Self-referential tree
+  parentId        String?
+  parent          Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: Restrict)
+  children        Category[] @relation("CategoryTree")
+
+  // Relations
+  products        Product[]
+  attributes      CategoryAttribute[]
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+
+  // Timestamps
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@index([path])
+  @@index([parentId])
+  @@map("categories")
+}
+
+model CategoryAttribute {
+  id              String        @id @default(cuid())
+  name            String        // display name: "Screen Size"
+  key             String        // machine key: "screen_size"
+  type            AttributeType
+  values          String[]      // possible values: ["32 inch", "55 inch", "65 inch"]
+  unit            String?       // e.g., "inch", "cm", "GB"
+  isFilterable    Boolean       @default(true)
+  isRequired      Boolean       @default(false)
+  position        Int           @default(0) // display order
+
+  categoryId      String
+  category        Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([categoryId, key]) // one attribute key per category
+  @@index([categoryId])
+  @@map("category_attributes")
+}
+
+// ============================================================================
+// PRODUCT VARIANT & OPTIONS DOMAIN
+// ============================================================================
+
+model ProductVariant {
+  id              String   @id @default(cuid())
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku             String   @unique
+  price           Int      // cents, overrides base product price
+  compareAtPrice  Int?
+  stock           Int      @default(0)
+  isActive        Boolean  @default(true)
+  images          String[] // variant-specific images
+
+  options         VariantOption[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([productId])
+  @@index([sku])
+  @@map("product_variants")
+}
+
+model OptionGroup {
+  id              String        @id @default(cuid())
+  name            String        @unique // "Size", "Color", "Material"
+  displayName     String        // user-facing label
+  values          OptionValue[]
+  createdAt       DateTime      @default(now())
+
+  @@map("option_groups")
+}
+
+model OptionValue {
+  id              String          @id @default(cuid())
+  value           String          // "Large", "Red", "#FF0000"
+  label           String?         // optional display label different from value
+  groupId         String
+  group           OptionGroup     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  variantOptions  VariantOption[]
+
+  @@unique([groupId, value])
+  @@index([groupId])
+  @@map("option_values")
+}
+
+model VariantOption {
+  id              String         @id @default(cuid())
+  variantId       String
+  variant         ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  optionId        String
+  option          OptionValue    @relation(fields: [optionId], references: [id], onDelete: Cascade)
+
+  @@unique([variantId, optionId])
+  @@index([variantId])
+  @@index([optionId])
+  @@map("variant_options")
+}
+
+// ============================================================================
+// BRAND, TAG, COLLECTION DOMAIN
+// ============================================================================
+
+model Brand {
+  id              String    @id @default(cuid())
+  name            String    @unique
+  slug            String    @unique
+  description     String?   @db.Text
+  logo            String?   // URL
+  website         String?
+  products        Product[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("brands")
+}
+
+model Tag {
+  id              String       @id @default(cuid())
+  name            String       @unique
+  slug            String       @unique
+  products        ProductTag[]
+  createdAt       DateTime     @default(now())
+
+  @@map("tags")
+}
+
+model ProductTag {
+  id              String   @id @default(cuid())
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  tagId           String
+  tag             Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, tagId])
+  @@index([productId])
+  @@index([tagId])
+  @@map("product_tags")
+}
+
+model Collection {
+  id              String              @id @default(cuid())
+  name            String
+  slug            String              @unique
+  description     String?             @db.Text
+  image           String?             // URL
+  isActive        Boolean             @default(true)
+  products        ProductCollection[]
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@map("collections")
+}
+
+model ProductCollection {
+  id              String     @id @default(cuid())
+  productId       String
+  product         Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  collectionId    String
+  collection      Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  position        Int        @default(0) // sort order within collection
+
+  @@unique([productId, collectionId])
+  @@index([productId])
+  @@index([collectionId])
+  @@map("product_collections")
+}
