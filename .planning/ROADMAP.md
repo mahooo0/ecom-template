@@ -221,7 +221,7 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Checkout flow guides the user through five steps: Information > Shipping > Payment > Review > Confirmation
   2. User can select from saved addresses or enter a new shipping/billing address, with guest checkout supported via email collection
-  3. Shipping method selection shows calculated rates per available method based on cart contents and destination
+  3. Shipping method selection shows calculated rates per available method based on cart contents and destination (consumes Phase 13's POST /api/shipping/calculate endpoint)
   4. Order summary is visible throughout checkout showing item details and a running total that updates with shipping and tax
   5. Checkout validates stock availability, reserves inventory during payment processing, and shows an order confirmation page with order number, summary, and estimated delivery
 **Plans**: TBD (estimated 7-9)
@@ -276,18 +276,19 @@ Plans:
 - [ ] 12-07: TBD
 
 ### Phase 13: Shipping
-**Goal**: Admins can configure shipping zones and methods, and shipping rates are calculated automatically at checkout based on cart and destination
+**Goal**: Admins can configure shipping zones and methods, and the shipping rate calculation API is available for checkout integration (Phase 10 consumes this API for the checkout shipping step)
 **Depends on**: Phase 1
 **Requirements**: SHIP-01, SHIP-02, SHIP-03, SHIP-04, SHIP-05, SHIP-06
 **Success Criteria** (what must be TRUE):
   1. Admin can define shipping zones as geographic regions and configure multiple shipping methods per zone (flat rate, weight-based, free above threshold)
-  2. Shipping rates are calculated at checkout based on cart weight, destination zone, and selected shipping method
+  2. POST /api/shipping/calculate accepts cart weight, destination, and returns available shipping methods with calculated rates (SHIP-03 API foundation -- the checkout UI that calls this endpoint is Phase 10, CHKT-03)
   3. Admin can add tracking numbers to orders with carrier selection (USPS, FedEx, UPS, DHL, etc.)
   4. Customer can track shipment status from the order detail page on the client app
   5. Free shipping threshold is configurable per zone and correctly applies when cart total exceeds the threshold
-**Plans**: 4 plans
+**Plans**: 5 plans
 
 Plans:
+- [ ] 13-00-PLAN.md — Wave 0: Extend Vitest setup with shipping Prisma mocks, create test fixtures and test stubs for SHIP-01 through SHIP-06
 - [ ] 13-01-PLAN.md — Server shipping module: Zod validation, zone/method CRUD service, zone matching algorithm, rate calculation engine, REST API endpoints
 - [ ] 13-02-PLAN.md — Order tracking: addTracking method on OrderService, order.shipped event, PATCH /orders/:id/tracking endpoint
 - [ ] 13-03-PLAN.md — Admin shipping zone/method management UI: zone list, zone detail with methods, create/edit forms for both
@@ -471,7 +472,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 10. Checkout | 0/7 | Not started | - |
 | 11. Payments | 0/5 | Not started | - |
 | 12. Order System | 0/7 | Not started | - |
-| 13. Shipping | 0/4 | Planning complete | - |
+| 13. Shipping | 0/5 | Planning complete | - |
 | 14. Inventory Management | 0/6 | Not started | - |
 | 15. Promotions & Discounts | 0/7 | Not started | - |
 | 16. Reviews & Ratings | 0/5 | Not started | - |
