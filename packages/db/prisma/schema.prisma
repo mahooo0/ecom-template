@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // ============================================================================
@@ -12,21 +11,128 @@ datasource db {
 // ============================================================================
 
 model User {
-  id        String   @id @default(cuid())
-  clerkId   String   @unique
-  email     String   @unique
-  firstName String
-  lastName  String
-  role      Role     @default(CUSTOMER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String    @id @default(cuid())
+  clerkId     String    @unique
+  email       String    @unique
+  firstName   String
+  lastName    String
+  role        Role      @default(CUSTOMER)
+  avatar      String?   // URL to user avatar
+  phone       String?
+  isActive    Boolean   @default(true)
+  lastLoginAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
+  // Relations
+  addresses Address[]
+  reviews   Review[]
+  wishlists Wishlist[]
+
+  @@index([clerkId])
+  @@index([role])
   @@map("users")
 }
 
 enum Role {
   CUSTOMER
   ADMIN
+  SUPER_ADMIN
+}
+
+// ============================================================================
+// ADDRESS DOMAIN
+// ============================================================================
+
+model Address {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName String
+  lastName  String
+  street    String
+  street2   String?  // apartment, suite, etc.
+  city      String
+  state     String
+  zipCode   String
+  country   String
+  phone     String?
+  isDefault Boolean  @default(false)
+  label     String?  // "Home", "Work", etc.
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("addresses")
+}
+
+// ============================================================================
+// WISHLIST DOMAIN
+// ============================================================================
+
+model Wishlist {
+  id        String         @id @default(cuid())
+  name      String         @default("My Wishlist")
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     WishlistItem[]
+  isPublic  Boolean        @default(false)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([userId])
+  @@map("wishlists")
+}
+
+model WishlistItem {
+  id                 String   @id @default(cuid())
+  wishlistId         String
+  wishlist           Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  productId          String
+  product            Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  addedAt            DateTime @default(now())
+  notifyOnPriceDrop  Boolean  @default(true)
+  notifyOnRestock    Boolean  @default(true)
+
+  @@unique([wishlistId, productId])
+  @@index([wishlistId])
+  @@index([productId])
+  @@map("wishlist_items")
+}
+
+// ============================================================================
+// REVIEW DOMAIN
+// ============================================================================
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  FLAGGED
+}
+
+model Review {
+  id                 String       @id @default(cuid())
+  userId             String
+  user               User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId          String
+  product            Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  rating             Int          // 1-5, validated in application layer
+  title              String?
+  body               String?      @db.Text
+  photos             String[]     // array of URLs
+  isVerifiedPurchase Boolean      @default(false)
+  status             ReviewStatus @default(PENDING)
+  helpfulCount       Int          @default(0)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  @@unique([userId, productId]) // one review per user per product
+  @@index([productId])
+  @@index([userId])
+  @@index([status])
+  @@index([productId, status]) // for fetching approved reviews per product
+  @@map("reviews")
 }
 
 // ============================================================================
@@ -85,6 +191,8 @@ model Product {
   variants        ProductVariant[]
   tags            ProductTag[]
   collections     ProductCollection[]
+  reviews         Review[]
+  wishlistItems   WishlistItem[]
 
   // Type-specific metadata
   digitalMeta     DigitalMeta?
