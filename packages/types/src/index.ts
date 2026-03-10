@@ -567,3 +567,9 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
   limit: number;
   totalPages: number;
 }
+
+// ============================================================================
+// PRODUCT SCHEMAS
+// ============================================================================
+
+export * from './product-schemas.js';
