@@ -278,33 +278,178 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SCHEMA-01 to SCHEMA-13 | Phase 1 | Pending |
-| AUTH-01 to AUTH-09 | Phase 2 | Pending |
-| PROD-01 to PROD-10 | Phase 3 | Pending |
-| CAT-01 to CAT-07 | Phase 4 | Pending |
-| SRCH-01 to SRCH-06 | Phase 5 | Pending |
-| FILT-01 to FILT-07 | Phase 6 | Pending |
-| PDPG-01 to PDPG-10 | Phase 7 | Pending |
-| WISH-01 to WISH-06 | Phase 8 | Pending |
-| CART-01 to CART-09 | Phase 9 | Pending |
-| CHKT-01 to CHKT-08 | Phase 10 | Pending |
-| PAY-01 to PAY-07 | Phase 11 | Pending |
-| ORD-01 to ORD-09 | Phase 12 | Pending |
-| SHIP-01 to SHIP-06 | Phase 13 | Pending |
-| INV-01 to INV-08 | Phase 14 | Pending |
-| PRMO-01 to PRMO-08 | Phase 15 | Pending |
-| REV-01 to REV-07 | Phase 16 | Pending |
-| NOTF-01 to NOTF-08 | Phase 17 | Pending |
-| ANLT-01 to ANLT-07 | Phase 18 | Pending |
-| SEO-01 to SEO-07 | Phase 19 | Pending |
-| MSTR-01 to MSTR-06 | Phase 20 | Pending |
-| ADMN-01 to ADMN-08 | Phase 21 | Pending |
+| SCHEMA-01 | Phase 1: Database Schema Design | Pending |
+| SCHEMA-02 | Phase 1: Database Schema Design | Pending |
+| SCHEMA-03 | Phase 1: Database Schema Design | Pending |
+| SCHEMA-04 | Phase 1: Database Schema Design | Pending |
+| SCHEMA-05 | Phase 1: Database Schema Design | Pending |
+| SCHEMA-06 | Phase 1: Database Schema Design | Pending |
+| SCHEMA-07 | Phase 1: Database Schema Design | Pending |
+| SCHEMA-08 | Phase 1: Database Schema Design | Pending |
+| SCHEMA-09 | Phase 1: Database Schema Design | Pending |
+| SCHEMA-10 | Phase 1: Database Schema Design | Pending |
+| SCHEMA-11 | Phase 1: Database Schema Design | Pending |
+| SCHEMA-12 | Phase 1: Database Schema Design | Pending |
+| SCHEMA-13 | Phase 1: Database Schema Design | Pending |
+| AUTH-01 | Phase 2: Authentication System | Pending |
+| AUTH-02 | Phase 2: Authentication System | Pending |
+| AUTH-03 | Phase 2: Authentication System | Pending |
+| AUTH-04 | Phase 2: Authentication System | Pending |
+| AUTH-05 | Phase 2: Authentication System | Pending |
+| AUTH-06 | Phase 2: Authentication System | Pending |
+| AUTH-07 | Phase 2: Authentication System | Pending |
+| AUTH-08 | Phase 2: Authentication System | Pending |
+| AUTH-09 | Phase 2: Authentication System | Pending |
+| PROD-01 | Phase 3: Product Catalog | Pending |
+| PROD-02 | Phase 3: Product Catalog | Pending |
+| PROD-03 | Phase 3: Product Catalog | Pending |
+| PROD-04 | Phase 3: Product Catalog | Pending |
+| PROD-05 | Phase 3: Product Catalog | Pending |
+| PROD-06 | Phase 3: Product Catalog | Pending |
+| PROD-07 | Phase 3: Product Catalog | Pending |
+| PROD-08 | Phase 3: Product Catalog | Pending |
+| PROD-09 | Phase 3: Product Catalog | Pending |
+| PROD-10 | Phase 3: Product Catalog | Pending |
+| CAT-01 | Phase 4: Categories & Navigation | Pending |
+| CAT-02 | Phase 4: Categories & Navigation | Pending |
+| CAT-03 | Phase 4: Categories & Navigation | Pending |
+| CAT-04 | Phase 4: Categories & Navigation | Pending |
+| CAT-05 | Phase 4: Categories & Navigation | Pending |
+| CAT-06 | Phase 4: Categories & Navigation | Pending |
+| CAT-07 | Phase 4: Categories & Navigation | Pending |
+| SRCH-01 | Phase 5: Search System | Pending |
+| SRCH-02 | Phase 5: Search System | Pending |
+| SRCH-03 | Phase 5: Search System | Pending |
+| SRCH-04 | Phase 5: Search System | Pending |
+| SRCH-05 | Phase 5: Search System | Pending |
+| SRCH-06 | Phase 5: Search System | Pending |
+| FILT-01 | Phase 6: Filter System | Pending |
+| FILT-02 | Phase 6: Filter System | Pending |
+| FILT-03 | Phase 6: Filter System | Pending |
+| FILT-04 | Phase 6: Filter System | Pending |
+| FILT-05 | Phase 6: Filter System | Pending |
+| FILT-06 | Phase 6: Filter System | Pending |
+| FILT-07 | Phase 6: Filter System | Pending |
+| PDPG-01 | Phase 7: Product Page | Pending |
+| PDPG-02 | Phase 7: Product Page | Pending |
+| PDPG-03 | Phase 7: Product Page | Pending |
+| PDPG-04 | Phase 7: Product Page | Pending |
+| PDPG-05 | Phase 7: Product Page | Pending |
+| PDPG-06 | Phase 7: Product Page | Pending |
+| PDPG-07 | Phase 7: Product Page | Pending |
+| PDPG-08 | Phase 7: Product Page | Pending |
+| PDPG-09 | Phase 7: Product Page | Pending |
+| PDPG-10 | Phase 7: Product Page | Pending |
+| WISH-01 | Phase 8: Wishlist & Compare | Pending |
+| WISH-02 | Phase 8: Wishlist & Compare | Pending |
+| WISH-03 | Phase 8: Wishlist & Compare | Pending |
+| WISH-04 | Phase 8: Wishlist & Compare | Pending |
+| WISH-05 | Phase 8: Wishlist & Compare | Pending |
+| WISH-06 | Phase 8: Wishlist & Compare | Pending |
+| CART-01 | Phase 9: Cart System | Pending |
+| CART-02 | Phase 9: Cart System | Pending |
+| CART-03 | Phase 9: Cart System | Pending |
+| CART-04 | Phase 9: Cart System | Pending |
+| CART-05 | Phase 9: Cart System | Pending |
+| CART-06 | Phase 9: Cart System | Pending |
+| CART-07 | Phase 9: Cart System | Pending |
+| CART-08 | Phase 9: Cart System | Pending |
+| CART-09 | Phase 9: Cart System | Pending |
+| CHKT-01 | Phase 10: Checkout | Pending |
+| CHKT-02 | Phase 10: Checkout | Pending |
+| CHKT-03 | Phase 10: Checkout | Pending |
+| CHKT-04 | Phase 10: Checkout | Pending |
+| CHKT-05 | Phase 10: Checkout | Pending |
+| CHKT-06 | Phase 10: Checkout | Pending |
+| CHKT-07 | Phase 10: Checkout | Pending |
+| CHKT-08 | Phase 10: Checkout | Pending |
+| PAY-01 | Phase 11: Payments | Pending |
+| PAY-02 | Phase 11: Payments | Pending |
+| PAY-03 | Phase 11: Payments | Pending |
+| PAY-04 | Phase 11: Payments | Pending |
+| PAY-05 | Phase 11: Payments | Pending |
+| PAY-06 | Phase 11: Payments | Pending |
+| PAY-07 | Phase 11: Payments | Pending |
+| ORD-01 | Phase 12: Order System | Pending |
+| ORD-02 | Phase 12: Order System | Pending |
+| ORD-03 | Phase 12: Order System | Pending |
+| ORD-04 | Phase 12: Order System | Pending |
+| ORD-05 | Phase 12: Order System | Pending |
+| ORD-06 | Phase 12: Order System | Pending |
+| ORD-07 | Phase 12: Order System | Pending |
+| ORD-08 | Phase 12: Order System | Pending |
+| ORD-09 | Phase 12: Order System | Pending |
+| SHIP-01 | Phase 13: Shipping | Pending |
+| SHIP-02 | Phase 13: Shipping | Pending |
+| SHIP-03 | Phase 13: Shipping | Pending |
+| SHIP-04 | Phase 13: Shipping | Pending |
+| SHIP-05 | Phase 13: Shipping | Pending |
+| SHIP-06 | Phase 13: Shipping | Pending |
+| INV-01 | Phase 14: Inventory Management | Pending |
+| INV-02 | Phase 14: Inventory Management | Pending |
+| INV-03 | Phase 14: Inventory Management | Pending |
+| INV-04 | Phase 14: Inventory Management | Pending |
+| INV-05 | Phase 14: Inventory Management | Pending |
+| INV-06 | Phase 14: Inventory Management | Pending |
+| INV-07 | Phase 14: Inventory Management | Pending |
+| INV-08 | Phase 14: Inventory Management | Pending |
+| PRMO-01 | Phase 15: Promotions & Discounts | Pending |
+| PRMO-02 | Phase 15: Promotions & Discounts | Pending |
+| PRMO-03 | Phase 15: Promotions & Discounts | Pending |
+| PRMO-04 | Phase 15: Promotions & Discounts | Pending |
+| PRMO-05 | Phase 15: Promotions & Discounts | Pending |
+| PRMO-06 | Phase 15: Promotions & Discounts | Pending |
+| PRMO-07 | Phase 15: Promotions & Discounts | Pending |
+| PRMO-08 | Phase 15: Promotions & Discounts | Pending |
+| REV-01 | Phase 16: Reviews & Ratings | Pending |
+| REV-02 | Phase 16: Reviews & Ratings | Pending |
+| REV-03 | Phase 16: Reviews & Ratings | Pending |
+| REV-04 | Phase 16: Reviews & Ratings | Pending |
+| REV-05 | Phase 16: Reviews & Ratings | Pending |
+| REV-06 | Phase 16: Reviews & Ratings | Pending |
+| REV-07 | Phase 16: Reviews & Ratings | Pending |
+| NOTF-01 | Phase 17: Notifications | Pending |
+| NOTF-02 | Phase 17: Notifications | Pending |
+| NOTF-03 | Phase 17: Notifications | Pending |
+| NOTF-04 | Phase 17: Notifications | Pending |
+| NOTF-05 | Phase 17: Notifications | Pending |
+| NOTF-06 | Phase 17: Notifications | Pending |
+| NOTF-07 | Phase 17: Notifications | Pending |
+| NOTF-08 | Phase 17: Notifications | Pending |
+| ANLT-01 | Phase 18: Analytics | Pending |
+| ANLT-02 | Phase 18: Analytics | Pending |
+| ANLT-03 | Phase 18: Analytics | Pending |
+| ANLT-04 | Phase 18: Analytics | Pending |
+| ANLT-05 | Phase 18: Analytics | Pending |
+| ANLT-06 | Phase 18: Analytics | Pending |
+| ANLT-07 | Phase 18: Analytics | Pending |
+| SEO-01 | Phase 19: SEO | Pending |
+| SEO-02 | Phase 19: SEO | Pending |
+| SEO-03 | Phase 19: SEO | Pending |
+| SEO-04 | Phase 19: SEO | Pending |
+| SEO-05 | Phase 19: SEO | Pending |
+| SEO-06 | Phase 19: SEO | Pending |
+| SEO-07 | Phase 19: SEO | Pending |
+| MSTR-01 | Phase 20: Multi-Store | Pending |
+| MSTR-02 | Phase 20: Multi-Store | Pending |
+| MSTR-03 | Phase 20: Multi-Store | Pending |
+| MSTR-04 | Phase 20: Multi-Store | Pending |
+| MSTR-05 | Phase 20: Multi-Store | Pending |
+| MSTR-06 | Phase 20: Multi-Store | Pending |
+| ADMN-01 | Phase 21: Admin Panel | Pending |
+| ADMN-02 | Phase 21: Admin Panel | Pending |
+| ADMN-03 | Phase 21: Admin Panel | Pending |
+| ADMN-04 | Phase 21: Admin Panel | Pending |
+| ADMN-05 | Phase 21: Admin Panel | Pending |
+| ADMN-06 | Phase 21: Admin Panel | Pending |
+| ADMN-07 | Phase 21: Admin Panel | Pending |
+| ADMN-08 | Phase 21: Admin Panel | Pending |
 
 **Coverage:**
-- v1 requirements: 158 total
-- Mapped to phases: 158
+- v1 requirements: 166 total
+- Mapped to phases: 166
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-10*
-*Last updated: 2026-03-10 after initial definition*
+*Last updated: 2026-03-10 after roadmap creation*
