@@ -26,10 +26,10 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 ### Authentication
 
 - [x] **AUTH-01**: Clerk SDK integrated in server with webhook handling for user sync
-- [ ] **AUTH-02**: User can register with email/password via Clerk on client app
-- [ ] **AUTH-03**: User can login with OAuth providers (Google, GitHub) via Clerk on client app
+- [x] **AUTH-02**: User can register with email/password via Clerk on client app
+- [x] **AUTH-03**: User can login with OAuth providers (Google, GitHub) via Clerk on client app
 - [x] **AUTH-04**: User session persists across browser refresh on both client and admin apps
-- [ ] **AUTH-05**: Admin app restricts access to ADMIN and SUPER_ADMIN roles only
+- [x] **AUTH-05**: Admin app restricts access to ADMIN and SUPER_ADMIN roles only
 - [x] **AUTH-06**: Server middleware validates Clerk JWT tokens and attaches user to request
 - [ ] **AUTH-07**: User can view and edit profile (name, email, avatar) on client app
 - [ ] **AUTH-08**: User can manage saved addresses (add, edit, delete, set default)
@@ -292,10 +292,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SCHEMA-12 | Phase 1: Database Schema Design | Complete |
 | SCHEMA-13 | Phase 1: Database Schema Design | Complete |
 | AUTH-01 | Phase 2: Authentication System | Complete |
-| AUTH-02 | Phase 2: Authentication System | Pending |
-| AUTH-03 | Phase 2: Authentication System | Pending |
+| AUTH-02 | Phase 2: Authentication System | Complete |
+| AUTH-03 | Phase 2: Authentication System | Complete |
 | AUTH-04 | Phase 2: Authentication System | Complete |
-| AUTH-05 | Phase 2: Authentication System | Pending |
+| AUTH-05 | Phase 2: Authentication System | Complete |
 | AUTH-06 | Phase 2: Authentication System | Complete |
 | AUTH-07 | Phase 2: Authentication System | Pending |
 | AUTH-08 | Phase 2: Authentication System | Pending |
