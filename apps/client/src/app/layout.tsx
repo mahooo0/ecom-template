@@ -25,6 +25,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   Cart
                 </a>
                 <SignedIn>
+                  <a href="/profile" className="text-sm hover:text-gray-600">
+                    Profile
+                  </a>
                   <UserButton />
                 </SignedIn>
                 <SignedOut>
