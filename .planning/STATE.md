@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
+status: executing
 stopped_at: Completed 02-02-PLAN.md (Server Authentication Integration)
-last_updated: "2026-03-10T19:34:53.816Z"
-last_activity: "2026-03-10 -- Completed plan 01-04: Seed Data and Shared Types"
+last_updated: "2026-03-10T19:37:47.609Z"
+last_activity: "2026-03-10 -- Completed plan 02-02: Server Authentication Integration"
 progress:
   total_phases: 21
   completed_phases: 1
   total_plans: 9
-  completed_plans: 5
-  percent: 100
+  completed_plans: 6
+  percent: 56
 ---
 
 # Project State
@@ -61,6 +61,7 @@ Progress: [██████░░░░] 56%
 | Phase 01 P03 | 2m | 3 tasks | 2 files |
 | Phase 01 P04 | 5m | 2 tasks | 4 files |
 | Phase 02 P02 | 111 | 2 tasks | 6 files |
+| Phase 02 P01 | 3 | 2 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,9 @@ Recent decisions affecting current work:
 - [Phase 02-02]: Use Clerk's clerkMiddleware() globally for JWT parsing - enables all routes to access auth context via getAuth(req)
 - [Phase 02-02]: Soft delete users (isActive=false) on user.deleted event - preserves order history and referential integrity
 - [Phase 02-02]: Store role in Clerk publicMetadata instead of local DB - single source of truth for authorization
+- [Phase 02]: Use ClerkProvider at root layout level for auth state availability
+- [Phase 02]: Implement public route patterns in client middleware for accessible store pages
+- [Phase 02]: Enforce role-based access at middleware level for admin app security
 
 ### Pending Todos
 
