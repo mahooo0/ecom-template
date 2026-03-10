@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: completed
-stopped_at: Completed 02-05-PLAN.md (Admin User Management)
-last_updated: "2026-03-10T20:38:36.783Z"
-last_activity: "2026-03-10 -- Completed plan 02-05: Admin User Management"
+status: in_progress
+stopped_at: Completed 03-02-PLAN.md (Cloudinary Image Upload Integration)
+last_updated: "2026-03-10T21:38:14Z"
+last_activity: "2026-03-10 -- Completed plan 03-02: Cloudinary Image Upload Integration"
 progress:
   total_phases: 21
   completed_phases: 2
-  total_plans: 9
-  completed_plans: 9
-  percent: 100
+  total_plans: 20
+  completed_plans: 11
+  percent: 55
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-10)
 
 **Core value:** A single template that handles every possible e-commerce scenario without needing architectural changes
-**Current focus:** Phase 2 - Authentication System
+**Current focus:** Phase 3 - Product Catalog
 
 ## Current Position
 
-Phase: 2 of 21 (Authentication System - Complete)
-Plan: 5 of 5 in current phase (02-05 completed)
-Status: Phase Complete
-Last activity: 2026-03-10 -- Completed plan 02-05: Admin User Management
+Phase: 3 of 21 (Product Catalog - In Progress)
+Plan: 2 of 7 in current phase (03-02 completed)
+Status: In Progress
+Last activity: 2026-03-10 -- Completed plan 03-02: Cloudinary Image Upload Integration
 
-Progress: [██████████] 100%
+Progress: [█████░░░░░] 55%
 
 ## Performance Metrics
 
@@ -65,6 +65,7 @@ Progress: [██████████] 100%
 | Phase 02 P03 | 100 | 2 tasks | 5 files |
 | Phase 02 P05 | 169 | 2 tasks | 8 files |
 | Phase 02 P04 | 170 | 2 tasks | 7 files |
+| Phase 03 P02 | 155 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -107,6 +108,11 @@ Recent decisions affecting current work:
 - [Phase 02]: Use server actions instead of API routes for profile and address operations - better App Router integration
 - [Phase 02]: Update Clerk user data directly instead of storing in database - Clerk is source of truth with webhook sync
 - [Phase 02]: Separate client components for form interactivity from server components for data fetching - optimal Next.js App Router pattern
+- [Phase 03-02]: Use signed uploads instead of unsigned to keep Cloudinary API credentials server-side
+- [Phase 03-02]: Use upload preset 'products' for Cloudinary configuration (user creates in dashboard)
+- [Phase 03-02]: Apply PointerSensor with activationConstraint distance 5 to prevent accidental drag operations
+- [Phase 03-02]: Use Image component from next/image with Cloudinary transformation (w_200,h_200,c_fill) for efficient thumbnails
+- [Phase 03-02]: Set maxFileSize to 5MB and supported formats to jpg, jpeg, png, webp for client-side validation
 
 ### Pending Todos
 
@@ -118,6 +124,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-10T20:32:55.996Z
-Stopped at: Completed 02-05-PLAN.md (Admin User Management)
+Last session: 2026-03-10T21:38:14Z
+Stopped at: Completed 03-02-PLAN.md (Cloudinary Image Upload Integration)
 Resume file: None

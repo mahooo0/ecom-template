@@ -42,7 +42,7 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 - [ ] **PROD-03**: Admin can create weighted products with unit pricing (per kg/lb/piece)
 - [ ] **PROD-04**: Admin can create digital products with downloadable file attachments and access rules
 - [ ] **PROD-05**: Admin can create bundled products composed of multiple other products with bundle pricing
-- [ ] **PROD-06**: Admin can upload and manage product images via Cloudinary (drag-drop, reorder, crop)
+- [x] **PROD-06**: Admin can upload and manage product images via Cloudinary (drag-drop, reorder, crop)
 - [ ] **PROD-07**: Admin can set product status (draft, active, archived) and visibility
 - [ ] **PROD-08**: Client app displays product listings with pagination, sorting (price, name, date, popularity)
 - [ ] **PROD-09**: Client app displays product cards with image, name, price, rating, quick-add-to-cart
@@ -305,7 +305,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROD-03 | Phase 3: Product Catalog | Pending |
 | PROD-04 | Phase 3: Product Catalog | Pending |
 | PROD-05 | Phase 3: Product Catalog | Pending |
-| PROD-06 | Phase 3: Product Catalog | Pending |
+| PROD-06 | Phase 3: Product Catalog | Complete |
 | PROD-07 | Phase 3: Product Catalog | Pending |
 | PROD-08 | Phase 3: Product Catalog | Pending |
 | PROD-09 | Phase 3: Product Catalog | Pending |
