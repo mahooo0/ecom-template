@@ -330,3 +330,34 @@ export const mockCategoryAttribute = {
   createdAt: new Date('2024-01-01T00:00:00Z'),
   updatedAt: new Date('2024-01-01T00:00:00Z'),
 };
+
+// Mock meilisearch SDK
+vi.mock('meilisearch', () => {
+  const mockIndex = {
+    search: vi.fn().mockResolvedValue({ hits: [], estimatedTotalHits: 0, facetDistribution: {} }),
+    addDocuments: vi.fn().mockResolvedValue({ taskUid: 1 }),
+    updateDocuments: vi.fn().mockResolvedValue({ taskUid: 2 }),
+    deleteDocument: vi.fn().mockResolvedValue({ taskUid: 3 }),
+    deleteAllDocuments: vi.fn().mockResolvedValue({ taskUid: 4 }),
+    updateSettings: vi.fn().mockResolvedValue({ taskUid: 5 }),
+    getSettings: vi.fn().mockResolvedValue({}),
+    updateSynonyms: vi.fn().mockResolvedValue({ taskUid: 6 }),
+    getSynonyms: vi.fn().mockResolvedValue({}),
+    updateStopWords: vi.fn().mockResolvedValue({ taskUid: 7 }),
+    getStopWords: vi.fn().mockResolvedValue([]),
+    updateRankingRules: vi.fn().mockResolvedValue({ taskUid: 8 }),
+    getRankingRules: vi.fn().mockResolvedValue([]),
+    waitForTask: vi.fn().mockResolvedValue({ status: 'succeeded' }),
+  };
+
+  const mockClient = {
+    index: vi.fn().mockReturnValue(mockIndex),
+    createKey: vi.fn().mockResolvedValue({ key: 'test-search-key' }),
+    getKeys: vi.fn().mockResolvedValue({ results: [] }),
+    waitForTask: vi.fn().mockResolvedValue({ status: 'succeeded' }),
+  };
+
+  return {
+    MeiliSearch: vi.fn().mockImplementation(() => mockClient),
+  };
+});
