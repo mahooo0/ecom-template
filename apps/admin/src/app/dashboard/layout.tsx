@@ -71,6 +71,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             >
               Users
             </Link>
+            <Link
+              href="/dashboard/search"
+              className="block px-3 py-2 rounded hover:bg-gray-800 transition-colors"
+            >
+              Search
+            </Link>
           </div>
         </nav>
       </aside>
