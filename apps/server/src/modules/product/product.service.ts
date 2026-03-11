@@ -824,7 +824,6 @@ export class ProductService {
 
     return result;
   }
-}
 
   async getRelated(productId: string, limit = 5) {
     // Fetch the current product to get categoryId and tag IDs
