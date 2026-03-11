@@ -155,6 +155,28 @@ export class ProductController {
       next(error);
     }
   }
+
+  async getRelated(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = req.params.id as string;
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 5;
+      const result = await productService.getRelated(id, limit);
+      res.json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getFbt(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = req.params.id as string;
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 3;
+      const result = await productService.getFrequentlyBoughtTogether(id, limit);
+      res.json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const productController = new ProductController();

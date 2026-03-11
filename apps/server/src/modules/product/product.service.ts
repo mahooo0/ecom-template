@@ -1,4 +1,4 @@
-import { prisma } from '@repo/db';
+import { prisma, OrderModel } from '@repo/db';
 import { eventBus } from '../../common/events/event-bus.js';
 import { AppError } from '../../common/middleware/error-handler.js';
 import { generateUniqueSlug } from '../../utils/slug.utils.js';
@@ -823,6 +823,74 @@ export class ProductService {
     }
 
     return result;
+  }
+}
+
+  async getRelated(productId: string, limit = 5) {
+    // Fetch the current product to get categoryId and tag IDs
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+      select: {
+        categoryId: true,
+        tags: { select: { tagId: true } },
+      },
+    });
+
+    if (!product) return [];
+
+    const tagIds = product.tags.map((t) => t.tagId);
+
+    const related = await prisma.product.findMany({
+      where: {
+        id: { not: productId },
+        status: 'ACTIVE' as const,
+        isActive: true,
+        OR: [
+          { categoryId: product.categoryId },
+          ...(tagIds.length > 0 ? [{ tags: { some: { tagId: { in: tagIds } } } }] : []),
+        ],
+      },
+      take: limit,
+      include: {
+        brand: true,
+        category: true,
+      },
+    });
+
+    return related;
+  }
+
+  async getFrequentlyBoughtTogether(productId: string, limit = 3) {
+    try {
+      // MongoDB aggregation to find co-purchased products
+      const pipeline = [
+        { $match: { 'items.productId': productId } },
+        { $unwind: '$items' },
+        { $match: { 'items.productId': { $ne: productId } } },
+        { $group: { _id: '$items.productId', count: { $sum: 1 } } },
+        { $match: { count: { $gte: 2 } } },
+        { $sort: { count: -1 } },
+        { $limit: limit },
+      ];
+
+      const results = await OrderModel.aggregate(pipeline);
+      const ids = results.map((r: { _id: string }) => r._id);
+
+      if (ids.length === 0) return [];
+
+      const products = await prisma.product.findMany({
+        where: {
+          id: { in: ids },
+          status: 'ACTIVE' as const,
+          isActive: true,
+        },
+        include: { brand: true },
+      });
+
+      return products;
+    } catch {
+      return [];
+    }
   }
 }
 

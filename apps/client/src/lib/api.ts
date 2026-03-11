@@ -84,6 +84,10 @@ export const api = {
     },
     getById: (id: string) => fetcher<ApiResponse<Product>>(`/products/${id}`),
     getBySlug: (slug: string) => fetcher<ApiResponse<Product>>(`/products/slug/${slug}`),
+    getRelated: (productId: string, limit = 5) =>
+      fetcher<ApiResponse<Product[]>>(`/products/${productId}/related?limit=${limit}`),
+    getFrequentlyBoughtTogether: (productId: string, limit = 3) =>
+      fetcher<ApiResponse<Product[]>>(`/products/${productId}/fbt?limit=${limit}`),
     filter: (params: FilterProductsParams = {}) => {
       const queryParams = new URLSearchParams();
       if (params.categoryPath) queryParams.set('categoryPath', params.categoryPath);
