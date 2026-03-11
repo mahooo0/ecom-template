@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 06-01-PLAN.md
-last_updated: "2026-03-11T12:17:30.756Z"
+stopped_at: Completed 06-03-PLAN.md
+last_updated: "2026-03-11T12:22:00.875Z"
 last_activity: "2026-03-11 -- Completed plan 05-02: Search API Endpoints and Admin Settings"
 progress:
-  total_phases: 21
+  total_phases: 22
   completed_phases: 6
   total_plans: 37
-  completed_plans: 35
+  completed_plans: 36
   percent: 84
 ---
 
@@ -90,6 +90,7 @@ Progress: [████████░░] 84%
 | Phase 05 P03 | 2 | 2 tasks | 5 files |
 | Phase 06 P02 | 327 | 2 tasks | 12 files |
 | Phase 06 P01 | 13 | 2 tasks | 6 files |
+| Phase 06 P03 | 2 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -197,6 +198,13 @@ Recent decisions affecting current work:
 - [Phase 06-01]: Vitest 4.x requires vi.hoisted() for mock functions AND absolute paths in vi.mock() - module aliases not resolved in vi.mock()
 - [Phase 06-01]: JSONB attribute filtering uses OR within same key group, AND across different key groups - maps to Prisma AND array with OR sub-arrays
 - [Phase 06-01]: Attribute facets computed in application code (not SQL) to avoid complex JSONB aggregation queries
+- [Phase Phase 06-03]: Build custom slide-in drawer instead of shadcn/ui Sheet (project uses Tailwind v4 without shadcn config)
+- [Phase Phase 06-03]: FilterDrawer snapshots filter state on open into pendingFilters to defer URL commits until Apply is clicked
+- [Phase Phase 06-03]: FilterButton uses lg:hidden class for mobile-only visibility, FilterSidebar uses hidden lg:block for desktop-only
+
+### Roadmap Evolution
+
+- Phase 22 added: In-App Guidance & AI Assistant
 
 ### Pending Todos
 
@@ -208,6 +216,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T12:17:30.753Z
-Stopped at: Completed 06-01-PLAN.md
+Last session: 2026-03-11T12:22:00.872Z
+Stopped at: Completed 06-03-PLAN.md
 Resume file: None
