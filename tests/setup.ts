@@ -18,7 +18,14 @@ const prismaMock = vi.hoisted(() => {
 
   const mock = {
     product,
-    productVariant: { createMany: vi.fn(), deleteMany: vi.fn() },
+    productVariant: {
+      findUnique: vi.fn(),
+      findMany: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      createMany: vi.fn(),
+      deleteMany: vi.fn(),
+    },
     digitalMeta: { create: vi.fn(), upsert: vi.fn() },
     weightedMeta: { create: vi.fn(), upsert: vi.fn() },
     bundleItem: { createMany: vi.fn(), deleteMany: vi.fn() },
