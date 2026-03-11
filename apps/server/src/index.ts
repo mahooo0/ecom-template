@@ -13,6 +13,9 @@ import { orderRoutes } from './modules/order/order.routes.js';
 import { authRoutes } from './modules/auth/auth.routes.js';
 import { paymentRoutes } from './modules/payment/payment.routes.js';
 import { shippingRoutes } from './modules/shipping/shipping.routes.js';
+import { searchRoutes } from './modules/search/search.routes.js';
+import { searchService } from './modules/search/search.service.js';
+import './modules/search/sync.service.js'; // Side-effect import: registers event listeners
 import { eventBus } from './common/events/event-bus.js';
 
 const app = express();
@@ -37,6 +40,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/shipping', shippingRoutes);
+app.use('/api/search', searchRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {
@@ -58,6 +62,15 @@ eventBus.on('payment.completed', (data) => {
 // Start server
 async function start() {
   await connectMongoDB(config.mongodbUri);
+
+  // Initialize Meilisearch index settings
+  try {
+    await searchService.initializeIndex();
+    console.log('Meilisearch index initialized');
+  } catch (err) {
+    console.error('Meilisearch initialization failed (search will be unavailable):', err);
+    // Don't crash the server - search is non-critical for startup
+  }
 
   app.listen(config.port, () => {
     console.log(`Server running on http://localhost:${config.port}`);
