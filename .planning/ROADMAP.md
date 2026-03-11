@@ -64,7 +64,7 @@ Plans:
   3. Admin app rejects access for users without ADMIN or SUPER_ADMIN role, showing an unauthorized page
   4. User can view and edit their profile (name, email, avatar) and manage saved addresses (add, edit, delete, set default) on the client app
   5. Admin can view the user list, view user details, change user roles, and disable accounts from the admin panel
-**Plans**: 5 plans
+**Plans**: 6 plans
 
 Plans:
 - [ ] 02-01-PLAN.md — Install Clerk SDKs, configure ClerkProvider in both Next.js apps, set up clerkMiddleware and auth helpers
@@ -124,7 +124,7 @@ Plans:
   3. Search finds products across name, description, SKU, brand, and category fields, with typo tolerance and synonym support
   4. Search results include facet counts that can drive dynamic filtering on the results page
   5. Admin can configure search settings (synonyms, stop words, ranking rules) from the admin panel
-**Plans**: 5 plans
+**Plans**: 6 plans
 
 Plans:
 - [ ] 05-00-PLAN.md — Wave 0: Meilisearch mock in test setup, search fixtures, test stubs for SRCH-01 through SRCH-06
@@ -143,7 +143,7 @@ Plans:
   3. Filters use OR logic within groups (selecting red OR blue shows both) and AND logic across groups (selecting red AND size:large narrows results)
   4. All filter state persists in URL parameters -- copying and pasting the URL reproduces the exact filtered view
   5. On mobile, filters open in a full-screen modal with apply and clear buttons
-**Plans**: 5 plans
+**Plans**: 6 plans
 
 Plans:
 - [ ] 06-00-PLAN.md — Wave 0: Test stubs for all FILT-01 through FILT-07 requirements (server filter logic + client filter components)
@@ -151,6 +151,7 @@ Plans:
 - [ ] 06-02-PLAN.md — Client filter components: nuqs useFilters hook, PriceFilter slider+inputs, AttributeFilter, AvailabilityFilter, ActiveFilters
 - [ ] 06-03-PLAN.md — Responsive filter layout: FilterContent, FilterSidebar (desktop), FilterDrawer (mobile Sheet with apply/clear)
 - [ ] 06-04-PLAN.md — Category page integration: wire searchParams to server filter API, render filters alongside product grid with facet counts
+- [ ] 06-05-PLAN.md — Gap closure: pre-order availability filter (FILT-07) and dynamic priceRange
 
 ### Phase 7: Product Page
 **Goal**: Each product type has a rich, dedicated detail page with image gallery, variant selection, specifications, related products, and type-specific displays
@@ -284,7 +285,7 @@ Plans:
   3. Admin can add tracking numbers to orders with carrier selection (USPS, FedEx, UPS, DHL, etc.)
   4. Customer can track shipment status from the order detail page on the client app
   5. Free shipping threshold is configurable per zone and correctly applies when cart total exceeds the threshold
-**Plans**: 5 plans
+**Plans**: 6 plans
 
 Plans:
 - [x] 13-00-PLAN.md — Wave 0: Extend Vitest setup with shipping Prisma mocks, create test fixtures and test stubs for SHIP-01 through SHIP-06
@@ -464,7 +465,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 3. Product Catalog | 6/7 | In Progress|  |
 | 4. Categories & Navigation | 0/6 | Planning complete | - |
 | 5. Search System | 0/5 | Planning complete | - |
-| 6. Filter System | 5/5 | Complete   | 2026-03-11 |
+| 6. Filter System | 5/6 | Gap closure   | 2026-03-11 |
 | 7. Product Page | 0/7 | Not started | - |
 | 8. Wishlist & Compare | 0/5 | Not started | - |
 | 9. Cart System | 0/7 | Not started | - |
@@ -490,3 +491,13 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 
 Plans:
 - [ ] TBD (run /gsd:plan-phase 22 to break down)
+
+### Phase 23: E-Commerce UI Design System & Component Library
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 22
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 23 to break down)
