@@ -146,12 +146,12 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 
 ### Shipping
 
-- [ ] **SHIP-01**: Admin can define shipping zones (geographic regions)
-- [ ] **SHIP-02**: Admin can configure shipping methods per zone (flat rate, weight-based, free above threshold)
-- [ ] **SHIP-03**: Shipping rate calculated at checkout based on cart weight, destination zone, and selected method
-- [ ] **SHIP-04**: Admin can add tracking numbers to orders with carrier selection
+- [x] **SHIP-01**: Admin can define shipping zones (geographic regions)
+- [x] **SHIP-02**: Admin can configure shipping methods per zone (flat rate, weight-based, free above threshold)
+- [x] **SHIP-03**: Shipping rate calculated at checkout based on cart weight, destination zone, and selected method
+- [x] **SHIP-04**: Admin can add tracking numbers to orders with carrier selection
 - [ ] **SHIP-05**: User can track shipment status from order detail page
-- [ ] **SHIP-06**: Free shipping threshold configurable per zone
+- [x] **SHIP-06**: Free shipping threshold configurable per zone
 
 ### Inventory Management
 
@@ -379,12 +379,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ORD-07 | Phase 12: Order System | Pending |
 | ORD-08 | Phase 12: Order System | Pending |
 | ORD-09 | Phase 12: Order System | Pending |
-| SHIP-01 | Phase 13: Shipping | Pending |
-| SHIP-02 | Phase 13: Shipping | Pending |
-| SHIP-03 | Phase 13: Shipping | Pending |
-| SHIP-04 | Phase 13: Shipping | Pending |
+| SHIP-01 | Phase 13: Shipping | Complete |
+| SHIP-02 | Phase 13: Shipping | Complete |
+| SHIP-03 | Phase 13: Shipping | Complete |
+| SHIP-04 | Phase 13: Shipping | Complete |
 | SHIP-05 | Phase 13: Shipping | Pending |
-| SHIP-06 | Phase 13: Shipping | Pending |
+| SHIP-06 | Phase 13: Shipping | Complete |
 | INV-01 | Phase 14: Inventory Management | Pending |
 | INV-02 | Phase 14: Inventory Management | Pending |
 | INV-03 | Phase 14: Inventory Management | Pending |
