@@ -472,7 +472,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 10. Checkout | 0/7 | Not started | - |
 | 11. Payments | 0/5 | Not started | - |
 | 12. Order System | 0/7 | Not started | - |
-| 13. Shipping | 3/5 | In Progress|  |
+| 13. Shipping | 4/5 | In Progress|  |
 | 14. Inventory Management | 0/6 | Not started | - |
 | 15. Promotions & Discounts | 0/7 | Not started | - |
 | 16. Reviews & Ratings | 0/5 | Not started | - |
