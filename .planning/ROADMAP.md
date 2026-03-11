@@ -25,7 +25,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 11: Payments** - Stripe integration with card payments, Apple/Google Pay, webhooks, and refunds
 - [ ] **Phase 12: Order System** - Order lifecycle management with tracking, invoices, returns, and saga consistency
 - [x] **Phase 13: Shipping** - Shipping zones, methods, rate calculation, and tracking (completed 2026-03-11)
-- [ ] **Phase 14: Inventory Management** - Stock tracking, multi-warehouse, atomic reservations, and SKU management
+- [x] **Phase 14: Inventory Management** - Stock tracking, multi-warehouse, atomic reservations, and SKU management (completed 2026-03-11)
 - [ ] **Phase 15: Promotions & Discounts** - Coupons, BOGO, tiered pricing, flash sales, and stackability rules
 - [ ] **Phase 16: Reviews & Ratings** - User reviews with photos, moderation, helpfulness voting, and verified purchase badges
 - [ ] **Phase 17: Notifications** - Transactional emails via Resend with React Email templates for all order lifecycle events
@@ -473,7 +473,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 11. Payments | 0/5 | Not started | - |
 | 12. Order System | 0/7 | Not started | - |
 | 13. Shipping | 5/5 | Complete    | 2026-03-11 |
-| 14. Inventory Management | 4/5 | In Progress|  |
+| 14. Inventory Management | 5/5 | Complete   | 2026-03-11 |
 | 15. Promotions & Discounts | 0/7 | Not started | - |
 | 16. Reviews & Ratings | 0/5 | Not started | - |
 | 17. Notifications | 0/6 | Not started | - |
@@ -489,7 +489,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 **Goal:** [To be planned]
 **Requirements**: TBD
 **Depends on:** Phase 21
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 
 Plans:
 - [ ] TBD (run /gsd:plan-phase 22 to break down)
