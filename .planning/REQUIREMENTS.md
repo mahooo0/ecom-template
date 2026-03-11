@@ -79,7 +79,7 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 
 ### Product Page
 
-- [ ] **PDPG-01**: Product page displays image gallery with zoom, thumbnails, and fullscreen lightbox
+- [x] **PDPG-01**: Product page displays image gallery with zoom, thumbnails, and fullscreen lightbox
 - [ ] **PDPG-02**: Variable products show variant selector (dropdowns/swatches) that updates price, images, and stock
 - [ ] **PDPG-03**: Product page shows specifications/attributes table
 - [x] **PDPG-04**: Product page shows related products carousel
@@ -330,7 +330,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FILT-05 | Phase 6: Filter System | Complete |
 | FILT-06 | Phase 6: Filter System | Complete |
 | FILT-07 | Phase 6: Filter System | Complete |
-| PDPG-01 | Phase 7: Product Page | Pending |
+| PDPG-01 | Phase 7: Product Page | Complete |
 | PDPG-02 | Phase 7: Product Page | Pending |
 | PDPG-03 | Phase 7: Product Page | Pending |
 | PDPG-04 | Phase 7: Product Page | Complete |
