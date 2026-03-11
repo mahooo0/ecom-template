@@ -10,6 +10,8 @@ export class ProductController {
       const status = req.query.status as ProductStatus | undefined;
       const productType = req.query.productType as string | undefined;
       const search = req.query.search as string | undefined;
+      const categoryId = req.query.categoryId as string | undefined;
+      const categoryPath = req.query.categoryPath as string | undefined;
       const sortBy = req.query.sortBy as 'createdAt' | 'name' | 'price' | 'updatedAt' | undefined;
       const sortOrder = req.query.sortOrder as 'asc' | 'desc' | undefined;
 
@@ -19,6 +21,8 @@ export class ProductController {
         status,
         productType,
         search,
+        categoryId,
+        categoryPath,
         sortBy,
         sortOrder,
       });

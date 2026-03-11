@@ -13,6 +13,8 @@ interface GetAllOptions {
   status?: ProductStatus;
   productType?: string;
   search?: string;
+  categoryId?: string;
+  categoryPath?: string;
   sortBy?: 'createdAt' | 'name' | 'price' | 'updatedAt';
   sortOrder?: 'asc' | 'desc';
 }
@@ -32,6 +34,8 @@ export class ProductService {
       status,
       productType,
       search,
+      categoryId,
+      categoryPath,
       sortBy = 'createdAt',
       sortOrder = 'desc',
     } = options;
@@ -46,6 +50,16 @@ export class ProductService {
       where.name = {
         contains: search,
         mode: 'insensitive' as const,
+      };
+    }
+    if (categoryId) {
+      where.categoryId = categoryId;
+    }
+    if (categoryPath) {
+      where.category = {
+        path: {
+          startsWith: categoryPath,
+        },
       };
     }
 
