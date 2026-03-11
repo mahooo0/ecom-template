@@ -161,7 +161,7 @@ export class ProductService {
         isActive: true,
       },
       include: {
-        category: true,
+        category: { include: { attributes: true } },
         brand: true,
         variants: {
           include: {
