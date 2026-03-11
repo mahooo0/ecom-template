@@ -25,6 +25,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             >
               Categories
             </Link>
+            <Link
+              href="/dashboard/collections"
+              className="block px-3 py-2 rounded hover:bg-gray-800 transition-colors"
+            >
+              Collections
+            </Link>
+            <Link
+              href="/dashboard/brands"
+              className="block px-3 py-2 rounded hover:bg-gray-800 transition-colors"
+            >
+              Brands
+            </Link>
+            <Link
+              href="/dashboard/tags"
+              className="block px-3 py-2 rounded hover:bg-gray-800 transition-colors"
+            >
+              Tags
+            </Link>
           </div>
           <div className="mb-4">
             <h2 className="text-xs uppercase text-gray-400 font-semibold mb-2">
