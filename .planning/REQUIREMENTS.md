@@ -86,9 +86,9 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 - [x] **PDPG-05**: Product page shows "frequently bought together" section with one-click add-all
 - [x] **PDPG-06**: Product page shows reviews section with average rating, distribution, and individual reviews
 - [x] **PDPG-07**: Product page shows real-time stock status (in stock, low stock with count, out of stock)
-- [ ] **PDPG-08**: Weighted products show unit price calculator (price per kg/lb with quantity selector)
-- [ ] **PDPG-09**: Digital products show file info, preview, and delivery method description
-- [ ] **PDPG-10**: Bundle products show included items with individual and bundle pricing comparison
+- [x] **PDPG-08**: Weighted products show unit price calculator (price per kg/lb with quantity selector)
+- [x] **PDPG-09**: Digital products show file info, preview, and delivery method description
+- [x] **PDPG-10**: Bundle products show included items with individual and bundle pricing comparison
 
 ### Wishlist & Compare
 
@@ -337,9 +337,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PDPG-05 | Phase 7: Product Page | Complete |
 | PDPG-06 | Phase 7: Product Page | Complete |
 | PDPG-07 | Phase 7: Product Page | Complete |
-| PDPG-08 | Phase 7: Product Page | Pending |
-| PDPG-09 | Phase 7: Product Page | Pending |
-| PDPG-10 | Phase 7: Product Page | Pending |
+| PDPG-08 | Phase 7: Product Page | Complete |
+| PDPG-09 | Phase 7: Product Page | Complete |
+| PDPG-10 | Phase 7: Product Page | Complete |
 | WISH-01 | Phase 8: Wishlist & Compare | Pending |
 | WISH-02 | Phase 8: Wishlist & Compare | Pending |
 | WISH-03 | Phase 8: Wishlist & Compare | Pending |
