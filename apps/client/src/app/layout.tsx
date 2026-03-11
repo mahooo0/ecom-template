@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { ClerkProvider, UserButton, SignInButton } from '@clerk/nextjs';
 import { auth } from '@clerk/nextjs/server';
 import { Suspense } from 'react';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { MegaMenu } from '@/components/navigation/mega-menu';
 import { SearchBar } from '@/components/search/search-bar';
 import './globals.css';
@@ -18,6 +19,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <ClerkProvider>
       <html lang="en">
         <body className="min-h-screen bg-white text-gray-900 antialiased">
+          <NuqsAdapter>
           <header className="border-b border-gray-200">
             <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
               <a href="/" className="text-xl font-bold">
@@ -52,6 +54,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </Suspense>
           </header>
           <main>{children}</main>
+          </NuqsAdapter>
         </body>
       </html>
     </ClerkProvider>
