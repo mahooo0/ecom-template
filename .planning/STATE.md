@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 14-00: Inventory Management Test Infrastructure"
-last_updated: "2026-03-11T16:15:39.192Z"
+stopped_at: "Completed 14-01: InventoryService and Validation Schemas"
+last_updated: "2026-03-11T16:18:40.461Z"
 last_activity: "2026-03-11 -- Completed plan 05-02: Search API Endpoints and Admin Settings"
 progress:
   total_phases: 23
   completed_phases: 8
   total_plans: 49
-  completed_plans: 45
+  completed_plans: 46
   percent: 84
 ---
 
@@ -100,6 +100,7 @@ Progress: [████████░░] 84%
 | Phase 07 P04 | 2 | 2 tasks | 4 files |
 | Phase 07 P06 | 117 | 2 tasks | 5 files |
 | Phase 14 P00 | 2 | 2 tasks | 4 files |
+| Phase 14 P01 | 326 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -234,6 +235,9 @@ Recent decisions affecting current work:
 - [Phase 07-06]: category: { include: { attributes: true } } in getBySlug for ProductSpecsTable display names
 - [Phase 14]: Add $queryRaw mock alongside warehouse/inventoryItem/stockMovement for raw SQL low-stock queries
 - [Phase 14]: Follow same it.todo() stub pattern as shipping tests without vi.mock in stub-only files
+- [Phase 14]: Use available(item) helper function everywhere to prevent exposing raw quantity without reserved
+- [Phase 14]: RESERVATION and RESERVATION_RELEASE excluded from adjustStockSchema - system-only reasons used by reservation system
+- [Phase 14]: inventory.lowStock and inventory.stockUpdated events added to EventMap for Phase 17 notification subscription
 
 ### Roadmap Evolution
 
@@ -250,6 +254,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T16:15:39.189Z
-Stopped at: Completed 14-00: Inventory Management Test Infrastructure
+Last session: 2026-03-11T16:18:40.457Z
+Stopped at: Completed 14-01: InventoryService and Validation Schemas
 Resume file: None

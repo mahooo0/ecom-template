@@ -473,7 +473,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 11. Payments | 0/5 | Not started | - |
 | 12. Order System | 0/7 | Not started | - |
 | 13. Shipping | 5/5 | Complete    | 2026-03-11 |
-| 14. Inventory Management | 1/5 | In Progress|  |
+| 14. Inventory Management | 2/5 | In Progress|  |
 | 15. Promotions & Discounts | 0/7 | Not started | - |
 | 16. Reviews & Ratings | 0/5 | Not started | - |
 | 17. Notifications | 0/6 | Not started | - |
@@ -489,7 +489,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 **Goal:** [To be planned]
 **Requirements**: TBD
 **Depends on:** Phase 21
-**Plans:** 1/5 plans executed
+**Plans:** 2/5 plans executed
 
 Plans:
 - [ ] TBD (run /gsd:plan-phase 22 to break down)
