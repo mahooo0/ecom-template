@@ -124,14 +124,14 @@ Plans:
   3. Search finds products across name, description, SKU, brand, and category fields, with typo tolerance and synonym support
   4. Search results include facet counts that can drive dynamic filtering on the results page
   5. Admin can configure search settings (synonyms, stop words, ranking rules) from the admin panel
-**Plans**: TBD (estimated 5-7)
+**Plans**: 5 plans
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
-- [ ] 05-03: TBD
-- [ ] 05-04: TBD
-- [ ] 05-05: TBD
+- [ ] 05-00-PLAN.md — Wave 0: Meilisearch mock in test setup, search fixtures, test stubs for SRCH-01 through SRCH-06
+- [ ] 05-01-PLAN.md — Meilisearch Docker Compose service, SearchService with index config, SyncService with event-driven product sync
+- [ ] 05-02-PLAN.md — Search API endpoints (public search, admin settings) and server startup initialization
+- [ ] 05-03-PLAN.md — Client SearchBar with InstantSearch autocomplete and search results page with faceted filtering
+- [ ] 05-04-PLAN.md — Admin search settings page: synonyms, stop words, ranking rules management, and full re-sync trigger
 
 ### Phase 6: Filter System
 **Goal**: Customers can narrow product listings using dynamic attribute-based filters with URL persistence, enabling shareable and bookmarkable filtered views
@@ -464,7 +464,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 2. Authentication System | 0/5 | Planning complete | - |
 | 3. Product Catalog | 6/7 | In Progress|  |
 | 4. Categories & Navigation | 0/6 | Planning complete | - |
-| 5. Search System | 0/5 | Not started | - |
+| 5. Search System | 0/5 | Planning complete | - |
 | 6. Filter System | 0/6 | Not started | - |
 | 7. Product Page | 0/7 | Not started | - |
 | 8. Wishlist & Compare | 0/5 | Not started | - |
