@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-03-11T06:29:50.658Z"
+stopped_at: Completed 04-05-PLAN.md
+last_updated: "2026-03-11T06:36:05.293Z"
 last_activity: "2026-03-11 -- Completed plan 04-00: Test Infrastructure for Categories & Navigation"
 progress:
   total_phases: 21
   completed_phases: 4
   total_plans: 27
-  completed_plans: 24
+  completed_plans: 25
   percent: 85
 ---
 
@@ -80,6 +80,7 @@ Progress: [█████████░] 85%
 | Phase 04 P01 | 148 | 2 tasks | 5 files |
 | Phase 04 P00 | 185 | 2 tasks | 11 files |
 | Phase 04 P02 | 439 | 2 tasks | 2 files |
+| Phase 04 P05 | 3 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -167,6 +168,9 @@ Recent decisions affecting current work:
 - [Phase 04-01]: Enforce maximum category depth of 5 levels in service layer
 - [Phase 04-00]: Extended Prisma mocks to support callback-style $transaction for tree operations
 - [Phase 04-00]: Created hierarchical mock fixtures for category tree testing (parent-child-grandchild)
+- [Phase 04-05]: Server Components for Navigation - use Next.js Server Components with Suspense for mega menu and breadcrumbs to enable direct API calls and better SEO
+- [Phase 04-05]: categoryPath filtering using Prisma startsWith on materialized path for efficient descendant product queries
+- [Phase 04-05]: JSON-LD BreadcrumbList schema embedded in breadcrumbs component for search engine visibility
 
 ### Pending Todos
 
@@ -178,6 +182,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T06:29:50.656Z
-Stopped at: Completed 04-02-PLAN.md
+Last session: 2026-03-11T06:36:05.290Z
+Stopped at: Completed 04-05-PLAN.md
 Resume file: None
