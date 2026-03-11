@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 06-04-PLAN.md
-last_updated: "2026-03-11T12:26:51.180Z"
+stopped_at: Completed 06-05-PLAN.md
+last_updated: "2026-03-11T13:00:44.074Z"
 last_activity: "2026-03-11 -- Completed plan 05-02: Search API Endpoints and Admin Settings"
 progress:
-  total_phases: 22
+  total_phases: 23
   completed_phases: 7
-  total_plans: 37
-  completed_plans: 37
+  total_plans: 38
+  completed_plans: 38
   percent: 84
 ---
 
@@ -92,6 +92,7 @@ Progress: [████████░░] 84%
 | Phase 06 P01 | 13 | 2 tasks | 6 files |
 | Phase 06 P03 | 2 | 2 tasks | 5 files |
 | Phase 06 P04 | 158 | 2 tasks | 3 files |
+| Phase 06 P05 | 4 | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -205,10 +206,13 @@ Recent decisions affecting current work:
 - [Phase 06]: NuqsAdapter added at root layout level so all client filter components can use useQueryStates
 - [Phase 06]: Promise.all for parallel filter + facets fetch to reduce category page load latency
 - [Phase 06-04]: noindex robots meta on filtered category views with canonical to base URL for SEO
+- [Phase 06]: Three mutually exclusive availability states: in_stock (has stock), out_of_stock (no stock AND allowPreorder=false), pre_order (no stock AND allowPreorder=true)
+- [Phase 06]: Dynamic priceRange derived from prisma.product.aggregate _min/_max price instead of hardcoded null
 
 ### Roadmap Evolution
 
 - Phase 22 added: In-App Guidance & AI Assistant
+- Phase 23 added: E-Commerce UI Design System & Component Library
 
 ### Pending Todos
 
@@ -220,6 +224,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T12:26:51.177Z
-Stopped at: Completed 06-04-PLAN.md
+Last session: 2026-03-11T13:00:44.072Z
+Stopped at: Completed 06-05-PLAN.md
 Resume file: None
