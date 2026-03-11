@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 14-02: Atomic Stock Reservation"
-last_updated: "2026-03-11T16:22:37.603Z"
+stopped_at: "Completed 14-03: Inventory Routes and Admin API Client"
+last_updated: "2026-03-11T16:26:27.403Z"
 last_activity: "2026-03-11 -- Completed plan 05-02: Search API Endpoints and Admin Settings"
 progress:
   total_phases: 23
   completed_phases: 8
   total_plans: 49
-  completed_plans: 47
+  completed_plans: 48
   percent: 84
 ---
 
@@ -102,6 +102,7 @@ Progress: [████████░░] 84%
 | Phase 14 P00 | 2 | 2 tasks | 4 files |
 | Phase 14 P01 | 326 | 2 tasks | 5 files |
 | Phase 14 P02 | 127 | 2 tasks | 4 files |
+| Phase 14 P03 | 3 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -242,6 +243,9 @@ Recent decisions affecting current work:
 - [Phase 14]: Use prisma.$transaction interactive callback for reserveStock to prevent TOCTOU race conditions
 - [Phase 14]: releaseReservation idempotency via Set of inventoryItemId from existing RESERVATION_RELEASE movements
 - [Phase 14]: startReservationCleanup() not wired into index.ts yet - deferred to Plan 03 when routes are mounted
+- [Phase 14]: getWarehouseById implemented inline in controller using prisma.warehouse.findUnique — not in InventoryService
+- [Phase 14]: reserveStock controller auto-selects best warehouse via findBestWarehouse when warehouseId omitted
+- [Phase 14]: Reservation endpoints (reserve/commit/release) are public — no requireAdmin — for checkout flow consumption
 
 ### Roadmap Evolution
 
@@ -258,6 +262,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T16:22:37.600Z
-Stopped at: Completed 14-02: Atomic Stock Reservation
+Last session: 2026-03-11T16:26:27.400Z
+Stopped at: Completed 14-03: Inventory Routes and Admin API Client
 Resume file: None
