@@ -185,14 +185,15 @@ Plans:
   3. Wishlist page shows all saved products with product cards and quick-add-to-cart buttons
   4. User can select 2-4 products for comparison, and the compare page shows a side-by-side specification table with differences highlighted
   5. User receives notifications when a wishlisted item has a price drop or comes back in stock
-**Plans**: TBD (estimated 5-7)
+**Plans**: 6 plans
 
 Plans:
-- [ ] 08-01: TBD
-- [ ] 08-02: TBD
-- [ ] 08-03: TBD
-- [ ] 08-04: TBD
-- [ ] 08-05: TBD
+- [ ] 08-00-PLAN.md — Wave 0: Prisma schema migration (priceAtAdd), types update, test infrastructure with mocks, fixtures, and stubs
+- [ ] 08-01-PLAN.md — Server wishlist module: Zod validation, WishlistService CRUD + sync + notify prefs, controller, routes, server wiring
+- [ ] 08-02-PLAN.md — Client Zustand stores (wishlist localStorage + compare sessionStorage), WishlistButton heart overlay, CompareBar, ProductCard integration
+- [ ] 08-03-PLAN.md — Wishlist page with product grid, price-drop badges, guest-to-auth sync hook, product detail toggle, header badge
+- [ ] 08-04-PLAN.md — Compare page with side-by-side specification table and difference highlighting
+- [ ] 08-05-PLAN.md — EventBus listeners for price drop and restock detection on wishlisted items
 
 ### Phase 9: Cart System
 **Goal**: Users can build and manage a shopping cart that persists across sessions with guest/auth support, cart merging, and real-time price calculation
@@ -467,7 +468,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 5. Search System | 0/5 | Planning complete | - |
 | 6. Filter System | 6/6 | Complete   | 2026-03-11 |
 | 7. Product Page | 6/6 | Complete   | 2026-03-11 |
-| 8. Wishlist & Compare | 0/5 | Not started | - |
+| 8. Wishlist & Compare | 0/6 | Planning complete | - |
 | 9. Cart System | 0/7 | Not started | - |
 | 10. Checkout | 0/7 | Not started | - |
 | 11. Payments | 0/5 | Not started | - |
