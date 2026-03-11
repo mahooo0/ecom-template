@@ -70,7 +70,7 @@ export function ActiveFilters() {
 
   // Availability filters
   filters.availability.forEach((avail) => {
-    const label = avail === 'in_stock' ? 'In Stock' : avail === 'out_of_stock' ? 'Out of Stock' : avail;
+    const label = avail === 'in_stock' ? 'In Stock' : avail === 'out_of_stock' ? 'Out of Stock' : avail === 'pre_order' ? 'Pre-Order' : avail;
     activeFilters.push({
       label,
       onRemove: () =>

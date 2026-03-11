@@ -74,9 +74,39 @@ describe('AvailabilityFilter', () => {
   });
 
   it('shows product count next to each option when facetCounts provided', () => {
-    render(<AvailabilityFilter facetCounts={{ in_stock: 42, out_of_stock: 8 }} />);
+    render(<AvailabilityFilter facetCounts={{ in_stock: 42, out_of_stock: 8, pre_order: 3 }} />);
 
     expect(screen.getByTestId('in-stock-count')).toHaveTextContent('(42)');
     expect(screen.getByTestId('out-of-stock-count')).toHaveTextContent('(8)');
+  });
+
+  it('renders Pre-Order checkbox option', () => {
+    render(<AvailabilityFilter />);
+
+    const preOrderOption = screen.getByTestId('availability-pre-order');
+    expect(preOrderOption).toBeInTheDocument();
+    expect(screen.getByText('Pre-Order')).toBeInTheDocument();
+
+    const checkbox = preOrderOption.querySelector('input[type="checkbox"]');
+    expect(checkbox).toBeInTheDocument();
+  });
+
+  it('toggling pre_order updates filter state', () => {
+    render(<AvailabilityFilter />);
+
+    const preOrderLabel = screen.getByTestId('availability-pre-order');
+    const preOrderCheckbox = preOrderLabel.querySelector('input[type="checkbox"]');
+    fireEvent.click(preOrderCheckbox!);
+
+    expect(mockSetFilters).toHaveBeenCalledWith({
+      availability: ['pre_order'],
+      page: 1,
+    });
+  });
+
+  it('shows pre-order count when facetCounts provided', () => {
+    render(<AvailabilityFilter facetCounts={{ in_stock: 42, out_of_stock: 8, pre_order: 3 }} />);
+
+    expect(screen.getByTestId('pre-order-count')).toHaveTextContent('(3)');
   });
 });

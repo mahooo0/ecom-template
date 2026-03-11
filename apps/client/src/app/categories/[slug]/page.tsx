@@ -160,11 +160,12 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
       // Normalize facets to match FilterContent expected shape
       const raw = facetsResult.data;
 
-      // Convert availability array [{status, count}] to object {in_stock?, out_of_stock?}
-      const availabilityObj: { in_stock?: number; out_of_stock?: number } = {};
+      // Convert availability array [{status, count}] to object {in_stock?, out_of_stock?, pre_order?}
+      const availabilityObj: { in_stock?: number; out_of_stock?: number; pre_order?: number } = {};
       (raw.availability || []).forEach((item: any) => {
         if (item.status === 'in_stock') availabilityObj.in_stock = item.count;
         if (item.status === 'out_of_stock') availabilityObj.out_of_stock = item.count;
+        if (item.status === 'pre_order') availabilityObj.pre_order = item.count;
       });
 
       facetCounts = {

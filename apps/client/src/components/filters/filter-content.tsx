@@ -20,6 +20,7 @@ interface BrandFacet {
 interface AvailabilityFacet {
   in_stock?: number;
   out_of_stock?: number;
+  pre_order?: number;
 }
 
 interface PriceRange {
