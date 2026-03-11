@@ -82,8 +82,8 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 - [ ] **PDPG-01**: Product page displays image gallery with zoom, thumbnails, and fullscreen lightbox
 - [ ] **PDPG-02**: Variable products show variant selector (dropdowns/swatches) that updates price, images, and stock
 - [ ] **PDPG-03**: Product page shows specifications/attributes table
-- [ ] **PDPG-04**: Product page shows related products carousel
-- [ ] **PDPG-05**: Product page shows "frequently bought together" section with one-click add-all
+- [x] **PDPG-04**: Product page shows related products carousel
+- [x] **PDPG-05**: Product page shows "frequently bought together" section with one-click add-all
 - [ ] **PDPG-06**: Product page shows reviews section with average rating, distribution, and individual reviews
 - [ ] **PDPG-07**: Product page shows real-time stock status (in stock, low stock with count, out of stock)
 - [ ] **PDPG-08**: Weighted products show unit price calculator (price per kg/lb with quantity selector)
@@ -333,8 +333,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PDPG-01 | Phase 7: Product Page | Pending |
 | PDPG-02 | Phase 7: Product Page | Pending |
 | PDPG-03 | Phase 7: Product Page | Pending |
-| PDPG-04 | Phase 7: Product Page | Pending |
-| PDPG-05 | Phase 7: Product Page | Pending |
+| PDPG-04 | Phase 7: Product Page | Complete |
+| PDPG-05 | Phase 7: Product Page | Complete |
 | PDPG-06 | Phase 7: Product Page | Pending |
 | PDPG-07 | Phase 7: Product Page | Pending |
 | PDPG-08 | Phase 7: Product Page | Pending |
