@@ -1,4 +1,4 @@
-import type { ApiResponse, PaginatedResponse, Product, Order, User, ShippingZone, ShippingMethod } from '@repo/types';
+import type { ApiResponse, PaginatedResponse, Product, Order, User, ShippingZone, ShippingMethod, Category, CategoryAttribute, Brand, Tag, Collection } from '@repo/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
 
@@ -119,5 +119,53 @@ export const api = {
       update: (id: string, data: Partial<ShippingMethod>) => fetcher<ApiResponse<ShippingMethod>>(`/shipping/methods/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
       delete: (id: string) => fetcher<ApiResponse<void>>(`/shipping/methods/${id}`, { method: 'DELETE' }),
     },
+  },
+  categories: {
+    getAll: (token?: string) => fetcher<ApiResponse<Category[]>>('/categories', { token }),
+    getTree: (token?: string) => fetcher<ApiResponse<Category[]>>('/categories/tree', { token }),
+    getById: (id: string, token?: string) => fetcher<ApiResponse<Category & { attributes: CategoryAttribute[], children: Category[] }>>(`/categories/${id}`, { token }),
+    create: (data: Partial<Category>, token?: string) => fetcher<ApiResponse<Category>>('/categories', { method: 'POST', body: JSON.stringify(data), token }),
+    update: (id: string, data: Partial<Category>, token?: string) => fetcher<ApiResponse<Category>>(`/categories/${id}`, { method: 'PUT', body: JSON.stringify(data), token }),
+    delete: (id: string, token?: string) => fetcher<ApiResponse<void>>(`/categories/${id}`, { method: 'DELETE', token }),
+    move: (id: string, data: { newParentId: string | null; position: number }, token?: string) => fetcher<ApiResponse<Category>>(`/categories/${id}/move`, { method: 'PATCH', body: JSON.stringify(data), token }),
+    reorder: (data: { parentId: string | null; orderedIds: string[] }, token?: string) => fetcher<ApiResponse<void>>('/categories/reorder', { method: 'PATCH', body: JSON.stringify(data), token }),
+    // Attributes
+    getAttributes: (categoryId: string, token?: string) => fetcher<ApiResponse<CategoryAttribute[]>>(`/categories/${categoryId}/attributes`, { token }),
+    createAttribute: (categoryId: string, data: Partial<CategoryAttribute>, token?: string) => fetcher<ApiResponse<CategoryAttribute>>(`/categories/${categoryId}/attributes`, { method: 'POST', body: JSON.stringify(data), token }),
+    updateAttribute: (attributeId: string, data: Partial<CategoryAttribute>, token?: string) => fetcher<ApiResponse<CategoryAttribute>>(`/categories/attributes/${attributeId}`, { method: 'PUT', body: JSON.stringify(data), token }),
+    deleteAttribute: (attributeId: string, token?: string) => fetcher<ApiResponse<void>>(`/categories/attributes/${attributeId}`, { method: 'DELETE', token }),
+  },
+  collections: {
+    getAll: (params?: { page?: number; limit?: number; token?: string }) => {
+      const qp = new URLSearchParams();
+      if (params?.page) qp.set('page', String(params.page));
+      if (params?.limit) qp.set('limit', String(params.limit));
+      const qs = qp.toString();
+      return fetcher<PaginatedResponse<Collection>>(`/collections${qs ? `?${qs}` : ''}`, { token: params?.token });
+    },
+    getById: (id: string, token?: string) => fetcher<ApiResponse<Collection>>(`/collections/${id}`, { token }),
+    create: (data: Partial<Collection>, token?: string) => fetcher<ApiResponse<Collection>>('/collections', { method: 'POST', body: JSON.stringify(data), token }),
+    update: (id: string, data: Partial<Collection>, token?: string) => fetcher<ApiResponse<Collection>>(`/collections/${id}`, { method: 'PUT', body: JSON.stringify(data), token }),
+    delete: (id: string, token?: string) => fetcher<ApiResponse<void>>(`/collections/${id}`, { method: 'DELETE', token }),
+    addProduct: (collectionId: string, productId: string, token?: string) => fetcher<ApiResponse<void>>(`/collections/${collectionId}/products`, { method: 'POST', body: JSON.stringify({ productId }), token }),
+    removeProduct: (collectionId: string, productId: string, token?: string) => fetcher<ApiResponse<void>>(`/collections/${collectionId}/products/${productId}`, { method: 'DELETE', token }),
+  },
+  brands: {
+    getAll: (params?: { page?: number; limit?: number; token?: string }) => {
+      const qp = new URLSearchParams();
+      if (params?.page) qp.set('page', String(params.page));
+      if (params?.limit) qp.set('limit', String(params.limit));
+      const qs = qp.toString();
+      return fetcher<PaginatedResponse<Brand>>(`/brands${qs ? `?${qs}` : ''}`, { token: params?.token });
+    },
+    getById: (id: string, token?: string) => fetcher<ApiResponse<Brand>>(`/brands/${id}`, { token }),
+    create: (data: Partial<Brand>, token?: string) => fetcher<ApiResponse<Brand>>('/brands', { method: 'POST', body: JSON.stringify(data), token }),
+    update: (id: string, data: Partial<Brand>, token?: string) => fetcher<ApiResponse<Brand>>(`/brands/${id}`, { method: 'PUT', body: JSON.stringify(data), token }),
+    delete: (id: string, token?: string) => fetcher<ApiResponse<void>>(`/brands/${id}`, { method: 'DELETE', token }),
+  },
+  tags: {
+    getAll: (token?: string) => fetcher<ApiResponse<Tag[]>>('/tags', { token }),
+    create: (data: { name: string }, token?: string) => fetcher<ApiResponse<Tag>>('/tags', { method: 'POST', body: JSON.stringify(data), token }),
+    delete: (id: string, token?: string) => fetcher<ApiResponse<void>>(`/tags/${id}`, { method: 'DELETE', token }),
   },
 };

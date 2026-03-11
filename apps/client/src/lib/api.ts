@@ -1,4 +1,4 @@
-import type { ApiResponse, PaginatedResponse, Product, Order } from '@repo/types';
+import type { ApiResponse, PaginatedResponse, Product, Order, Category, Collection, Brand } from '@repo/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
 
@@ -49,5 +49,17 @@ export const api = {
         method: 'POST',
         body: JSON.stringify(data),
       }),
+  },
+  categories: {
+    getAll: () => fetcher<ApiResponse<Category[]>>('/categories'),
+    getTree: () => fetcher<ApiResponse<Category[]>>('/categories/tree'),
+    getBySlug: (slug: string) => fetcher<ApiResponse<Category>>(`/categories/slug/${slug}`),
+  },
+  collections: {
+    getBySlug: (slug: string) => fetcher<ApiResponse<Collection>>(`/collections/slug/${slug}`),
+  },
+  brands: {
+    getAll: () => fetcher<ApiResponse<Brand[]>>('/brands'),
+    getBySlug: (slug: string) => fetcher<ApiResponse<Brand>>(`/brands/slug/${slug}`),
   },
 };
