@@ -473,7 +473,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 11. Payments | 0/5 | Not started | - |
 | 12. Order System | 0/7 | Not started | - |
 | 13. Shipping | 5/5 | Complete    | 2026-03-11 |
-| 14. Inventory Management | 5/5 | Complete   | 2026-03-11 |
+| 14. Inventory Management | 5/5 | Complete    | 2026-03-11 |
 | 15. Promotions & Discounts | 0/7 | Not started | - |
 | 16. Reviews & Ratings | 0/5 | Not started | - |
 | 17. Notifications | 0/6 | Not started | - |
