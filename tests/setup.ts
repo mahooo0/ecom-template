@@ -2,8 +2,8 @@ import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 
 // Mock @repo/db prisma client
-vi.mock('@repo/db', () => ({
-  prisma: {
+vi.mock('@repo/db', () => {
+  const prismaMock = {
     product: {
       findMany: vi.fn(),
       findUnique: vi.fn(),
@@ -19,10 +19,63 @@ vi.mock('@repo/db', () => ({
     digitalMeta: { create: vi.fn(), upsert: vi.fn() },
     weightedMeta: { create: vi.fn(), upsert: vi.fn() },
     bundleItem: { createMany: vi.fn(), deleteMany: vi.fn() },
-    productTag: { deleteMany: vi.fn() },
-    productCollection: { deleteMany: vi.fn() },
-    category: { findUnique: vi.fn() },
-    brand: { findUnique: vi.fn() },
+    productTag: {
+      findMany: vi.fn(),
+      create: vi.fn(),
+      createMany: vi.fn(),
+      deleteMany: vi.fn(),
+    },
+    productCollection: {
+      findMany: vi.fn(),
+      create: vi.fn(),
+      createMany: vi.fn(),
+      deleteMany: vi.fn(),
+      count: vi.fn(),
+    },
+    category: {
+      findMany: vi.fn(),
+      findUnique: vi.fn(),
+      findFirst: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+      count: vi.fn(),
+    },
+    categoryAttribute: {
+      findMany: vi.fn(),
+      findUnique: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+      count: vi.fn(),
+    },
+    brand: {
+      findMany: vi.fn(),
+      findUnique: vi.fn(),
+      findFirst: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+      count: vi.fn(),
+    },
+    tag: {
+      findMany: vi.fn(),
+      findUnique: vi.fn(),
+      findFirst: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+      count: vi.fn(),
+    },
+    collection: {
+      findMany: vi.fn(),
+      findUnique: vi.fn(),
+      findFirst: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+      count: vi.fn(),
+    },
     shippingZone: {
       findMany: vi.fn(),
       findUnique: vi.fn(),
@@ -41,9 +94,18 @@ vi.mock('@repo/db', () => ({
       delete: vi.fn(),
       count: vi.fn(),
     },
-    $transaction: vi.fn((fns) => Promise.all(fns.map((fn: Function) => fn()))),
-  },
-}));
+    $transaction: vi.fn(),
+  };
+
+  // Configure $transaction to support both array and callback styles
+  prismaMock.$transaction.mockImplementation((input: any) => {
+    if (Array.isArray(input)) return Promise.all(input.map((fn: Function) => fn()));
+    if (typeof input === 'function') return input(prismaMock);
+    return Promise.resolve();
+  });
+
+  return { prisma: prismaMock };
+});
 
 // Export shared mock product fixtures
 export const mockSimpleProduct = {
@@ -175,4 +237,96 @@ export const mockBundleProduct = {
       discount: 5,
     },
   ],
+};
+
+// Category domain mock fixtures
+export const mockCategory = {
+  id: 'cat-1',
+  name: 'Electronics',
+  slug: 'electronics',
+  path: '/electronics',
+  depth: 0,
+  position: 0,
+  parentId: null,
+  description: null,
+  isActive: true,
+  metaTitle: null,
+  metaDescription: null,
+  createdAt: new Date('2024-01-01T00:00:00Z'),
+  updatedAt: new Date('2024-01-01T00:00:00Z'),
+};
+
+export const mockChildCategory = {
+  id: 'cat-1-1',
+  name: 'Phones',
+  slug: 'phones',
+  path: '/electronics/phones',
+  depth: 1,
+  position: 0,
+  parentId: 'cat-1',
+  description: null,
+  isActive: true,
+  metaTitle: null,
+  metaDescription: null,
+  createdAt: new Date('2024-01-01T00:00:00Z'),
+  updatedAt: new Date('2024-01-01T00:00:00Z'),
+};
+
+export const mockGrandchildCategory = {
+  id: 'cat-1-1-1',
+  name: 'Smartphones',
+  slug: 'smartphones',
+  path: '/electronics/phones/smartphones',
+  depth: 2,
+  position: 0,
+  parentId: 'cat-1-1',
+  description: null,
+  isActive: true,
+  metaTitle: null,
+  metaDescription: null,
+  createdAt: new Date('2024-01-01T00:00:00Z'),
+  updatedAt: new Date('2024-01-01T00:00:00Z'),
+};
+
+export const mockBrand = {
+  id: 'brand-1',
+  name: 'Samsung',
+  slug: 'samsung',
+  logo: null,
+  description: null,
+  createdAt: new Date('2024-01-01T00:00:00Z'),
+  updatedAt: new Date('2024-01-01T00:00:00Z'),
+};
+
+export const mockTag = {
+  id: 'tag-1',
+  name: 'New Arrival',
+  slug: 'new-arrival',
+  createdAt: new Date('2024-01-01T00:00:00Z'),
+  updatedAt: new Date('2024-01-01T00:00:00Z'),
+};
+
+export const mockCollection = {
+  id: 'col-1',
+  name: 'Summer Sale',
+  slug: 'summer-sale',
+  description: null,
+  isActive: true,
+  createdAt: new Date('2024-01-01T00:00:00Z'),
+  updatedAt: new Date('2024-01-01T00:00:00Z'),
+};
+
+export const mockCategoryAttribute = {
+  id: 'attr-1',
+  categoryId: 'cat-1',
+  name: 'Screen Size',
+  key: 'screen_size',
+  type: 'SELECT',
+  values: ['32 inch', '55 inch', '65 inch'],
+  unit: 'inch',
+  isFilterable: true,
+  isRequired: false,
+  position: 0,
+  createdAt: new Date('2024-01-01T00:00:00Z'),
+  updatedAt: new Date('2024-01-01T00:00:00Z'),
 };
