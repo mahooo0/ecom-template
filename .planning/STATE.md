@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 13-02-PLAN.md
-last_updated: "2026-03-11T05:27:58.327Z"
+stopped_at: Completed 13-01-PLAN.md
+last_updated: "2026-03-11T05:29:30.675Z"
 last_activity: "2026-03-11 -- Completed plan 13-02: Order Tracking Management"
 progress:
   total_phases: 21
   completed_phases: 3
   total_plans: 21
-  completed_plans: 18
+  completed_plans: 19
   percent: 86
 ---
 
@@ -74,6 +74,7 @@ Progress: [█████████░] 86%
 | Phase 03 P06 | 364 | 2 tasks | 6 files |
 | Phase 13 P00 | 99 | 2 tasks | 4 files |
 | Phase 13 P02 | 130 | 2 tasks | 4 files |
+| Phase 13 P01 | 3.4 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -147,6 +148,11 @@ Recent decisions affecting current work:
 - [Phase 13-00]: Add shippingZone and shippingMethod mocks to setup.ts alongside product mocks
 - [Phase 13-02]: Validate order is in paid/processing state before allowing tracking - prevents invalid state transitions
 - [Phase 13-02]: Use MongoDB atomic updates ( and ) for tracking - ensures shipping info and status history stay synchronized
+- [Phase 13]: Use two-tier zone matching algorithm: state-specific zones > country-wide zones
+- [Phase 13]: Check free shipping threshold before calculating rate type cost
+- [Phase 13]: Filter out weight-exceeded methods instead of showing errors to users
+- [Phase 13]: Make POST /api/shipping/calculate public endpoint for checkout consumption
+- [Phase 13]: Use JSONB priceThresholds for flexible price-based rate tiers
 
 ### Pending Todos
 
@@ -158,6 +164,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T05:27:41.789Z
-Stopped at: Completed 13-02-PLAN.md
+Last session: 2026-03-11T05:29:30.672Z
+Stopped at: Completed 13-01-PLAN.md
 Resume file: None
