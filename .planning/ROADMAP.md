@@ -33,6 +33,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 19: SEO** - Meta tags, canonical URLs, sitemap, structured data, and admin SEO field editing
 - [ ] **Phase 20: Multi-Store** - Multi-language, multi-currency, locale detection, and admin translation management
 - [ ] **Phase 21: Admin Panel** - Dashboard, RBAC, data tables, forms, activity log, and settings for all modules
+- [ ] **Phase 22: In-App Guidance & AI Assistant** - In-app guidance system and AI-powered assistant for admin and client apps
+- [ ] **Phase 23: E-Commerce UI Design System & Component Library** - Unified design system and reusable component library
 
 ## Phase Details
 
@@ -163,16 +165,15 @@ Plans:
   3. Product page shows a specifications/attributes table and a related products carousel
   4. "Frequently bought together" section shows complementary products with a one-click add-all-to-cart button
   5. Type-specific displays work correctly: weighted products show unit price calculator, digital products show file info and delivery method, bundle products show included items with price comparison
-**Plans**: TBD (estimated 7-9)
+**Plans**: 6 plans
 
 Plans:
-- [ ] 07-01: TBD
-- [ ] 07-02: TBD
-- [ ] 07-03: TBD
-- [ ] 07-04: TBD
-- [ ] 07-05: TBD
-- [ ] 07-06: TBD
-- [ ] 07-07: TBD
+- [ ] 07-01-PLAN.md — Foundation: test stubs, ProductDetail type, server related/FBT endpoints, client API extensions, Cloudinary config
+- [ ] 07-02-PLAN.md — Image gallery with hero, thumbnails, hover zoom, mobile carousel, and fullscreen lightbox
+- [ ] 07-03-PLAN.md — Variant selector with dropdown menus, stock status display, and add-to-cart button
+- [ ] 07-04-PLAN.md — Type-specific displays: weighted quantity selector, digital product info, bundle items list
+- [ ] 07-05-PLAN.md — Specs table, reviews placeholder, related products carousel, frequently bought together
+- [ ] 07-06-PLAN.md — Product page assembly: Server Component wiring all sub-components, loading skeleton, not-found page
 
 ### Phase 8: Wishlist & Compare
 **Goal**: Users can save products to a wishlist and compare products side-by-side, with guest support and notifications for price changes
@@ -454,7 +455,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 > 2 > 3 > 4 > 5 > 6 > 7 > 8 > 9 > 10 > 11 > 12 > 13 > 14 > 15 > 16 > 17 > 18 > 19 > 20 > 21
+Phases execute in numeric order: 1 > 2 > 3 > 4 > 5 > 6 > 7 > 8 > 9 > 10 > 11 > 12 > 13 > 14 > 15 > 16 > 17 > 18 > 19 > 20 > 21 > 22 > 23
 
 Note: Some phases share dependencies and could theoretically run in parallel (e.g., Phase 5 and Phase 7 both depend on Phase 3). The linear order above is the recommended solo-developer sequence.
 
@@ -466,7 +467,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 4. Categories & Navigation | 0/6 | Planning complete | - |
 | 5. Search System | 0/5 | Planning complete | - |
 | 6. Filter System | 6/6 | Complete   | 2026-03-11 |
-| 7. Product Page | 0/7 | Not started | - |
+| 7. Product Page | 0/6 | Planning complete | - |
 | 8. Wishlist & Compare | 0/5 | Not started | - |
 | 9. Cart System | 0/7 | Not started | - |
 | 10. Checkout | 0/7 | Not started | - |
@@ -481,6 +482,8 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 19. SEO | 0/5 | Not started | - |
 | 20. Multi-Store | 0/5 | Not started | - |
 | 21. Admin Panel | 0/6 | Not started | - |
+| 22. In-App Guidance & AI Assistant | 0/6 | Not started | - |
+| 23. UI Design System & Component Library | 0/0 | Not started | - |
 
 ### Phase 22: In-App Guidance & AI Assistant
 
