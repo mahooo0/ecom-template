@@ -92,6 +92,7 @@ model WishlistItem {
   productId          String
   product            Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   addedAt            DateTime @default(now())
+  priceAtAdd         Int      @default(0)
   notifyOnPriceDrop  Boolean  @default(true)
   notifyOnRestock    Boolean  @default(true)
 

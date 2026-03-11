@@ -151,8 +151,25 @@ export interface WishlistItem {
   wishlistId: string;
   productId: string;
   addedAt: Date;
+  priceAtAdd: number;
   notifyOnPriceDrop: boolean;
   notifyOnRestock: boolean;
+}
+
+// ============================================================================
+// WISHLIST EVENT TYPES
+// ============================================================================
+
+export interface WishlistPriceDropEvent {
+  productId: string;
+  oldPrice: number;
+  newPrice: number;
+  affectedUserIds: string[];
+}
+
+export interface WishlistRestockEvent {
+  productId: string;
+  affectedUserIds: string[];
 }
 
 // ============================================================================
