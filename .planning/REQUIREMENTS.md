@@ -50,13 +50,13 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 
 ### Categories & Navigation
 
-- [ ] **CAT-01**: Admin can create categories with infinite depth tree structure using drag-and-drop
-- [ ] **CAT-02**: Admin can assign dynamic attributes/characteristics to categories (e.g., screen size for Electronics > TVs)
-- [ ] **CAT-03**: Admin can manage collections (curated product groups), brands, and tags
-- [ ] **CAT-04**: Client app renders mega menu from category tree (top 2-3 levels)
-- [ ] **CAT-05**: Client app renders breadcrumbs showing full category path
-- [ ] **CAT-06**: Client app displays category page with products, subcategories, and applied filters
-- [ ] **CAT-07**: Categories support SEO fields (slug, meta title, meta description, custom URL)
+- [x] **CAT-01**: Admin can create categories with infinite depth tree structure using drag-and-drop
+- [x] **CAT-02**: Admin can assign dynamic attributes/characteristics to categories (e.g., screen size for Electronics > TVs)
+- [x] **CAT-03**: Admin can manage collections (curated product groups), brands, and tags
+- [x] **CAT-04**: Client app renders mega menu from category tree (top 2-3 levels)
+- [x] **CAT-05**: Client app renders breadcrumbs showing full category path
+- [x] **CAT-06**: Client app displays category page with products, subcategories, and applied filters
+- [x] **CAT-07**: Categories support SEO fields (slug, meta title, meta description, custom URL)
 
 ### Search System
 
@@ -310,13 +310,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROD-08 | Phase 3: Product Catalog | Complete |
 | PROD-09 | Phase 3: Product Catalog | Complete |
 | PROD-10 | Phase 3: Product Catalog | Complete |
-| CAT-01 | Phase 4: Categories & Navigation | Pending |
-| CAT-02 | Phase 4: Categories & Navigation | Pending |
-| CAT-03 | Phase 4: Categories & Navigation | Pending |
-| CAT-04 | Phase 4: Categories & Navigation | Pending |
-| CAT-05 | Phase 4: Categories & Navigation | Pending |
-| CAT-06 | Phase 4: Categories & Navigation | Pending |
-| CAT-07 | Phase 4: Categories & Navigation | Pending |
+| CAT-01 | Phase 4: Categories & Navigation | Complete |
+| CAT-02 | Phase 4: Categories & Navigation | Complete |
+| CAT-03 | Phase 4: Categories & Navigation | Complete |
+| CAT-04 | Phase 4: Categories & Navigation | Complete |
+| CAT-05 | Phase 4: Categories & Navigation | Complete |
+| CAT-06 | Phase 4: Categories & Navigation | Complete |
+| CAT-07 | Phase 4: Categories & Navigation | Complete |
 | SRCH-01 | Phase 5: Search System | Pending |
 | SRCH-02 | Phase 5: Search System | Pending |
 | SRCH-03 | Phase 5: Search System | Pending |
