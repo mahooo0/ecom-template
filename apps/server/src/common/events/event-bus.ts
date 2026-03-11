@@ -9,6 +9,8 @@ type EventMap = {
   'product.created': { productId: string };
   'product.updated': { productId: string };
   'product.deleted': { productId: string };
+  'inventory.lowStock': { variantId: string; warehouseId: string; available: number; threshold: number };
+  'inventory.stockUpdated': { variantId: string; warehouseId: string; quantity: number; available: number };
 };
 
 class EventBus {
