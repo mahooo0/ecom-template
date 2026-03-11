@@ -155,14 +155,14 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 
 ### Inventory Management
 
-- [ ] **INV-01**: Stock tracked per SKU (variant-level) with real-time quantities
-- [ ] **INV-02**: Low stock alerts configurable per product with threshold
-- [ ] **INV-03**: Admin can manage multiple warehouses with location and priority
-- [ ] **INV-04**: Stock allocation per warehouse with intelligent routing to nearest warehouse
-- [ ] **INV-05**: Atomic stock reservation with TTL (15 min) during checkout, commit on payment, release on abandon
-- [ ] **INV-06**: Admin inventory dashboard showing stock levels, alerts, and movement history
-- [ ] **INV-07**: Stock adjustment history with reason tracking (sale, return, manual adjustment, damage)
-- [ ] **INV-08**: SKU auto-generation based on product attributes
+- [x] **INV-01**: Stock tracked per SKU (variant-level) with real-time quantities
+- [x] **INV-02**: Low stock alerts configurable per product with threshold
+- [x] **INV-03**: Admin can manage multiple warehouses with location and priority
+- [x] **INV-04**: Stock allocation per warehouse with intelligent routing to nearest warehouse
+- [x] **INV-05**: Atomic stock reservation with TTL (15 min) during checkout, commit on payment, release on abandon
+- [x] **INV-06**: Admin inventory dashboard showing stock levels, alerts, and movement history
+- [x] **INV-07**: Stock adjustment history with reason tracking (sale, return, manual adjustment, damage)
+- [x] **INV-08**: SKU auto-generation based on product attributes
 
 ### Promotions & Discounts
 
@@ -385,14 +385,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SHIP-04 | Phase 13: Shipping | Complete |
 | SHIP-05 | Phase 13: Shipping | Complete |
 | SHIP-06 | Phase 13: Shipping | Complete |
-| INV-01 | Phase 14: Inventory Management | Pending |
-| INV-02 | Phase 14: Inventory Management | Pending |
-| INV-03 | Phase 14: Inventory Management | Pending |
-| INV-04 | Phase 14: Inventory Management | Pending |
-| INV-05 | Phase 14: Inventory Management | Pending |
-| INV-06 | Phase 14: Inventory Management | Pending |
-| INV-07 | Phase 14: Inventory Management | Pending |
-| INV-08 | Phase 14: Inventory Management | Pending |
+| INV-01 | Phase 14: Inventory Management | Complete |
+| INV-02 | Phase 14: Inventory Management | Complete |
+| INV-03 | Phase 14: Inventory Management | Complete |
+| INV-04 | Phase 14: Inventory Management | Complete |
+| INV-05 | Phase 14: Inventory Management | Complete |
+| INV-06 | Phase 14: Inventory Management | Complete |
+| INV-07 | Phase 14: Inventory Management | Complete |
+| INV-08 | Phase 14: Inventory Management | Complete |
 | PRMO-01 | Phase 15: Promotions & Discounts | Pending |
 | PRMO-02 | Phase 15: Promotions & Discounts | Pending |
 | PRMO-03 | Phase 15: Promotions & Discounts | Pending |
