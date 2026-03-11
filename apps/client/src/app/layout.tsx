@@ -3,6 +3,7 @@ import { ClerkProvider, UserButton, SignInButton } from '@clerk/nextjs';
 import { auth } from '@clerk/nextjs/server';
 import { Suspense } from 'react';
 import { MegaMenu } from '@/components/navigation/mega-menu';
+import { SearchBar } from '@/components/search/search-bar';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -22,6 +23,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <a href="/" className="text-xl font-bold">
                 Store
               </a>
+              <div className="flex-1 max-w-md mx-4">
+                <SearchBar />
+              </div>
               <div className="flex items-center gap-6">
                 <a href="/products" className="text-sm hover:text-gray-600">
                   Products
