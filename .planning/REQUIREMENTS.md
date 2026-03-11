@@ -69,13 +69,13 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 
 ### Filter System
 
-- [ ] **FILT-01**: Category pages show dynamic attribute-based filters derived from category's assigned attributes
-- [ ] **FILT-02**: Price range filter with slider and min/max input fields
-- [ ] **FILT-03**: Multi-select filters with checkbox groups (brand, color, size, etc.) showing product counts
-- [ ] **FILT-04**: Filter state persists in URL parameters for shareable/bookmarkable filtered views
-- [ ] **FILT-05**: Filters use OR logic within groups and AND logic across groups
-- [ ] **FILT-06**: Mobile filter UI uses full-screen modal with apply/clear buttons
-- [ ] **FILT-07**: Availability filter (in stock, out of stock, pre-order)
+- [x] **FILT-01**: Category pages show dynamic attribute-based filters derived from category's assigned attributes
+- [x] **FILT-02**: Price range filter with slider and min/max input fields
+- [x] **FILT-03**: Multi-select filters with checkbox groups (brand, color, size, etc.) showing product counts
+- [x] **FILT-04**: Filter state persists in URL parameters for shareable/bookmarkable filtered views
+- [x] **FILT-05**: Filters use OR logic within groups and AND logic across groups
+- [x] **FILT-06**: Mobile filter UI uses full-screen modal with apply/clear buttons
+- [x] **FILT-07**: Availability filter (in stock, out of stock, pre-order)
 
 ### Product Page
 
@@ -323,13 +323,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SRCH-04 | Phase 5: Search System | Pending |
 | SRCH-05 | Phase 5: Search System | Pending |
 | SRCH-06 | Phase 5: Search System | Pending |
-| FILT-01 | Phase 6: Filter System | Pending |
-| FILT-02 | Phase 6: Filter System | Pending |
-| FILT-03 | Phase 6: Filter System | Pending |
-| FILT-04 | Phase 6: Filter System | Pending |
-| FILT-05 | Phase 6: Filter System | Pending |
-| FILT-06 | Phase 6: Filter System | Pending |
-| FILT-07 | Phase 6: Filter System | Pending |
+| FILT-01 | Phase 6: Filter System | Complete |
+| FILT-02 | Phase 6: Filter System | Complete |
+| FILT-03 | Phase 6: Filter System | Complete |
+| FILT-04 | Phase 6: Filter System | Complete |
+| FILT-05 | Phase 6: Filter System | Complete |
+| FILT-06 | Phase 6: Filter System | Complete |
+| FILT-07 | Phase 6: Filter System | Complete |
 | PDPG-01 | Phase 7: Product Page | Pending |
 | PDPG-02 | Phase 7: Product Page | Pending |
 | PDPG-03 | Phase 7: Product Page | Pending |
