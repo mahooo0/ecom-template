@@ -1,4 +1,4 @@
-import type { ApiResponse, PaginatedResponse, Product, Order, User } from '@repo/types';
+import type { ApiResponse, PaginatedResponse, Product, Order, User, ShippingZone, ShippingMethod } from '@repo/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
 
@@ -90,14 +90,34 @@ export const api = {
   orders: {
     getAll: (page = 1, limit = 20) =>
       fetcher<PaginatedResponse<Order>>(`/orders?page=${page}&limit=${limit}`),
+    getById: (id: string) => fetcher<ApiResponse<Order>>(`/orders/${id}`),
     updateStatus: (id: string, status: string) =>
       fetcher<ApiResponse<Order>>(`/orders/${id}/status`, {
         method: 'PATCH',
         body: JSON.stringify({ status }),
       }),
+    addTracking: (id: string, data: { carrier: string; trackingNumber: string; estimatedDelivery?: string }) =>
+      fetcher<ApiResponse<Order>>(`/orders/${id}/tracking`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      }),
   },
   users: {
     getAll: (page = 1, limit = 20) =>
       fetcher<PaginatedResponse<User>>(`/auth/users?page=${page}&limit=${limit}`),
+  },
+  shipping: {
+    zones: {
+      getAll: () => fetcher<ApiResponse<ShippingZone[]>>('/shipping/zones'),
+      getById: (id: string) => fetcher<ApiResponse<ShippingZone & { methods: ShippingMethod[] }>>(`/shipping/zones/${id}`),
+      create: (data: Partial<ShippingZone>) => fetcher<ApiResponse<ShippingZone>>('/shipping/zones', { method: 'POST', body: JSON.stringify(data) }),
+      update: (id: string, data: Partial<ShippingZone>) => fetcher<ApiResponse<ShippingZone>>(`/shipping/zones/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+      delete: (id: string) => fetcher<ApiResponse<void>>(`/shipping/zones/${id}`, { method: 'DELETE' }),
+    },
+    methods: {
+      create: (zoneId: string, data: Partial<ShippingMethod>) => fetcher<ApiResponse<ShippingMethod>>(`/shipping/zones/${zoneId}/methods`, { method: 'POST', body: JSON.stringify(data) }),
+      update: (id: string, data: Partial<ShippingMethod>) => fetcher<ApiResponse<ShippingMethod>>(`/shipping/methods/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+      delete: (id: string) => fetcher<ApiResponse<void>>(`/shipping/methods/${id}`, { method: 'DELETE' }),
+    },
   },
 };
