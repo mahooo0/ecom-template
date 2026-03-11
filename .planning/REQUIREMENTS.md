@@ -61,7 +61,7 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 ### Search System
 
 - [x] **SRCH-01**: Meilisearch instance configured and synced with product catalog
-- [ ] **SRCH-02**: Client app provides search-as-you-type with autocomplete suggestions (<100ms response)
+- [x] **SRCH-02**: Client app provides search-as-you-type with autocomplete suggestions (<100ms response)
 - [x] **SRCH-03**: Search supports full-text across product name, description, SKU, brand, category
 - [x] **SRCH-04**: Search has typo tolerance and synonym mapping
 - [x] **SRCH-05**: Search results include facet counts for dynamic filtering
@@ -318,7 +318,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CAT-06 | Phase 4: Categories & Navigation | Complete |
 | CAT-07 | Phase 4: Categories & Navigation | Complete |
 | SRCH-01 | Phase 5: Search System | Complete |
-| SRCH-02 | Phase 5: Search System | Pending |
+| SRCH-02 | Phase 5: Search System | Complete |
 | SRCH-03 | Phase 5: Search System | Complete |
 | SRCH-04 | Phase 5: Search System | Complete |
 | SRCH-05 | Phase 5: Search System | Complete |
