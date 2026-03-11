@@ -104,15 +104,15 @@ Plans:
   3. Client app renders a mega menu from the category tree showing top 2-3 levels, and breadcrumbs display the full category path on category and product pages
   4. Client app displays category pages showing products within the category (including subcategory products), subcategory links, and applied filters
   5. Categories support SEO fields (slug, meta title, meta description, custom URL) editable by admin
-**Plans**: TBD (estimated 6-8)
+**Plans**: 6 plans
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
-- [ ] 04-03: TBD
-- [ ] 04-04: TBD
-- [ ] 04-05: TBD
-- [ ] 04-06: TBD
+- [ ] 04-00-PLAN.md — Wave 0: Extend Vitest setup with category domain mocks, create test stubs for CAT-01 through CAT-07
+- [ ] 04-01-PLAN.md — Server category module: Zod schemas, category tree CRUD service (create, move, reorder with materialized path), attribute management, REST API endpoints
+- [ ] 04-02-PLAN.md — Server collection/brand/tag modules: CRUD services and routes, admin and client API client extensions
+- [ ] 04-03-PLAN.md — Admin category tree UI: drag-and-drop tree with @minoru/react-dnd-treeview, category create/edit form with SEO fields, attribute manager
+- [ ] 04-04-PLAN.md — Admin collections/brands/tags UI: CRUD tables and forms with product assignment for collections
+- [ ] 04-05-PLAN.md — Client mega menu, breadcrumbs with JSON-LD, category page with products/subcategories and dynamic SEO metadata
 
 ### Phase 5: Search System
 **Goal**: Customers can find products instantly via search-as-you-type with typo tolerance, and admins can configure search behavior
@@ -463,7 +463,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 1. Database Schema Design | 0/4 | Planning complete | - |
 | 2. Authentication System | 0/5 | Planning complete | - |
 | 3. Product Catalog | 6/7 | In Progress|  |
-| 4. Categories & Navigation | 0/6 | Not started | - |
+| 4. Categories & Navigation | 0/6 | Planning complete | - |
 | 5. Search System | 0/5 | Not started | - |
 | 6. Filter System | 0/6 | Not started | - |
 | 7. Product Page | 0/7 | Not started | - |
