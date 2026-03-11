@@ -181,6 +181,7 @@ model Product {
   status          ProductStatus @default(DRAFT)
   attributes      Json     @default("{}") // JSONB for dynamic attributes
   isActive        Boolean  @default(true)
+  allowPreorder   Boolean  @default(false)
 
   // Relations
   categoryId      String

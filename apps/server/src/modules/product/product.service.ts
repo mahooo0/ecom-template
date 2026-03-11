@@ -530,7 +530,15 @@ export class ProductService {
         orClauses.push({ variants: { some: { stock: { gt: 0 } } } });
       }
       if (statuses.includes('out_of_stock')) {
-        orClauses.push({ variants: { every: { stock: { equals: 0 } } } });
+        orClauses.push({ variants: { every: { stock: { equals: 0 } } }, allowPreorder: false });
+      }
+      if (statuses.includes('pre_order')) {
+        orClauses.push({
+          AND: [
+            { allowPreorder: true },
+            { variants: { every: { stock: { equals: 0 } } } },
+          ],
+        });
       }
       if (orClauses.length > 0) {
         where.OR = orClauses;
@@ -640,21 +648,33 @@ export class ProductService {
     }
 
     // Availability counts
-    const [inStockCount, outOfStockCount] = await Promise.all([
+    const [inStockCount, outOfStockCount, preOrderCount] = await Promise.all([
       prisma.product.count({ where: { ...baseWhere, variants: { some: { stock: { gt: 0 } } } } }),
-      prisma.product.count({ where: { ...baseWhere, variants: { every: { stock: { equals: 0 } } } } }),
+      prisma.product.count({ where: { ...baseWhere, variants: { every: { stock: { equals: 0 } } }, allowPreorder: false } }),
+      prisma.product.count({ where: { ...baseWhere, variants: { every: { stock: { equals: 0 } } }, allowPreorder: true } }),
     ]);
 
     const availabilityFacets = [
       { status: 'in_stock', count: inStockCount },
       { status: 'out_of_stock', count: outOfStockCount },
+      { status: 'pre_order', count: preOrderCount },
     ];
+
+    // Dynamic price range
+    const priceAgg = await prisma.product.aggregate({
+      where: baseWhere,
+      _min: { price: true },
+      _max: { price: true },
+    });
+    const priceRange = priceAgg._min.price !== null && priceAgg._max.price !== null
+      ? { min: priceAgg._min.price, max: priceAgg._max.price }
+      : null;
 
     return {
       brands: brandFacets,
       attributes: attributeFacets,
       availability: availabilityFacets,
-      priceRange: null,
+      priceRange,
     };
   }
 

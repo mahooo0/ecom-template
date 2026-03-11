@@ -7,7 +7,7 @@ export const filterQuerySchema = z.object({
   maxPrice: z.coerce.number().optional(),
   brands: z.string().optional(), // comma-separated brand IDs
   attributes: z.string().optional(), // comma-separated "key:value" pairs
-  availability: z.string().optional(), // comma-separated: "in_stock", "out_of_stock"
+  availability: z.string().optional(), // comma-separated: "in_stock", "out_of_stock", "pre_order"
   categoryPath: z.string().optional(),
   page: z.coerce.number().default(1),
   limit: z.coerce.number().default(20),
