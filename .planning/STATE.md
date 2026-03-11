@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 07-05: Specs, Reviews, Carousel & FBT components"
-last_updated: "2026-03-11T15:49:02.299Z"
+stopped_at: "Completed 07-03: Variant Selector, Stock Status, and Add-to-Cart"
+last_updated: "2026-03-11T15:49:14.362Z"
 last_activity: "2026-03-11 -- Completed plan 05-02: Search API Endpoints and Admin Settings"
 progress:
   total_phases: 23
@@ -97,6 +97,7 @@ Progress: [████████░░] 84%
 | Phase 07 P02 | 84 | 2 tasks | 3 files |
 | Phase 07 P05 | 2 | 2 tasks | 4 files |
 | Phase 07 P03 | 2 | 2 tasks | 3 files |
+| Phase 07 P04 | 2 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -223,6 +224,9 @@ Recent decisions affecting current work:
 - [Phase 07-05]: FrequentlyBoughtTogether uses Set<string> for checked IDs for O(1) toggle and clean filtering
 - [Phase 07-03]: Variant matrix built with sorted option key strings in useMemo - deterministic and order-independent
 - [Phase 07-03]: AddToCartButton uses imageUrl and sku fields matching CartItem interface from @repo/types (not image as plan specified)
+- [Phase 07-04]: Emoji icons for digital file types instead of external icon library - keeps bundle small and avoids dependency
+- [Phase 07-04]: WeightedQuantitySelector clamps weight to [minWeight, maxWeight] to prevent out-of-range price calculations
+- [Phase 07-04]: BundleItemsList returns null for empty items - prevents rendering broken empty sections
 
 ### Roadmap Evolution
 
@@ -239,6 +243,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T15:48:53.611Z
-Stopped at: Completed 07-05: Specs, Reviews, Carousel & FBT components
+Last session: 2026-03-11T15:49:05.216Z
+Stopped at: Completed 07-03: Variant Selector, Stock Status, and Add-to-Cart
 Resume file: None

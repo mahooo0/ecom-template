@@ -80,12 +80,12 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 ### Product Page
 
 - [x] **PDPG-01**: Product page displays image gallery with zoom, thumbnails, and fullscreen lightbox
-- [ ] **PDPG-02**: Variable products show variant selector (dropdowns/swatches) that updates price, images, and stock
+- [x] **PDPG-02**: Variable products show variant selector (dropdowns/swatches) that updates price, images, and stock
 - [x] **PDPG-03**: Product page shows specifications/attributes table
 - [x] **PDPG-04**: Product page shows related products carousel
 - [x] **PDPG-05**: Product page shows "frequently bought together" section with one-click add-all
 - [x] **PDPG-06**: Product page shows reviews section with average rating, distribution, and individual reviews
-- [ ] **PDPG-07**: Product page shows real-time stock status (in stock, low stock with count, out of stock)
+- [x] **PDPG-07**: Product page shows real-time stock status (in stock, low stock with count, out of stock)
 - [ ] **PDPG-08**: Weighted products show unit price calculator (price per kg/lb with quantity selector)
 - [ ] **PDPG-09**: Digital products show file info, preview, and delivery method description
 - [ ] **PDPG-10**: Bundle products show included items with individual and bundle pricing comparison
@@ -331,12 +331,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FILT-06 | Phase 6: Filter System | Complete |
 | FILT-07 | Phase 6: Filter System | Complete |
 | PDPG-01 | Phase 7: Product Page | Complete |
-| PDPG-02 | Phase 7: Product Page | Pending |
+| PDPG-02 | Phase 7: Product Page | Complete |
 | PDPG-03 | Phase 7: Product Page | Complete |
 | PDPG-04 | Phase 7: Product Page | Complete |
 | PDPG-05 | Phase 7: Product Page | Complete |
 | PDPG-06 | Phase 7: Product Page | Complete |
-| PDPG-07 | Phase 7: Product Page | Pending |
+| PDPG-07 | Phase 7: Product Page | Complete |
 | PDPG-08 | Phase 7: Product Page | Pending |
 | PDPG-09 | Phase 7: Product Page | Pending |
 | PDPG-10 | Phase 7: Product Page | Pending |
