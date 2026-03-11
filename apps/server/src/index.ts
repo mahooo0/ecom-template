@@ -5,6 +5,7 @@ import { connectMongoDB } from '@repo/db';
 import { config } from './config/index.js';
 import { errorHandler } from './common/middleware/error-handler.js';
 import { productRoutes } from './modules/product/product.routes.js';
+import { categoryRoutes } from './modules/category/category.routes.js';
 import { orderRoutes } from './modules/order/order.routes.js';
 import { authRoutes } from './modules/auth/auth.routes.js';
 import { paymentRoutes } from './modules/payment/payment.routes.js';
@@ -25,6 +26,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/products', productRoutes);
+app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/payments', paymentRoutes);
