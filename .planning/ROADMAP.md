@@ -305,15 +305,14 @@ Plans:
   3. Atomic stock reservation with 15-minute TTL holds inventory during checkout, commits on successful payment, and releases on abandonment
   4. Admin inventory dashboard shows stock levels across all warehouses, active alerts, and movement history with reason tracking (sale, return, manual adjustment, damage)
   5. SKU auto-generation based on product attributes produces unique, predictable identifiers
-**Plans**: TBD (estimated 6-8)
+**Plans**: 5 plans
 
 Plans:
-- [ ] 14-01: TBD
-- [ ] 14-02: TBD
-- [ ] 14-03: TBD
-- [ ] 14-04: TBD
-- [ ] 14-05: TBD
-- [ ] 14-06: TBD
+- [ ] 14-00-PLAN.md — Wave 0: Extend Vitest setup with inventory Prisma mocks, create test fixtures and test stubs for INV-01 through INV-08
+- [ ] 14-01-PLAN.md — InventoryService with stock tracking, warehouse CRUD, nearest-warehouse routing, movement history, low stock alerts, SKU auto-generation, and Zod validation schemas
+- [ ] 14-02-PLAN.md — Atomic stock reservation with Prisma $transaction, commit/release methods, and node-cron TTL cleanup job
+- [ ] 14-03-PLAN.md — Express controller, routes (/api/inventory), server wiring with cron startup, and admin API client extension
+- [ ] 14-04-PLAN.md — Admin inventory dashboard, warehouse management UI, movement history page, and manual stock adjustment form
 
 ### Phase 15: Promotions & Discounts
 **Goal**: Admins can create and manage diverse promotion types with configurable conditions, limits, and stackability rules
@@ -365,7 +364,7 @@ Plans:
   3. Shipping confirmation email sends with tracking info when tracking number is added, and status update emails send for processing and delivered transitions
   4. Abandoned cart recovery email sequence fires at 1hr, 24hr, and 72hr intervals for carts with items but no checkout completion
   5. Low stock alert emails send to admin when inventory drops below threshold, and admin can preview and customize email templates
-**Plans**: TBD (estimated 6-8)
+**Plans**: 5 plans
 
 Plans:
 - [ ] 17-01: TBD
@@ -442,7 +441,7 @@ Plans:
   3. Role-based access control enforces permissions: SUPER_ADMIN sees everything, ADMIN has configurable module-level permissions
   4. Reusable data table component supports sorting, filtering, pagination, and bulk actions across all entity types, and reusable form component supports validation, image upload, and rich text editing
   5. Activity log shows who changed what and when, and settings page allows store configuration (name, logo, contact, tax rates, policies)
-**Plans**: TBD (estimated 6-8)
+**Plans**: 5 plans
 
 Plans:
 - [ ] 21-01: TBD
@@ -474,7 +473,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 11. Payments | 0/5 | Not started | - |
 | 12. Order System | 0/7 | Not started | - |
 | 13. Shipping | 5/5 | Complete    | 2026-03-11 |
-| 14. Inventory Management | 0/6 | Not started | - |
+| 14. Inventory Management | 0/5 | Planning complete | - |
 | 15. Promotions & Discounts | 0/7 | Not started | - |
 | 16. Reviews & Ratings | 0/5 | Not started | - |
 | 17. Notifications | 0/6 | Not started | - |
