@@ -8,6 +8,7 @@ import { productRoutes } from './modules/product/product.routes.js';
 import { orderRoutes } from './modules/order/order.routes.js';
 import { authRoutes } from './modules/auth/auth.routes.js';
 import { paymentRoutes } from './modules/payment/payment.routes.js';
+import { shippingRoutes } from './modules/shipping/shipping.routes.js';
 import { eventBus } from './common/events/event-bus.js';
 
 const app = express();
@@ -27,6 +28,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/shipping', shippingRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {
