@@ -1,20 +1,23 @@
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 
-// Mock @repo/db prisma client
-vi.mock('@repo/db', () => {
-  const prismaMock = {
-    product: {
-      findMany: vi.fn(),
-      findUnique: vi.fn(),
-      findFirst: vi.fn(),
-      create: vi.fn().mockResolvedValue({}),
-      update: vi.fn(),
-      updateMany: vi.fn(),
-      delete: vi.fn(),
-      deleteMany: vi.fn(),
-      count: vi.fn(),
-    },
+// Hoist mock creation so vi.fn() produces proper Vitest mock functions in Vitest 4.x
+const prismaMock = vi.hoisted(() => {
+  const product = {
+    findMany: vi.fn(),
+    findUnique: vi.fn(),
+    findFirst: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    updateMany: vi.fn(),
+    delete: vi.fn(),
+    deleteMany: vi.fn(),
+    count: vi.fn(),
+    groupBy: vi.fn(),
+  };
+
+  const mock = {
+    product,
     productVariant: { createMany: vi.fn(), deleteMany: vi.fn() },
     digitalMeta: { create: vi.fn(), upsert: vi.fn() },
     weightedMeta: { create: vi.fn(), upsert: vi.fn() },
@@ -98,14 +101,20 @@ vi.mock('@repo/db', () => {
   };
 
   // Configure $transaction to support both array and callback styles
-  prismaMock.$transaction.mockImplementation((input: any) => {
+  mock.$transaction.mockImplementation((input: any) => {
     if (Array.isArray(input)) return Promise.all(input.map((fn: Function) => fn()));
-    if (typeof input === 'function') return input(prismaMock);
+    if (typeof input === 'function') return input(mock);
     return Promise.resolve();
   });
 
-  return { prisma: prismaMock };
+  // Default return value for product.create
+  mock.product.create.mockResolvedValue({});
+
+  return mock;
 });
+
+// Note: @repo/db is mocked individually in each test file using vi.mock('@repo/db', ...)
+// The prismaMock object is exported for use in test files that mock @repo/db
 
 // Export shared mock product fixtures
 export const mockSimpleProduct = {
@@ -331,33 +340,56 @@ export const mockCategoryAttribute = {
   updatedAt: new Date('2024-01-01T00:00:00Z'),
 };
 
+// Export prisma mock for use in tests
+export { prismaMock };
+
 // Mock meilisearch SDK
-vi.mock('meilisearch', () => {
+const meiliMocks = vi.hoisted(() => {
   const mockIndex = {
-    search: vi.fn().mockResolvedValue({ hits: [], estimatedTotalHits: 0, facetDistribution: {} }),
-    addDocuments: vi.fn().mockResolvedValue({ taskUid: 1 }),
-    updateDocuments: vi.fn().mockResolvedValue({ taskUid: 2 }),
-    deleteDocument: vi.fn().mockResolvedValue({ taskUid: 3 }),
-    deleteAllDocuments: vi.fn().mockResolvedValue({ taskUid: 4 }),
-    updateSettings: vi.fn().mockResolvedValue({ taskUid: 5 }),
-    getSettings: vi.fn().mockResolvedValue({}),
-    updateSynonyms: vi.fn().mockResolvedValue({ taskUid: 6 }),
-    getSynonyms: vi.fn().mockResolvedValue({}),
-    updateStopWords: vi.fn().mockResolvedValue({ taskUid: 7 }),
-    getStopWords: vi.fn().mockResolvedValue([]),
-    updateRankingRules: vi.fn().mockResolvedValue({ taskUid: 8 }),
-    getRankingRules: vi.fn().mockResolvedValue([]),
-    waitForTask: vi.fn().mockResolvedValue({ status: 'succeeded' }),
+    search: vi.fn(),
+    addDocuments: vi.fn(),
+    updateDocuments: vi.fn(),
+    deleteDocument: vi.fn(),
+    deleteAllDocuments: vi.fn(),
+    updateSettings: vi.fn(),
+    getSettings: vi.fn(),
+    updateSynonyms: vi.fn(),
+    getSynonyms: vi.fn(),
+    updateStopWords: vi.fn(),
+    getStopWords: vi.fn(),
+    updateRankingRules: vi.fn(),
+    getRankingRules: vi.fn(),
+    waitForTask: vi.fn(),
   };
-
   const mockClient = {
-    index: vi.fn().mockReturnValue(mockIndex),
-    createKey: vi.fn().mockResolvedValue({ key: 'test-search-key' }),
-    getKeys: vi.fn().mockResolvedValue({ results: [] }),
-    waitForTask: vi.fn().mockResolvedValue({ status: 'succeeded' }),
+    index: vi.fn(),
+    createKey: vi.fn(),
+    getKeys: vi.fn(),
+    waitForTask: vi.fn(),
   };
-
-  return {
-    MeiliSearch: vi.fn().mockImplementation(() => mockClient),
-  };
+  return { mockIndex, mockClient };
 });
+
+// Configure meili mock default values
+meiliMocks.mockIndex.search.mockResolvedValue({ hits: [], estimatedTotalHits: 0, facetDistribution: {} });
+meiliMocks.mockIndex.addDocuments.mockResolvedValue({ taskUid: 1 });
+meiliMocks.mockIndex.updateDocuments.mockResolvedValue({ taskUid: 2 });
+meiliMocks.mockIndex.deleteDocument.mockResolvedValue({ taskUid: 3 });
+meiliMocks.mockIndex.deleteAllDocuments.mockResolvedValue({ taskUid: 4 });
+meiliMocks.mockIndex.updateSettings.mockResolvedValue({ taskUid: 5 });
+meiliMocks.mockIndex.getSettings.mockResolvedValue({});
+meiliMocks.mockIndex.updateSynonyms.mockResolvedValue({ taskUid: 6 });
+meiliMocks.mockIndex.getSynonyms.mockResolvedValue({});
+meiliMocks.mockIndex.updateStopWords.mockResolvedValue({ taskUid: 7 });
+meiliMocks.mockIndex.getStopWords.mockResolvedValue([]);
+meiliMocks.mockIndex.updateRankingRules.mockResolvedValue({ taskUid: 8 });
+meiliMocks.mockIndex.getRankingRules.mockResolvedValue([]);
+meiliMocks.mockIndex.waitForTask.mockResolvedValue({ status: 'succeeded' });
+meiliMocks.mockClient.index.mockReturnValue(meiliMocks.mockIndex);
+meiliMocks.mockClient.createKey.mockResolvedValue({ key: 'test-search-key' });
+meiliMocks.mockClient.getKeys.mockResolvedValue({ results: [] });
+meiliMocks.mockClient.waitForTask.mockResolvedValue({ status: 'succeeded' });
+
+vi.mock('meilisearch', () => ({
+  MeiliSearch: vi.fn().mockImplementation(() => meiliMocks.mockClient),
+}));

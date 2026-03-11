@@ -7,6 +7,26 @@ import { productSchema } from '@repo/types/product-schemas';
 import type { ProductStatus } from '@repo/types';
 import Papa from 'papaparse';
 
+interface FilterOptions {
+  minPrice?: number;
+  maxPrice?: number;
+  brands?: string;
+  attributes?: string;
+  availability?: string;
+  categoryPath?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+interface FacetCounts {
+  brands: Array<{ id: string; name: string; count: number }>;
+  attributes: Record<string, Array<{ value: string; count: number }>>;
+  availability: Array<{ status: string; count: number }>;
+  priceRange: { min: number; max: number } | null;
+}
+
 interface GetAllOptions {
   page?: number;
   limit?: number;
@@ -439,6 +459,203 @@ export class ProductService {
   async delete(id: string) {
     await prisma.product.delete({ where: { id } });
     eventBus.emit('product.deleted', { productId: id });
+  }
+
+  async filterProducts(filters: FilterOptions) {
+    const {
+      page = 1,
+      limit = 20,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+      minPrice,
+      maxPrice,
+      brands,
+      attributes,
+      availability,
+      categoryPath,
+    } = filters;
+
+    const skip = (page - 1) * limit;
+    const where: any = { status: 'ACTIVE' };
+
+    // Category path filter (startsWith for materialized path)
+    if (categoryPath) {
+      where.category = { path: { startsWith: categoryPath } };
+    }
+
+    // Price range filter
+    if (minPrice !== undefined || maxPrice !== undefined) {
+      where.price = {};
+      if (minPrice !== undefined) where.price.gte = minPrice;
+      if (maxPrice !== undefined) where.price.lte = maxPrice;
+    }
+
+    // Brand filter (OR logic - brandId in [...brandIds])
+    if (brands) {
+      const brandIds = brands.split(',').map((b) => b.trim()).filter(Boolean);
+      if (brandIds.length > 0) {
+        where.brandId = { in: brandIds };
+      }
+    }
+
+    // Attribute filter: OR within same key, AND across different keys
+    if (attributes) {
+      const pairs = attributes.split(',').map((p) => p.trim()).filter(Boolean);
+      const grouped: Record<string, string[]> = {};
+      for (const pair of pairs) {
+        const colonIdx = pair.indexOf(':');
+        if (colonIdx === -1) continue;
+        const key = pair.slice(0, colonIdx).trim();
+        const value = pair.slice(colonIdx + 1).trim();
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(value);
+      }
+
+      const andClauses = Object.entries(grouped).map(([key, values]) => ({
+        OR: values.map((value) => ({
+          attributes: { path: [key], equals: value },
+        })),
+      }));
+
+      if (andClauses.length > 0) {
+        where.AND = andClauses;
+      }
+    }
+
+    // Availability filter
+    if (availability) {
+      const statuses = availability.split(',').map((s) => s.trim()).filter(Boolean);
+      const orClauses: any[] = [];
+      if (statuses.includes('in_stock')) {
+        orClauses.push({ variants: { some: { stock: { gt: 0 } } } });
+      }
+      if (statuses.includes('out_of_stock')) {
+        orClauses.push({ variants: { every: { stock: { equals: 0 } } } });
+      }
+      if (orClauses.length > 0) {
+        where.OR = orClauses;
+      }
+    }
+
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
+        skip,
+        take: limit,
+        where,
+        include: {
+          category: true,
+          brand: true,
+          variants: { select: { stock: true } },
+          _count: { select: { variants: true } },
+        },
+        orderBy: { [sortBy]: sortOrder },
+      }),
+      prisma.product.count({ where }),
+    ]);
+
+    return {
+      products,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  async getFacetCounts(categoryPath: string, currentFilters: Omit<FilterOptions, 'categoryPath'>): Promise<FacetCounts> {
+    // Build base where clause: active + category path
+    const baseWhere: any = { status: 'ACTIVE' };
+    if (categoryPath) {
+      baseWhere.category = { path: { startsWith: categoryPath } };
+    }
+
+    // Brand facets: groupBy brandId (exclude brand filter from where)
+    const brandWhereWithoutBrands = { ...baseWhere };
+    if (currentFilters.attributes) {
+      // Apply attribute filters for brand counting
+      const pairs = currentFilters.attributes.split(',').map((p) => p.trim()).filter(Boolean);
+      const grouped: Record<string, string[]> = {};
+      for (const pair of pairs) {
+        const colonIdx = pair.indexOf(':');
+        if (colonIdx === -1) continue;
+        const key = pair.slice(0, colonIdx).trim();
+        const value = pair.slice(colonIdx + 1).trim();
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(value);
+      }
+      const andClauses = Object.entries(grouped).map(([key, values]) => ({
+        OR: values.map((value) => ({ attributes: { path: [key], equals: value } })),
+      }));
+      if (andClauses.length > 0) {
+        brandWhereWithoutBrands.AND = andClauses;
+      }
+    }
+
+    // Get brand counts via groupBy
+    const brandGroups = await (prisma.product as any).groupBy({
+      by: ['brandId'],
+      where: { ...brandWhereWithoutBrands, brandId: { not: null } },
+      _count: { id: true },
+    });
+
+    // Look up brand names
+    const brandIds = brandGroups.map((g: any) => g.brandId).filter(Boolean);
+    const brands = brandIds.length > 0
+      ? await prisma.brand.findMany({ where: { id: { in: brandIds } } })
+      : [];
+
+    const brandMap = new Map(brands.map((b: any) => [b.id, b.name]));
+    const brandFacets = brandGroups
+      .filter((g: any) => g.brandId)
+      .map((g: any) => ({
+        id: g.brandId as string,
+        name: brandMap.get(g.brandId) as string || g.brandId,
+        count: g._count.id,
+      }));
+
+    // Attribute facets: fetch products and aggregate in application code
+    const attrWhere = { ...baseWhere };
+    const productsForAttr = await prisma.product.findMany({
+      where: attrWhere,
+      select: { attributes: true },
+    });
+
+    const attributeCounts: Record<string, Record<string, number>> = {};
+    for (const product of productsForAttr) {
+      if (product.attributes && typeof product.attributes === 'object') {
+        for (const [key, value] of Object.entries(product.attributes as Record<string, any>)) {
+          if (value === null || value === undefined) continue;
+          if (!attributeCounts[key]) attributeCounts[key] = {};
+          const strVal = String(value);
+          attributeCounts[key][strVal] = (attributeCounts[key][strVal] || 0) + 1;
+        }
+      }
+    }
+
+    const attributeFacets: Record<string, Array<{ value: string; count: number }>> = {};
+    for (const [key, values] of Object.entries(attributeCounts)) {
+      attributeFacets[key] = Object.entries(values)
+        .map(([value, count]) => ({ value, count }))
+        .sort((a, b) => b.count - a.count);
+    }
+
+    // Availability counts
+    const [inStockCount, outOfStockCount] = await Promise.all([
+      prisma.product.count({ where: { ...baseWhere, variants: { some: { stock: { gt: 0 } } } } }),
+      prisma.product.count({ where: { ...baseWhere, variants: { every: { stock: { equals: 0 } } } } }),
+    ]);
+
+    const availabilityFacets = [
+      { status: 'in_stock', count: inStockCount },
+      { status: 'out_of_stock', count: outOfStockCount },
+    ];
+
+    return {
+      brands: brandFacets,
+      attributes: attributeFacets,
+      availability: availabilityFacets,
+      priceRange: null,
+    };
   }
 
   async importFromCsv(fileBuffer: Buffer): Promise<ImportResult> {
