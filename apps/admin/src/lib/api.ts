@@ -168,4 +168,32 @@ export const api = {
     create: (data: { name: string }, token?: string) => fetcher<ApiResponse<Tag>>('/tags', { method: 'POST', body: JSON.stringify(data), token }),
     delete: (id: string, token?: string) => fetcher<ApiResponse<void>>(`/tags/${id}`, { method: 'DELETE', token }),
   },
+  inventory: {
+    dashboard: () => fetcher<ApiResponse<any>>('/inventory/dashboard'),
+    stock: {
+      getByVariant: (variantId: string) => fetcher<ApiResponse<any[]>>(`/inventory/stock?variantId=${variantId}`),
+      getLevel: (variantId: string, warehouseId: string) => fetcher<ApiResponse<any>>(`/inventory/stock?variantId=${variantId}&warehouseId=${warehouseId}`),
+      adjust: (data: { variantId: string; warehouseId: string; quantity: number; reason: string; note?: string; reference?: string }) =>
+        fetcher<ApiResponse<any>>('/inventory/adjust', { method: 'POST', body: JSON.stringify(data) }),
+    },
+    alerts: () => fetcher<ApiResponse<any[]>>('/inventory/alerts'),
+    warehouses: {
+      getAll: () => fetcher<ApiResponse<any[]>>('/inventory/warehouses'),
+      getById: (id: string) => fetcher<ApiResponse<any>>(`/inventory/warehouses/${id}`),
+      create: (data: any) => fetcher<ApiResponse<any>>('/inventory/warehouses', { method: 'POST', body: JSON.stringify(data) }),
+      update: (id: string, data: any) => fetcher<ApiResponse<any>>(`/inventory/warehouses/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+      delete: (id: string) => fetcher<ApiResponse<void>>(`/inventory/warehouses/${id}`, { method: 'DELETE' }),
+    },
+    movements: {
+      getAll: (params?: { inventoryItemId?: string; reason?: string; page?: number; limit?: number }) => {
+        const qp = new URLSearchParams();
+        if (params?.inventoryItemId) qp.set('inventoryItemId', params.inventoryItemId);
+        if (params?.reason) qp.set('reason', params.reason);
+        if (params?.page) qp.set('page', String(params.page));
+        if (params?.limit) qp.set('limit', String(params.limit));
+        const qs = qp.toString();
+        return fetcher<ApiResponse<any[]>>(`/inventory/movements${qs ? `?${qs}` : ''}`);
+      },
+    },
+  },
 };
