@@ -65,7 +65,7 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 - [x] **SRCH-03**: Search supports full-text across product name, description, SKU, brand, category
 - [x] **SRCH-04**: Search has typo tolerance and synonym mapping
 - [x] **SRCH-05**: Search results include facet counts for dynamic filtering
-- [ ] **SRCH-06**: Admin can configure search settings (synonyms, stop words, ranking rules)
+- [x] **SRCH-06**: Admin can configure search settings (synonyms, stop words, ranking rules)
 
 ### Filter System
 
@@ -322,7 +322,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SRCH-03 | Phase 5: Search System | Complete |
 | SRCH-04 | Phase 5: Search System | Complete |
 | SRCH-05 | Phase 5: Search System | Complete |
-| SRCH-06 | Phase 5: Search System | Pending |
+| SRCH-06 | Phase 5: Search System | Complete |
 | FILT-01 | Phase 6: Filter System | Complete |
 | FILT-02 | Phase 6: Filter System | Complete |
 | FILT-03 | Phase 6: Filter System | Complete |
