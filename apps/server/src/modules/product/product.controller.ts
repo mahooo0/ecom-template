@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import { productService } from './product.service.js';
 import type { ProductStatus } from '@repo/types';
+import { filterQuerySchema } from './product.schemas.js';
 
 export class ProductController {
   async getAll(req: Request, res: Response, next: NextFunction) {
@@ -105,6 +106,38 @@ export class ProductController {
     try {
       await productService.delete(req.params.id as string);
       res.json({ success: true, message: 'Product deleted' });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async filter(req: Request, res: Response, next: NextFunction) {
+    try {
+      const parsed = filterQuerySchema.safeParse(req.query);
+      if (!parsed.success) {
+        return res.status(400).json({ success: false, errors: parsed.error.errors });
+      }
+      const result = await productService.filterProducts(parsed.data);
+      return res.json({
+        success: true,
+        data: result.products,
+        total: result.total,
+        page: result.page,
+        limit: result.limit,
+        totalPages: result.totalPages,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async facets(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { categoryPath, ...restFilters } = req.query as Record<string, string>;
+      const parsedFilters = filterQuerySchema.partial().safeParse(restFilters);
+      const currentFilters = parsedFilters.success ? parsedFilters.data : {};
+      const facetCounts = await productService.getFacetCounts(categoryPath || '', currentFilters);
+      return res.json({ success: true, data: facetCounts });
     } catch (error) {
       next(error);
     }

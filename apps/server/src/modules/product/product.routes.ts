@@ -15,6 +15,8 @@ const router = Router();
 
 // Public routes
 router.get('/', (req, res, next) => productController.getAll(req, res, next));
+router.get('/filter', (req, res, next) => productController.filter(req, res, next));
+router.get('/facets', (req, res, next) => productController.facets(req, res, next));
 router.get('/slug/:slug', (req, res, next) => productController.getBySlug(req, res, next));
 router.get('/:id', (req, res, next) => productController.getById(req, res, next));
 
