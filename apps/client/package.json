@@ -12,10 +12,12 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^7.0.2",
+    "@meilisearch/instant-meilisearch": "^0.30.0",
     "@repo/types": "workspace:*",
     "next": "16.1.5",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-instantsearch": "^7.27.0",
     "zustand": "^5.0.0"
   },
   "devDependencies": {
