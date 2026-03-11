@@ -288,11 +288,11 @@ Plans:
 **Plans**: 5 plans
 
 Plans:
-- [ ] 13-00-PLAN.md — Wave 0: Extend Vitest setup with shipping Prisma mocks, create test fixtures and test stubs for SHIP-01 through SHIP-06
-- [ ] 13-01-PLAN.md — Server shipping module: Zod validation, zone/method CRUD service, zone matching algorithm, rate calculation engine, REST API endpoints
-- [ ] 13-02-PLAN.md — Order tracking: addTracking method on OrderService, order.shipped event, PATCH /orders/:id/tracking endpoint
-- [ ] 13-03-PLAN.md — Admin shipping zone/method management UI: zone list, zone detail with methods, create/edit forms for both
-- [ ] 13-04-PLAN.md — Admin order tracking form and client order tracking display with carrier-specific tracking URLs
+- [x] 13-00-PLAN.md — Wave 0: Extend Vitest setup with shipping Prisma mocks, create test fixtures and test stubs for SHIP-01 through SHIP-06
+- [x] 13-01-PLAN.md — Server shipping module: Zod validation, zone/method CRUD service, zone matching algorithm, rate calculation engine, REST API endpoints
+- [x] 13-02-PLAN.md — Order tracking: addTracking method on OrderService, order.shipped event, PATCH /orders/:id/tracking endpoint
+- [x] 13-03-PLAN.md — Admin shipping zone/method management UI: zone list, zone detail with methods, create/edit forms for both
+- [x] 13-04-PLAN.md — Admin order tracking form and client order tracking display with carrier-specific tracking URLs
 
 ### Phase 14: Inventory Management
 **Goal**: Stock is tracked at the variant/SKU level across multiple warehouses with atomic reservations preventing overselling

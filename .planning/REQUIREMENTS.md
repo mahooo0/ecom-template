@@ -150,7 +150,7 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 - [x] **SHIP-02**: Admin can configure shipping methods per zone (flat rate, weight-based, free above threshold)
 - [x] **SHIP-03**: Shipping rate calculated at checkout based on cart weight, destination zone, and selected method
 - [x] **SHIP-04**: Admin can add tracking numbers to orders with carrier selection
-- [ ] **SHIP-05**: User can track shipment status from order detail page
+- [x] **SHIP-05**: User can track shipment status from order detail page
 - [x] **SHIP-06**: Free shipping threshold configurable per zone
 
 ### Inventory Management
@@ -383,7 +383,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SHIP-02 | Phase 13: Shipping | Complete |
 | SHIP-03 | Phase 13: Shipping | Complete |
 | SHIP-04 | Phase 13: Shipping | Complete |
-| SHIP-05 | Phase 13: Shipping | Pending |
+| SHIP-05 | Phase 13: Shipping | Complete |
 | SHIP-06 | Phase 13: Shipping | Complete |
 | INV-01 | Phase 14: Inventory Management | Pending |
 | INV-02 | Phase 14: Inventory Management | Pending |
