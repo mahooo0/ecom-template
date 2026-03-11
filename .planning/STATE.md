@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 06-02-PLAN.md
-last_updated: "2026-03-11T12:09:52.824Z"
+stopped_at: Completed 06-01-PLAN.md
+last_updated: "2026-03-11T12:17:30.756Z"
 last_activity: "2026-03-11 -- Completed plan 05-02: Search API Endpoints and Admin Settings"
 progress:
   total_phases: 21
   completed_phases: 6
   total_plans: 37
-  completed_plans: 34
+  completed_plans: 35
   percent: 84
 ---
 
@@ -89,6 +89,7 @@ Progress: [████████░░] 84%
 | Phase 05 P04 | 2.2 | 2 tasks | 4 files |
 | Phase 05 P03 | 2 | 2 tasks | 5 files |
 | Phase 06 P02 | 327 | 2 tasks | 12 files |
+| Phase 06 P01 | 13 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -193,6 +194,9 @@ Recent decisions affecting current work:
 - [Phase 06-02]: Install nuqs at workspace root so vitest can resolve it (not just apps/client)
 - [Phase 06-02]: Build custom Tailwind CSS filter UI instead of shadcn/ui - project uses Tailwind v4 without shadcn config
 - [Phase 06-02]: Use vi.hoisted() for mock variables referenced in vi.mock() factory functions (ESM hoisting requirement)
+- [Phase 06-01]: Vitest 4.x requires vi.hoisted() for mock functions AND absolute paths in vi.mock() - module aliases not resolved in vi.mock()
+- [Phase 06-01]: JSONB attribute filtering uses OR within same key group, AND across different key groups - maps to Prisma AND array with OR sub-arrays
+- [Phase 06-01]: Attribute facets computed in application code (not SQL) to avoid complex JSONB aggregation queries
 
 ### Pending Todos
 
@@ -204,6 +208,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T12:09:52.820Z
-Stopped at: Completed 06-02-PLAN.md
+Last session: 2026-03-11T12:17:30.753Z
+Stopped at: Completed 06-01-PLAN.md
 Resume file: None

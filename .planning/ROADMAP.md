@@ -464,7 +464,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 3. Product Catalog | 6/7 | In Progress|  |
 | 4. Categories & Navigation | 0/6 | Planning complete | - |
 | 5. Search System | 0/5 | Planning complete | - |
-| 6. Filter System | 2/5 | In Progress|  |
+| 6. Filter System | 3/5 | In Progress|  |
 | 7. Product Page | 0/7 | Not started | - |
 | 8. Wishlist & Compare | 0/5 | Not started | - |
 | 9. Cart System | 0/7 | Not started | - |
