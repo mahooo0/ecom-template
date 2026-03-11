@@ -14,6 +14,8 @@ import { authRoutes } from './modules/auth/auth.routes.js';
 import { paymentRoutes } from './modules/payment/payment.routes.js';
 import { shippingRoutes } from './modules/shipping/shipping.routes.js';
 import { searchRoutes } from './modules/search/search.routes.js';
+import { inventoryRoutes } from './modules/inventory/inventory.routes.js';
+import { startReservationCleanup } from './modules/inventory/reservation.cleanup.js';
 import { searchService } from './modules/search/search.service.js';
 import './modules/search/sync.service.js'; // Side-effect import: registers event listeners
 import { eventBus } from './common/events/event-bus.js';
@@ -41,6 +43,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/shipping', shippingRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/inventory', inventoryRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {
@@ -71,6 +74,8 @@ async function start() {
     console.error('Meilisearch initialization failed (search will be unavailable):', err);
     // Don't crash the server - search is non-critical for startup
   }
+
+  startReservationCleanup();
 
   app.listen(config.port, () => {
     console.log(`Server running on http://localhost:${config.port}`);
