@@ -2,7 +2,7 @@
 phase: 8
 slug: wishlist-compare
 status: draft
-nyquist_compliant: false
+nyquist_compliant: true
 wave_0_complete: false
 created: 2026-03-11
 ---
@@ -38,19 +38,18 @@ created: 2026-03-11
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 08-00-01 | 00 | 0 | ALL | infra | `pnpm vitest run tests/wishlist/ tests/compare/` | Wave 0 | ⬜ pending |
-| 08-01-01 | 01 | 1 | WISH-01 | unit | `pnpm vitest run tests/wishlist/wishlist-store.test.ts` | Wave 0 | ⬜ pending |
-| 08-01-02 | 01 | 1 | WISH-01 | unit | `pnpm vitest run tests/wishlist/wishlist-button.test.ts` | Wave 0 | ⬜ pending |
-| 08-02-01 | 02 | 1 | WISH-02 | unit | `pnpm vitest run tests/wishlist/wishlist-service.test.ts` | Wave 0 | ⬜ pending |
-| 08-02-02 | 02 | 1 | WISH-02 | unit | `pnpm vitest run tests/wishlist/wishlist-sync.test.ts` | Wave 0 | ⬜ pending |
-| 08-03-01 | 03 | 2 | WISH-03 | unit | `pnpm vitest run tests/wishlist/wishlist-page.test.ts` | Wave 0 | ⬜ pending |
-| 08-04-01 | 04 | 2 | WISH-04 | unit | `pnpm vitest run tests/compare/compare-store.test.ts` | Wave 0 | ⬜ pending |
-| 08-04-02 | 04 | 2 | WISH-04 | unit | `pnpm vitest run tests/compare/compare-bar.test.ts` | Wave 0 | ⬜ pending |
-| 08-05-01 | 05 | 3 | WISH-05 | unit | `pnpm vitest run tests/compare/compare-page.test.ts` | Wave 0 | ⬜ pending |
-| 08-06-01 | 06 | 3 | WISH-06 | unit | `pnpm vitest run tests/wishlist/wishlist-events.test.ts` | Wave 0 | ⬜ pending |
-| 08-06-02 | 06 | 3 | WISH-06 | unit | `pnpm vitest run tests/wishlist/price-drop-badge.test.ts` | Wave 0 | ⬜ pending |
+| 08-00-01 | 00 | 0 | ALL | infra | `pnpm vitest run tests/wishlist/ tests/compare/` | Wave 0 | pending |
+| 08-01-01 | 01 | 1 | WISH-01 | unit | `pnpm vitest run tests/wishlist/wishlist-service.test.ts` | Wave 0 | pending |
+| 08-01-02 | 01 | 1 | WISH-01 | unit | `npx tsc --noEmit -p apps/server/tsconfig.json` | N/A | pending |
+| 08-02-01 | 02 | 1 | WISH-04 | unit | `pnpm vitest run tests/compare/compare-store.test.ts` | Wave 0 | pending |
+| 08-02-02 | 02 | 1 | WISH-01,WISH-02 | unit | `npx tsc --noEmit -p apps/client/tsconfig.json` | N/A | pending |
+| 08-03-01 | 03 | 2 | WISH-03,WISH-06 | unit | `pnpm vitest run tests/wishlist/wishlist-page.test.ts tests/wishlist/wishlist-sync.test.ts tests/wishlist/price-drop-badge.test.ts` | Wave 0 | pending |
+| 08-03-02 | 03 | 2 | WISH-01 | unit | `pnpm vitest run tests/wishlist/wishlist-button.test.ts` | Wave 0 | pending |
+| 08-04-01 | 04 | 2 | WISH-04,WISH-05 | unit | `pnpm vitest run tests/compare/compare-page.test.ts` | Wave 0 | pending |
+| 08-05-01 | 05 | 3 | WISH-06 | unit | `pnpm vitest run tests/wishlist/wishlist-events.test.ts` | Wave 0 | pending |
+| 08-05-02 | 05 | 3 | WISH-06 | unit | `npx tsc --noEmit -p apps/server/tsconfig.json` | N/A | pending |
 
-*Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
+*Status: pending / green / red / flaky*
 
 ---
 
@@ -83,11 +82,11 @@ created: 2026-03-11
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 15s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 15s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** signed-off (2026-03-11)
