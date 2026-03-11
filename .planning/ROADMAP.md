@@ -143,15 +143,14 @@ Plans:
   3. Filters use OR logic within groups (selecting red OR blue shows both) and AND logic across groups (selecting red AND size:large narrows results)
   4. All filter state persists in URL parameters -- copying and pasting the URL reproduces the exact filtered view
   5. On mobile, filters open in a full-screen modal with apply and clear buttons
-**Plans**: TBD (estimated 6-8)
+**Plans**: 5 plans
 
 Plans:
-- [ ] 06-01: TBD
-- [ ] 06-02: TBD
-- [ ] 06-03: TBD
-- [ ] 06-04: TBD
-- [ ] 06-05: TBD
-- [ ] 06-06: TBD
+- [ ] 06-00-PLAN.md — Wave 0: Test stubs for all FILT-01 through FILT-07 requirements (server filter logic + client filter components)
+- [ ] 06-01-PLAN.md — Server-side filtering: filterProducts with JSONB OR/AND logic, getFacetCounts aggregation, filter/facets API endpoints
+- [ ] 06-02-PLAN.md — Client filter components: nuqs useFilters hook, PriceFilter slider+inputs, AttributeFilter, AvailabilityFilter, ActiveFilters
+- [ ] 06-03-PLAN.md — Responsive filter layout: FilterContent, FilterSidebar (desktop), FilterDrawer (mobile Sheet with apply/clear)
+- [ ] 06-04-PLAN.md — Category page integration: wire searchParams to server filter API, render filters alongside product grid with facet counts
 
 ### Phase 7: Product Page
 **Goal**: Each product type has a rich, dedicated detail page with image gallery, variant selection, specifications, related products, and type-specific displays
@@ -465,7 +464,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 3. Product Catalog | 6/7 | In Progress|  |
 | 4. Categories & Navigation | 0/6 | Planning complete | - |
 | 5. Search System | 0/5 | Planning complete | - |
-| 6. Filter System | 0/6 | Not started | - |
+| 6. Filter System | 0/5 | Planning complete | - |
 | 7. Product Page | 0/7 | Not started | - |
 | 8. Wishlist & Compare | 0/5 | Not started | - |
 | 9. Cart System | 0/7 | Not started | - |
