@@ -81,10 +81,10 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 
 - [x] **PDPG-01**: Product page displays image gallery with zoom, thumbnails, and fullscreen lightbox
 - [ ] **PDPG-02**: Variable products show variant selector (dropdowns/swatches) that updates price, images, and stock
-- [ ] **PDPG-03**: Product page shows specifications/attributes table
+- [x] **PDPG-03**: Product page shows specifications/attributes table
 - [x] **PDPG-04**: Product page shows related products carousel
 - [x] **PDPG-05**: Product page shows "frequently bought together" section with one-click add-all
-- [ ] **PDPG-06**: Product page shows reviews section with average rating, distribution, and individual reviews
+- [x] **PDPG-06**: Product page shows reviews section with average rating, distribution, and individual reviews
 - [ ] **PDPG-07**: Product page shows real-time stock status (in stock, low stock with count, out of stock)
 - [ ] **PDPG-08**: Weighted products show unit price calculator (price per kg/lb with quantity selector)
 - [ ] **PDPG-09**: Digital products show file info, preview, and delivery method description
@@ -332,10 +332,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FILT-07 | Phase 6: Filter System | Complete |
 | PDPG-01 | Phase 7: Product Page | Complete |
 | PDPG-02 | Phase 7: Product Page | Pending |
-| PDPG-03 | Phase 7: Product Page | Pending |
+| PDPG-03 | Phase 7: Product Page | Complete |
 | PDPG-04 | Phase 7: Product Page | Complete |
 | PDPG-05 | Phase 7: Product Page | Complete |
-| PDPG-06 | Phase 7: Product Page | Pending |
+| PDPG-06 | Phase 7: Product Page | Complete |
 | PDPG-07 | Phase 7: Product Page | Pending |
 | PDPG-08 | Phase 7: Product Page | Pending |
 | PDPG-09 | Phase 7: Product Page | Pending |

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 07-02: Product Image Gallery"
-last_updated: "2026-03-11T15:48:31.229Z"
+stopped_at: "Completed 07-05: Specs, Reviews, Carousel & FBT components"
+last_updated: "2026-03-11T15:49:02.299Z"
 last_activity: "2026-03-11 -- Completed plan 05-02: Search API Endpoints and Admin Settings"
 progress:
   total_phases: 23
   completed_phases: 7
   total_plans: 44
-  completed_plans: 41
+  completed_plans: 43
   percent: 84
 ---
 
@@ -95,6 +95,8 @@ Progress: [████████░░] 84%
 | Phase 06 P05 | 4 | 2 tasks | 8 files |
 | Phase 07 P01 | 150 | 2 tasks | 10 files |
 | Phase 07 P02 | 84 | 2 tasks | 3 files |
+| Phase 07 P05 | 2 | 2 tasks | 4 files |
+| Phase 07 P03 | 2 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -216,6 +218,11 @@ Recent decisions affecting current work:
 - [Phase 07-01]: FBT wrapped in try/catch returning [] for graceful degradation when MongoDB has no order history
 - [Phase 07]: Use CSS backgroundImage overlay for hover zoom - no external zoom library needed
 - [Phase 07]: scroll event + Math.round(scrollLeft/offsetWidth) for mobile dot tracking - simpler than IntersectionObserver
+- [Phase 07-05]: Server-safe components for ProductSpecsTable and ReviewsPlaceholder - pure display with no client interactivity
+- [Phase 07-05]: CSS snap scrolling for RelatedProductsCarousel avoids carousel library dependency
+- [Phase 07-05]: FrequentlyBoughtTogether uses Set<string> for checked IDs for O(1) toggle and clean filtering
+- [Phase 07-03]: Variant matrix built with sorted option key strings in useMemo - deterministic and order-independent
+- [Phase 07-03]: AddToCartButton uses imageUrl and sku fields matching CartItem interface from @repo/types (not image as plan specified)
 
 ### Roadmap Evolution
 
@@ -232,6 +239,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T15:48:26.725Z
-Stopped at: Completed 07-02: Product Image Gallery
+Last session: 2026-03-11T15:48:53.611Z
+Stopped at: Completed 07-05: Specs, Reviews, Carousel & FBT components
 Resume file: None
