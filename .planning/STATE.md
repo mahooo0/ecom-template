@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 14-01: InventoryService and Validation Schemas"
-last_updated: "2026-03-11T16:18:40.461Z"
+stopped_at: "Completed 14-02: Atomic Stock Reservation"
+last_updated: "2026-03-11T16:22:37.603Z"
 last_activity: "2026-03-11 -- Completed plan 05-02: Search API Endpoints and Admin Settings"
 progress:
   total_phases: 23
   completed_phases: 8
   total_plans: 49
-  completed_plans: 46
+  completed_plans: 47
   percent: 84
 ---
 
@@ -101,6 +101,7 @@ Progress: [████████░░] 84%
 | Phase 07 P06 | 117 | 2 tasks | 5 files |
 | Phase 14 P00 | 2 | 2 tasks | 4 files |
 | Phase 14 P01 | 326 | 2 tasks | 5 files |
+| Phase 14 P02 | 127 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -238,6 +239,9 @@ Recent decisions affecting current work:
 - [Phase 14]: Use available(item) helper function everywhere to prevent exposing raw quantity without reserved
 - [Phase 14]: RESERVATION and RESERVATION_RELEASE excluded from adjustStockSchema - system-only reasons used by reservation system
 - [Phase 14]: inventory.lowStock and inventory.stockUpdated events added to EventMap for Phase 17 notification subscription
+- [Phase 14]: Use prisma.$transaction interactive callback for reserveStock to prevent TOCTOU race conditions
+- [Phase 14]: releaseReservation idempotency via Set of inventoryItemId from existing RESERVATION_RELEASE movements
+- [Phase 14]: startReservationCleanup() not wired into index.ts yet - deferred to Plan 03 when routes are mounted
 
 ### Roadmap Evolution
 
@@ -254,6 +258,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T16:18:40.457Z
-Stopped at: Completed 14-01: InventoryService and Validation Schemas
+Last session: 2026-03-11T16:22:37.600Z
+Stopped at: Completed 14-02: Atomic Stock Reservation
 Resume file: None
