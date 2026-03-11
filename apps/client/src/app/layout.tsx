@@ -1,5 +1,8 @@
 import type { Metadata } from 'next';
-import { ClerkProvider, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { ClerkProvider, UserButton, SignInButton } from '@clerk/nextjs';
+import { auth } from '@clerk/nextjs/server';
+import { Suspense } from 'react';
+import { MegaMenu } from '@/components/navigation/mega-menu';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -7,7 +10,9 @@ export const metadata: Metadata = {
   description: 'Modern e-commerce application',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const { userId } = await auth();
+
   return (
     <ClerkProvider>
       <html lang="en">
@@ -24,19 +29,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <a href="/cart" className="text-sm hover:text-gray-600">
                   Cart
                 </a>
-                <SignedIn>
-                  <a href="/profile" className="text-sm hover:text-gray-600">
-                    Profile
-                  </a>
-                  <UserButton />
-                </SignedIn>
-                <SignedOut>
-                  <a href="/sign-in" className="text-sm hover:text-gray-600">
-                    Sign In
-                  </a>
-                </SignedOut>
+                {userId ? (
+                  <>
+                    <a href="/profile" className="text-sm hover:text-gray-600">
+                      Profile
+                    </a>
+                    <UserButton />
+                  </>
+                ) : (
+                  <SignInButton mode="redirect">
+                    <button className="text-sm hover:text-gray-600">Sign In</button>
+                  </SignInButton>
+                )}
               </div>
             </nav>
+            <Suspense fallback={<div className="h-12" />}>
+              <MegaMenu />
+            </Suspense>
           </header>
           <main>{children}</main>
         </body>
