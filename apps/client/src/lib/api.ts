@@ -41,6 +41,7 @@ export const api = {
     getBySlug: (slug: string) => fetcher<ApiResponse<Product>>(`/products/slug/${slug}`),
   },
   orders: {
+    getById: (id: string) => fetcher<ApiResponse<Order>>(`/orders/${id}`),
     getByUser: (userId: string) =>
       fetcher<ApiResponse<Order[]>>(`/orders/user/${userId}`),
     create: (data: Partial<Order>) =>
