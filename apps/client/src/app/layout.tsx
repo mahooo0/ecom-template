@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { MegaMenu } from '@/components/navigation/mega-menu';
 import { SearchBar } from '@/components/search/search-bar';
+import { WishlistHeaderBadge } from '@/components/wishlist/wishlist-header-badge';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -32,6 +33,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <a href="/products" className="text-sm hover:text-gray-600">
                   Products
                 </a>
+                <WishlistHeaderBadge />
                 <a href="/cart" className="text-sm hover:text-gray-600">
                   Cart
                 </a>

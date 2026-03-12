@@ -6,6 +6,7 @@ import { VariantSelector } from '@/components/product/variant-selector';
 import { StockStatus } from '@/components/product/stock-status';
 import { AddToCartButton } from '@/components/product/add-to-cart-button';
 import { WeightedQuantitySelector } from '@/components/product/weighted-quantity-selector';
+import { WishlistButton } from '@/components/product/wishlist-button';
 import { StarRating } from '@/components/ui/star-rating';
 import { formatPrice } from '@/lib/utils';
 import type { ProductDetail, ProductVariantDetail } from '@/types/product-detail';
@@ -83,6 +84,12 @@ export function ProductPageClient({ product }: ProductPageClientProps) {
 
         {/* Product name */}
         <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">{product.name}</h1>
+
+        {/* Wishlist toggle */}
+        <div className="inline-flex items-center gap-2 text-sm text-gray-600">
+          <WishlistButton productId={product.id} price={currentPrice} size="md" />
+          <span>Add to Wishlist</span>
+        </div>
 
         {/* Brand */}
         {product.brand && (
