@@ -11,6 +11,8 @@ type EventMap = {
   'product.deleted': { productId: string };
   'inventory.lowStock': { variantId: string; warehouseId: string; available: number; threshold: number };
   'inventory.stockUpdated': { variantId: string; warehouseId: string; quantity: number; available: number };
+  'wishlist.priceDrop': { productId: string; oldPrice: number; newPrice: number; affectedUserIds: string[] };
+  'wishlist.restock': { productId: string; affectedUserIds: string[] };
 };
 
 class EventBus {
