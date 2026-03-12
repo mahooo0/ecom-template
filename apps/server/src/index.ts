@@ -17,6 +17,7 @@ import { searchRoutes } from './modules/search/search.routes.js';
 import { inventoryRoutes } from './modules/inventory/inventory.routes.js';
 import { startReservationCleanup } from './modules/inventory/reservation.cleanup.js';
 import { wishlistRoutes } from './modules/wishlist/wishlist.routes.js';
+import { registerWishlistEventListeners } from './modules/wishlist/wishlist.events.js';
 import { searchService } from './modules/search/search.service.js';
 import './modules/search/sync.service.js'; // Side-effect import: registers event listeners
 import { eventBus } from './common/events/event-bus.js';
@@ -78,6 +79,7 @@ async function start() {
   }
 
   startReservationCleanup();
+  registerWishlistEventListeners();
 
   app.listen(config.port, () => {
     console.log(`Server running on http://localhost:${config.port}`);
