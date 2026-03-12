@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 22-03: In-App Guidance Components"
-last_updated: "2026-03-12T10:25:56.976Z"
+stopped_at: "Completed 22-02: Admin AI Assistant"
+last_updated: "2026-03-12T10:26:09.565Z"
 last_activity: "2026-03-11 -- Completed plan 05-02: Search API Endpoints and Admin Settings"
 progress:
   total_phases: 23
@@ -275,6 +275,8 @@ Recent decisions affecting current work:
 - [Phase 22-03]: HelpTooltip uses CSS border trick for arrow triangles — no external library, self-contained component
 - [Phase 22-03]: useTour reads localStorage in useState initializer with typeof window guard for SSR safety in Next.js App Router
 - [Phase 22-03]: Tour step files are plain TypeScript (no use client) since they export data arrays only
+- [Phase 22]: Admin widget uses indigo color scheme (vs client blue) to visually differentiate admin vs storefront contexts
+- [Phase 22]: context.page optional body param allows admin pages to inject page context for targeted AI responses
 
 ### Roadmap Evolution
 
@@ -291,6 +293,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T10:25:38.841Z
-Stopped at: Completed 22-03: In-App Guidance Components
+Last session: 2026-03-12T10:26:09.560Z
+Stopped at: Completed 22-02: Admin AI Assistant
 Resume file: None
