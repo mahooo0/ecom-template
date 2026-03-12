@@ -482,7 +482,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 19. SEO | 0/5 | Not started | - |
 | 20. Multi-Store | 0/5 | Not started | - |
 | 21. Admin Panel | 0/6 | Not started | - |
-| 22. In-App Guidance & AI Assistant | 1/5 | In Progress|  |
+| 22. In-App Guidance & AI Assistant | 2/5 | In Progress|  |
 | 23. UI Design System & Component Library | 0/0 | Not started | - |
 
 ### Phase 22: In-App Guidance & AI Assistant
@@ -510,7 +510,7 @@ Plans:
 **Goal:** [To be planned]
 **Requirements**: TBD
 **Depends on:** Phase 22
-**Plans:** 1/5 plans executed
+**Plans:** 2/5 plans executed
 
 Plans:
 - [ ] TBD (run /gsd:plan-phase 23 to break down)

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 22-00: AI Assistant Test Infrastructure"
-last_updated: "2026-03-12T10:21:56.916Z"
+stopped_at: "Completed 22-01: Client AI Chat API Route and Widget"
+last_updated: "2026-03-12T10:25:12.850Z"
 last_activity: "2026-03-11 -- Completed plan 05-02: Search API Endpoints and Admin Settings"
 progress:
   total_phases: 23
   completed_phases: 9
   total_plans: 55
-  completed_plans: 56
+  completed_plans: 57
   percent: 84
 ---
 
@@ -111,6 +111,7 @@ Progress: [████████░░] 84%
 | Phase 08 P03 | 5 | 2 tasks | 7 files |
 | Phase 08 P05 | 83 | 2 tasks | 3 files |
 | Phase 22 P00 | 116 | 2 tasks | 8 files |
+| Phase 22 P01 | 81 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -267,6 +268,8 @@ Recent decisions affecting current work:
 - [Phase 08]: Hydration-safe count badge: renders 0 until mounted then real count
 - [Phase 08-05]: priceAtAdd updated after emission to prevent duplicate price drop notifications
 - [Phase 22]: Place Phase 22 test stubs in tests/ai-assistant/ (workspace root) — vitest.config.ts only scans tests/** pattern
+- [Phase 22-01]: In-memory rate limiter uses module-level Map per process — appropriate for single-instance; Redis needed for multi-region production
+- [Phase 22-01]: ChatWidget maps useChat message parts to explicit {type,text} shape for ChatMessages compatibility
 
 ### Roadmap Evolution
 
@@ -283,6 +286,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T10:21:56.912Z
-Stopped at: Completed 22-00: AI Assistant Test Infrastructure
+Last session: 2026-03-12T10:25:12.845Z
+Stopped at: Completed 22-01: Client AI Chat API Route and Widget
 Resume file: None
