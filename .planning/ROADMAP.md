@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 5: Search System** - Meilisearch integration with full-text search, autocomplete, and typo tolerance
 - [x] **Phase 6: Filter System** - Dynamic attribute-based filters with price range, multi-select, and URL persistence (completed 2026-03-11)
 - [x] **Phase 7: Product Page** - Full product detail pages with gallery, variant selector, specs, and type-specific displays (completed 2026-03-11)
-- [ ] **Phase 8: Wishlist & Compare** - Wishlist management with guest/auth sync and side-by-side product comparison
+- [x] **Phase 8: Wishlist & Compare** - Wishlist management with guest/auth sync and side-by-side product comparison (completed 2026-03-12)
 - [ ] **Phase 9: Cart System** - Persistent cart with guest/auth support, cart merge, coupon application, and mini cart
 - [ ] **Phase 10: Checkout** - Multi-step checkout flow with address selection, shipping methods, and order confirmation
 - [ ] **Phase 11: Payments** - Stripe integration with card payments, Apple/Google Pay, webhooks, and refunds
@@ -468,7 +468,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 5. Search System | 0/5 | Planning complete | - |
 | 6. Filter System | 6/6 | Complete   | 2026-03-11 |
 | 7. Product Page | 6/6 | Complete   | 2026-03-11 |
-| 8. Wishlist & Compare | 5/6 | In Progress|  |
+| 8. Wishlist & Compare | 6/6 | Complete   | 2026-03-12 |
 | 9. Cart System | 0/7 | Not started | - |
 | 10. Checkout | 0/7 | Not started | - |
 | 11. Payments | 0/5 | Not started | - |
@@ -510,7 +510,7 @@ Plans:
 **Goal:** [To be planned]
 **Requirements**: TBD
 **Depends on:** Phase 22
-**Plans:** 5/6 plans executed
+**Plans:** 6/6 plans complete
 
 Plans:
 - [ ] TBD (run /gsd:plan-phase 23 to break down)

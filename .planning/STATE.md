@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 08-03: Wishlist Page UX"
-last_updated: "2026-03-12T10:06:27.555Z"
+stopped_at: "Completed 08-05: Wishlist EventBus Listeners"
+last_updated: "2026-03-12T10:09:20.647Z"
 last_activity: "2026-03-11 -- Completed plan 05-02: Search API Endpoints and Admin Settings"
 progress:
   total_phases: 23
-  completed_phases: 8
+  completed_phases: 9
   total_plans: 55
-  completed_plans: 54
+  completed_plans: 55
   percent: 84
 ---
 
@@ -109,6 +109,7 @@ Progress: [████████░░] 84%
 | Phase 08 P02 | 124 | 2 tasks | 6 files |
 | Phase 08 P04 | 3 | 1 tasks | 2 files |
 | Phase 08 P03 | 5 | 2 tasks | 7 files |
+| Phase 08 P05 | 83 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -263,6 +264,7 @@ Recent decisions affecting current work:
 - [Phase 08]: ComparePageClient fetches by slug via api.products.getBySlug — slug stored in compare store items
 - [Phase 08]: useWishlistSync placed inside WishlistHeaderBadge rather than a separate provider to reduce component tree depth
 - [Phase 08]: Hydration-safe count badge: renders 0 until mounted then real count
+- [Phase 08-05]: priceAtAdd updated after emission to prevent duplicate price drop notifications
 
 ### Roadmap Evolution
 
@@ -279,6 +281,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T10:06:20.106Z
-Stopped at: Completed 08-03: Wishlist Page UX
+Last session: 2026-03-12T10:09:20.642Z
+Stopped at: Completed 08-05: Wishlist EventBus Listeners
 Resume file: None
