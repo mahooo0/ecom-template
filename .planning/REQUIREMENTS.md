@@ -92,12 +92,12 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 
 ### Wishlist & Compare
 
-- [ ] **WISH-01**: User can add/remove products to wishlist from product card or product page
-- [ ] **WISH-02**: Wishlist persists in localStorage for guests and syncs to database on login
-- [ ] **WISH-03**: User can view wishlist page with product cards and quick-add-to-cart
-- [ ] **WISH-04**: User can select 2-4 products for side-by-side comparison
-- [ ] **WISH-05**: Compare page shows specification table with differences highlighted
-- [ ] **WISH-06**: User receives price drop and back-in-stock notifications for wishlisted items
+- [x] **WISH-01**: User can add/remove products to wishlist from product card or product page
+- [x] **WISH-02**: Wishlist persists in localStorage for guests and syncs to database on login
+- [x] **WISH-03**: User can view wishlist page with product cards and quick-add-to-cart
+- [x] **WISH-04**: User can select 2-4 products for side-by-side comparison
+- [x] **WISH-05**: Compare page shows specification table with differences highlighted
+- [x] **WISH-06**: User receives price drop and back-in-stock notifications for wishlisted items
 
 ### Cart System
 
@@ -340,12 +340,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PDPG-08 | Phase 7: Product Page | Complete |
 | PDPG-09 | Phase 7: Product Page | Complete |
 | PDPG-10 | Phase 7: Product Page | Complete |
-| WISH-01 | Phase 8: Wishlist & Compare | Pending |
-| WISH-02 | Phase 8: Wishlist & Compare | Pending |
-| WISH-03 | Phase 8: Wishlist & Compare | Pending |
-| WISH-04 | Phase 8: Wishlist & Compare | Pending |
-| WISH-05 | Phase 8: Wishlist & Compare | Pending |
-| WISH-06 | Phase 8: Wishlist & Compare | Pending |
+| WISH-01 | Phase 8: Wishlist & Compare | Complete |
+| WISH-02 | Phase 8: Wishlist & Compare | Complete |
+| WISH-03 | Phase 8: Wishlist & Compare | Complete |
+| WISH-04 | Phase 8: Wishlist & Compare | Complete |
+| WISH-05 | Phase 8: Wishlist & Compare | Complete |
+| WISH-06 | Phase 8: Wishlist & Compare | Complete |
 | CART-01 | Phase 9: Cart System | Pending |
 | CART-02 | Phase 9: Cart System | Pending |
 | CART-03 | Phase 9: Cart System | Pending |
