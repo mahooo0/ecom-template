@@ -468,7 +468,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 5. Search System | 0/5 | Planning complete | - |
 | 6. Filter System | 6/6 | Complete   | 2026-03-11 |
 | 7. Product Page | 6/6 | Complete   | 2026-03-11 |
-| 8. Wishlist & Compare | 0/6 | Planning complete | - |
+| 8. Wishlist & Compare | 1/6 | In Progress|  |
 | 9. Cart System | 0/7 | Not started | - |
 | 10. Checkout | 0/7 | Not started | - |
 | 11. Payments | 0/5 | Not started | - |
@@ -482,25 +482,35 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 19. SEO | 0/5 | Not started | - |
 | 20. Multi-Store | 0/5 | Not started | - |
 | 21. Admin Panel | 0/6 | Not started | - |
-| 22. In-App Guidance & AI Assistant | 0/6 | Not started | - |
+| 22. In-App Guidance & AI Assistant | 0/5 | Planning complete | - |
 | 23. UI Design System & Component Library | 0/0 | Not started | - |
 
 ### Phase 22: In-App Guidance & AI Assistant
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Both client and admin apps have AI-powered chat assistants (Vercel AI SDK with streaming) and in-app guidance (Driver.js tours with contextual help tooltips) so users get instant help and first-time onboarding
+**Requirements**: GUIDE-01, GUIDE-02, GUIDE-03, GUIDE-04, GUIDE-05, GUIDE-06
 **Depends on:** Phase 21
-**Plans:** 5/5 plans complete
+**Success Criteria** (what must be TRUE):
+  1. Client app has a floating AI shopping assistant that streams responses about products, shipping, and returns via Vercel AI SDK
+  2. Admin app has an AI helper that answers how-to questions about admin panel features
+  3. Both AI chat endpoints are rate-limited to prevent API cost abuse
+  4. Driver.js tours provide first-time onboarding for client homepage and admin dashboard, with completion persisted in localStorage
+  5. HelpTooltip components provide contextual inline help on forms and settings
+**Plans**: 5 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 22 to break down)
+- [ ] 22-00-PLAN.md — Wave 0: Install AI SDK and Driver.js packages, create test stubs for all Phase 22 behaviors
+- [ ] 22-01-PLAN.md — Client AI shopping assistant: chat API route with rate limiting and ChatWidget components
+- [ ] 22-02-PLAN.md — Admin AI helper: chat API route with admin system prompt and AdminChatWidget components
+- [ ] 22-03-PLAN.md — Guidance system: HelpTooltip, useTour hook with Driver.js, tour step definitions for client and admin
+- [ ] 22-04-PLAN.md — Integration: wire ChatWidget into client layout, AdminChatWidget into admin layout, visual verification
 
 ### Phase 23: E-Commerce UI Design System & Component Library
 
 **Goal:** [To be planned]
 **Requirements**: TBD
 **Depends on:** Phase 22
-**Plans:** 0 plans
+**Plans:** 1/6 plans executed
 
 Plans:
 - [ ] TBD (run /gsd:plan-phase 23 to break down)

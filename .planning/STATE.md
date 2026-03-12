@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 14-04: Admin Inventory Management UI"
-last_updated: "2026-03-11T16:34:31.976Z"
+stopped_at: "Completed 08-00: Wishlist & Compare Infrastructure"
+last_updated: "2026-03-12T09:57:44.128Z"
 last_activity: "2026-03-11 -- Completed plan 05-02: Search API Endpoints and Admin Settings"
 progress:
   total_phases: 23
-  completed_phases: 9
-  total_plans: 49
-  completed_plans: 49
+  completed_phases: 8
+  total_plans: 55
+  completed_plans: 50
   percent: 84
 ---
 
@@ -104,6 +104,7 @@ Progress: [████████░░] 84%
 | Phase 14 P02 | 127 | 2 tasks | 4 files |
 | Phase 14 P03 | 3 | 2 tasks | 4 files |
 | Phase 14 P04 | 157 | 2 tasks | 5 files |
+| Phase 08 P00 | 5 | 2 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -249,6 +250,8 @@ Recent decisions affecting current work:
 - [Phase 14]: Reservation endpoints (reserve/commit/release) are public — no requireAdmin — for checkout flow consumption
 - [Phase 14]: Promise.all for dashboard+alerts fetch in inventory dashboard — parallel requests reduce load latency
 - [Phase 14]: WarehouseForm optional warehouse prop — undefined=create mode, defined=edit mode, consistent with existing admin form patterns
+- [Phase 08]: priceAtAdd stored as Int @default(0) in WishlistItem — captures price-at-add-time for price-drop badge, consistent with cents convention
+- [Phase 08]: WishlistPriceDropEvent and WishlistRestockEvent added to types now so Phase 17 Notifications can consume them without schema changes
 
 ### Roadmap Evolution
 
@@ -265,6 +268,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T16:30:48.734Z
-Stopped at: Completed 14-04: Admin Inventory Management UI
+Last session: 2026-03-12T09:57:44.124Z
+Stopped at: Completed 08-00: Wishlist & Compare Infrastructure
 Resume file: None
