@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 08-00: Wishlist & Compare Infrastructure"
-last_updated: "2026-03-12T09:57:44.128Z"
+stopped_at: "Completed 08-01: Server Wishlist Module"
+last_updated: "2026-03-12T10:00:54.399Z"
 last_activity: "2026-03-11 -- Completed plan 05-02: Search API Endpoints and Admin Settings"
 progress:
   total_phases: 23
   completed_phases: 8
   total_plans: 55
-  completed_plans: 50
+  completed_plans: 51
   percent: 84
 ---
 
@@ -105,6 +105,7 @@ Progress: [████████░░] 84%
 | Phase 14 P03 | 3 | 2 tasks | 4 files |
 | Phase 14 P04 | 157 | 2 tasks | 5 files |
 | Phase 08 P00 | 5 | 2 tasks | 13 files |
+| Phase 08 P01 | 4 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -252,6 +253,8 @@ Recent decisions affecting current work:
 - [Phase 14]: WarehouseForm optional warehouse prop — undefined=create mode, defined=edit mode, consistent with existing admin form patterns
 - [Phase 08]: priceAtAdd stored as Int @default(0) in WishlistItem — captures price-at-add-time for price-drop badge, consistent with cents convention
 - [Phase 08]: WishlistPriceDropEvent and WishlistRestockEvent added to types now so Phase 17 Notifications can consume them without schema changes
+- [Phase 08]: getOrCreateWishlist lazy-creates wishlist on first use — no migration needed for existing users
+- [Phase 08]: upsert with update:{} for addItem and syncItems — skip-if-exists deduplication without error
 
 ### Roadmap Evolution
 
@@ -268,6 +271,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T09:57:44.124Z
-Stopped at: Completed 08-00: Wishlist & Compare Infrastructure
+Last session: 2026-03-12T10:00:54.395Z
+Stopped at: Completed 08-01: Server Wishlist Module
 Resume file: None
