@@ -6,6 +6,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { MegaMenu } from '@/components/navigation/mega-menu';
 import { SearchBar } from '@/components/search/search-bar';
 import { WishlistHeaderBadge } from '@/components/wishlist/wishlist-header-badge';
+import { ChatWidget } from '@/components/ai-assistant/ChatWidget';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -56,6 +57,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </Suspense>
           </header>
           <main>{children}</main>
+          <ChatWidget />
           </NuqsAdapter>
         </body>
       </html>

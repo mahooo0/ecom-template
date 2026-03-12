@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { ClerkProvider, UserButton } from '@clerk/nextjs';
+import { AdminChatWidget } from '@/components/ai-assistant/AdminChatWidget';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -35,6 +36,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </aside>
             <main className="ml-64 flex-1 p-8">{children}</main>
           </div>
+          <AdminChatWidget />
         </body>
       </html>
     </ClerkProvider>
