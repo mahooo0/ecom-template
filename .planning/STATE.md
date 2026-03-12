@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 22-01: Client AI Chat API Route and Widget"
-last_updated: "2026-03-12T10:25:12.850Z"
+stopped_at: "Completed 22-03: In-App Guidance Components"
+last_updated: "2026-03-12T10:25:56.976Z"
 last_activity: "2026-03-11 -- Completed plan 05-02: Search API Endpoints and Admin Settings"
 progress:
   total_phases: 23
   completed_phases: 9
   total_plans: 55
-  completed_plans: 57
+  completed_plans: 59
   percent: 84
 ---
 
@@ -112,6 +112,8 @@ Progress: [████████░░] 84%
 | Phase 08 P05 | 83 | 2 tasks | 3 files |
 | Phase 22 P00 | 116 | 2 tasks | 8 files |
 | Phase 22 P01 | 81 | 2 tasks | 5 files |
+| Phase 22 P03 | 102 | 2 tasks | 8 files |
+| Phase 22 P02 | 101 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -270,6 +272,9 @@ Recent decisions affecting current work:
 - [Phase 22]: Place Phase 22 test stubs in tests/ai-assistant/ (workspace root) — vitest.config.ts only scans tests/** pattern
 - [Phase 22-01]: In-memory rate limiter uses module-level Map per process — appropriate for single-instance; Redis needed for multi-region production
 - [Phase 22-01]: ChatWidget maps useChat message parts to explicit {type,text} shape for ChatMessages compatibility
+- [Phase 22-03]: HelpTooltip uses CSS border trick for arrow triangles — no external library, self-contained component
+- [Phase 22-03]: useTour reads localStorage in useState initializer with typeof window guard for SSR safety in Next.js App Router
+- [Phase 22-03]: Tour step files are plain TypeScript (no use client) since they export data arrays only
 
 ### Roadmap Evolution
 
@@ -286,6 +291,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T10:25:12.845Z
-Stopped at: Completed 22-01: Client AI Chat API Route and Widget
+Last session: 2026-03-12T10:25:38.841Z
+Stopped at: Completed 22-03: In-App Guidance Components
 Resume file: None
