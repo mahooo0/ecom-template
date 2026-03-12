@@ -10,7 +10,7 @@ importers:
     dependencies:
       nuqs:
         specifier: ^2.8.9
-        version: 2.8.9(next@16.1.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
+        version: 2.8.9(next@16.1.5(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
       use-debounce:
         specifier: ^10.1.0
         version: 10.1.0(react@19.2.0)
@@ -53,13 +53,19 @@ importers:
         version: 5.9.2
       vitest:
         specifier: ^4.0.18
-        version: 4.0.18(@types/node@22.15.3)(@vitest/ui@4.0.18)(happy-dom@20.8.3)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.0.0-1)
+        version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@22.15.3)(@vitest/ui@4.0.18)(happy-dom@20.8.3)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.0.0-1)
 
   apps/admin:
     dependencies:
+      '@ai-sdk/openai':
+        specifier: ^3.0.41
+        version: 3.0.41(zod@3.25.76)
+      '@ai-sdk/react':
+        specifier: ^3.0.118
+        version: 3.0.118(react@19.2.0)(zod@3.25.76)
       '@clerk/nextjs':
         specifier: ^7.0.2
-        version: 7.0.2(next@16.1.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 7.0.2(next@16.1.5(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@dnd-kit/core':
         specifier: ^6.3.1
         version: 6.3.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -84,15 +90,21 @@ importers:
       '@tanstack/react-table':
         specifier: ^8.21.3
         version: 8.21.3(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      ai:
+        specifier: ^6.0.116
+        version: 6.0.116(zod@3.25.76)
       cloudinary:
         specifier: ^2.9.0
         version: 2.9.0
+      driver.js:
+        specifier: ^1.4.0
+        version: 1.4.0
       next:
         specifier: 16.1.5
-        version: 16.1.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 16.1.5(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       next-cloudinary:
         specifier: ^6.17.5
-        version: 6.17.5(next@16.1.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
+        version: 6.17.5(next@16.1.5(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
       react:
         specifier: ^19.2.0
         version: 19.2.0
@@ -136,21 +148,33 @@ importers:
 
   apps/client:
     dependencies:
+      '@ai-sdk/openai':
+        specifier: ^3.0.41
+        version: 3.0.41(zod@3.25.76)
+      '@ai-sdk/react':
+        specifier: ^3.0.118
+        version: 3.0.118(react@19.2.0)(zod@3.25.76)
       '@clerk/nextjs':
         specifier: ^7.0.2
-        version: 7.0.2(next@16.1.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 7.0.2(next@16.1.5(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@meilisearch/instant-meilisearch':
         specifier: ^0.30.0
         version: 0.30.0
       '@repo/types':
         specifier: workspace:*
         version: link:../../packages/types
+      ai:
+        specifier: ^6.0.116
+        version: 6.0.116(zod@3.25.76)
+      driver.js:
+        specifier: ^1.4.0
+        version: 1.4.0
       next:
         specifier: 16.1.5
-        version: 16.1.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 16.1.5(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       nuqs:
         specifier: ^2.8.9
-        version: 2.8.9(next@16.1.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
+        version: 2.8.9(next@16.1.5(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
       react:
         specifier: ^19.2.0
         version: 19.2.0
@@ -369,6 +393,34 @@ packages:
 
   '@adobe/css-tools@4.4.4':
     resolution: {integrity: sha512-Elp+iwUx5rN5+Y8xLt5/GRoG20WGoDCQ/1Fb+1LiGtvwbDavuSk0jhD/eZdckHAuzcDzccnkv+rEjyWfRx18gg==}
+
+  '@ai-sdk/gateway@3.0.66':
+    resolution: {integrity: sha512-SIQ0YY0iMuv+07HLsZ+bB990zUJ6S4ujORAh+Jv1V2KGNn73qQKnGO0JBk+w+Res8YqOFSycwDoWcFlQrVxS4A==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+
+  '@ai-sdk/openai@3.0.41':
+    resolution: {integrity: sha512-IZ42A+FO+vuEQCVNqlnAPYQnnUpUfdJIwn1BEDOBywiEHa23fw7PahxVtlX9zm3/zMvTW4JKPzWyvAgDu+SQ2A==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+
+  '@ai-sdk/provider-utils@4.0.19':
+    resolution: {integrity: sha512-3eG55CrSWCu2SXlqq2QCsFjo3+E7+Gmg7i/oRVoSZzIodTuDSfLb3MRje67xE9RFea73Zao7Lm4mADIfUETKGg==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
+
+  '@ai-sdk/provider@3.0.8':
+    resolution: {integrity: sha512-oGMAgGoQdBXbZqNG0Ze56CHjDZ1IDYOwGYxYjO5KLSlz5HiNQ9udIXsPZ61VWaHGZ5XW/jyjmr6t2xz2jGVwbQ==}
+    engines: {node: '>=18'}
+
+  '@ai-sdk/react@3.0.118':
+    resolution: {integrity: sha512-fBAix8Jftxse6/2YJnOFkwW1/O6EQK4DK68M9DlFmZGAzBmsaHXEPVS77sVIlkaOWCy11bE7434NAVXRY+3OsQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      react: ^18 || ~19.0.1 || ~19.1.2 || ^19.2.1
 
   '@algolia/abtesting@1.15.2':
     resolution: {integrity: sha512-rF7vRVE61E0QORw8e2NNdnttcl3jmFMWS9B4hhdga12COe+lMa26bQLfcBn/Nbp9/AF/8gXdaRCPsVns3CnjsA==}
@@ -997,6 +1049,10 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
+  '@opentelemetry/api@1.9.0':
+    resolution: {integrity: sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg==}
+    engines: {node: '>=8.0.0'}
+
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
@@ -1461,6 +1517,10 @@ packages:
     resolution: {integrity: sha512-Xzmnb58+Db78gT/CCj/PVCvK+zxbnsw6F+O1oheYszJbBSdEjVhQi3C/Xttzxgi/GLmpvOggRs1RFpiJ8+c34Q==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
+  '@vercel/oidc@3.1.0':
+    resolution: {integrity: sha512-Fw28YZpRnA3cAHHDlkt7xQHiJ0fcL+NRcIqsocZQUSmbzeIKRpwttJjik5ZGanXP+vlA4SbTg+AbA3bP363l+w==}
+    engines: {node: '>= 20'}
+
   '@vitest/expect@4.0.18':
     resolution: {integrity: sha512-8sCWUyckXXYvx4opfzVY03EOiYVxyNrHS5QxX3DAIi5dpJAAkyJezHCP77VMX4HKA2LDT/Jpfo8i2r5BE3GnQQ==}
 
@@ -1510,6 +1570,12 @@ packages:
   acorn@8.15.0:
     resolution: {integrity: sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==}
     engines: {node: '>=0.4.0'}
+
+  ai@6.0.116:
+    resolution: {integrity: sha512-7yM+cTmyRLeNIXwt4Vj+mrrJgVQ9RMIW5WO0ydoLoYkewIvsMcvUmqS4j2RJTUXaF1HphwmSKUMQ/HypNRGOmA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.25.76 || ^4.1.8
 
   ajv@6.12.6:
     resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}
@@ -1822,6 +1888,9 @@ packages:
     resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
     engines: {node: '>=12'}
 
+  driver.js@1.4.0:
+    resolution: {integrity: sha512-Gm64jm6PmcU+si21sQhBrTAM1JvUrR0QhNmjkprNLxohOBzul9+pNHXgQaT9lW84gwg9GMLB3NZGuGolsz5uew==}
+
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
     engines: {node: '>= 0.4'}
@@ -1971,6 +2040,10 @@ packages:
   etag@1.8.1:
     resolution: {integrity: sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==}
     engines: {node: '>= 0.6'}
+
+  eventsource-parser@3.0.6:
+    resolution: {integrity: sha512-Vo1ab+QXPzZ4tCa8SwIHJFaSzy4R6SHf7BY79rFBDf0idraZWAkYrDjDj8uWaSm3S2TK+hJ7/t1CEmZ7jXw+pg==}
+    engines: {node: '>=18.0.0'}
 
   expect-type@1.3.0:
     resolution: {integrity: sha512-knvyeauYhqjOYvQ66MznSMs83wmHrCycNEN6Ao+2AeYEfxUIkuiVxdEa1qlGEPK+We3n0THiDciYSsCcgW/DoA==}
@@ -2362,6 +2435,9 @@ packages:
 
   json-schema-traverse@0.4.1:
     resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
+
+  json-schema@0.4.0:
+    resolution: {integrity: sha512-es94M3nTIfsEPisRafak+HDLfHXnKBhV3vU5eqPcS3flIWqcxJWgXHXiey3YrpaNsanY5ei1VoYEbOzijuq9BA==}
 
   json-stable-stringify-without-jsonify@1.0.1:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
@@ -3180,12 +3256,21 @@ packages:
     peerDependencies:
       express: '>=4.0.0 || >=5.0.0-beta'
 
+  swr@2.4.1:
+    resolution: {integrity: sha512-2CC6CiKQtEwaEeNiqWTAw9PGykW8SR5zZX8MZk6TeAvEAnVS7Visz8WzphqgtQ8v2xz/4Q5K+j+SeMaKXeeQIA==}
+    peerDependencies:
+      react: ^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
   tailwindcss@4.2.1:
     resolution: {integrity: sha512-/tBrSQ36vCleJkAOsy9kbNTgaxvGbyOamC30PRePTQe/o1MFwEKHQk4Cn7BNGaPtjp+PuUrByJehM1hgxfq4sw==}
 
   tapable@2.3.0:
     resolution: {integrity: sha512-g9ljZiwki/LfxmQADO3dEY1CbpmXT5Hm2fJ+QaGKwSXUylMybePR7/67YW7jOrrvjEgL1Fmz5kzyAjWVWLlucg==}
     engines: {node: '>=6'}
+
+  throttleit@2.1.0:
+    resolution: {integrity: sha512-nt6AMGKW1p/70DF/hGBdJB57B8Tspmbp5gfJ8ilhLnt7kkr2ye7hzD6NVG8GGErk2HWF34igrL2CXmNIkzKqKw==}
+    engines: {node: '>=18'}
 
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
@@ -3536,6 +3621,40 @@ snapshots:
 
   '@adobe/css-tools@4.4.4': {}
 
+  '@ai-sdk/gateway@3.0.66(zod@3.25.76)':
+    dependencies:
+      '@ai-sdk/provider': 3.0.8
+      '@ai-sdk/provider-utils': 4.0.19(zod@3.25.76)
+      '@vercel/oidc': 3.1.0
+      zod: 3.25.76
+
+  '@ai-sdk/openai@3.0.41(zod@3.25.76)':
+    dependencies:
+      '@ai-sdk/provider': 3.0.8
+      '@ai-sdk/provider-utils': 4.0.19(zod@3.25.76)
+      zod: 3.25.76
+
+  '@ai-sdk/provider-utils@4.0.19(zod@3.25.76)':
+    dependencies:
+      '@ai-sdk/provider': 3.0.8
+      '@standard-schema/spec': 1.1.0
+      eventsource-parser: 3.0.6
+      zod: 3.25.76
+
+  '@ai-sdk/provider@3.0.8':
+    dependencies:
+      json-schema: 0.4.0
+
+  '@ai-sdk/react@3.0.118(react@19.2.0)(zod@3.25.76)':
+    dependencies:
+      '@ai-sdk/provider-utils': 4.0.19(zod@3.25.76)
+      ai: 6.0.116(zod@3.25.76)
+      react: 19.2.0
+      swr: 2.4.1(react@19.2.0)
+      throttleit: 2.1.0
+    transitivePeerDependencies:
+      - zod
+
   '@algolia/abtesting@1.15.2':
     dependencies:
       '@algolia/client-common': 5.49.2
@@ -3674,12 +3793,12 @@ snapshots:
       - react
       - react-dom
 
-  '@clerk/nextjs@7.0.2(next@16.1.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+  '@clerk/nextjs@7.0.2(next@16.1.5(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@clerk/backend': 3.0.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@clerk/react': 6.0.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@clerk/shared': 4.1.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      next: 16.1.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      next: 16.1.5(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
       server-only: 0.0.1
@@ -4080,6 +4199,8 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
+
+  '@opentelemetry/api@1.9.0': {}
 
   '@polka/url@1.0.0-next.29': {}
 
@@ -4518,6 +4639,8 @@ snapshots:
       '@typescript-eslint/types': 8.50.0
       eslint-visitor-keys: 4.2.1
 
+  '@vercel/oidc@3.1.0': {}
+
   '@vitest/expect@4.0.18':
     dependencies:
       '@standard-schema/spec': 1.1.0
@@ -4561,7 +4684,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vitest: 4.0.18(@types/node@22.15.3)(@vitest/ui@4.0.18)(happy-dom@20.8.3)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.0.0-1)
+      vitest: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@22.15.3)(@vitest/ui@4.0.18)(happy-dom@20.8.3)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.0.0-1)
 
   '@vitest/utils@4.0.18':
     dependencies:
@@ -4580,6 +4703,14 @@ snapshots:
       acorn: 8.15.0
 
   acorn@8.15.0: {}
+
+  ai@6.0.116(zod@3.25.76):
+    dependencies:
+      '@ai-sdk/gateway': 3.0.66(zod@3.25.76)
+      '@ai-sdk/provider': 3.0.8
+      '@ai-sdk/provider-utils': 4.0.19(zod@3.25.76)
+      '@opentelemetry/api': 1.9.0
+      zod: 3.25.76
 
   ajv@6.12.6:
     dependencies:
@@ -4916,6 +5047,8 @@ snapshots:
 
   dotenv@16.6.1: {}
 
+  driver.js@1.4.0: {}
+
   dunder-proto@1.0.1:
     dependencies:
       call-bind-apply-helpers: 1.0.2
@@ -5187,6 +5320,8 @@ snapshots:
   esutils@2.0.3: {}
 
   etag@1.8.1: {}
+
+  eventsource-parser@3.0.6: {}
 
   expect-type@1.3.0: {}
 
@@ -5640,6 +5775,8 @@ snapshots:
 
   json-schema-traverse@0.4.1: {}
 
+  json-schema@0.4.0: {}
+
   json-stable-stringify-without-jsonify@1.0.1: {}
 
   jsx-ast-utils@3.3.5:
@@ -5843,15 +5980,15 @@ snapshots:
 
   negotiator@1.0.0: {}
 
-  next-cloudinary@6.17.5(next@16.1.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0):
+  next-cloudinary@6.17.5(next@16.1.5(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0):
     dependencies:
       '@cloudinary-util/types': 1.5.10
       '@cloudinary-util/url-loader': 5.10.4
       '@cloudinary-util/util': 4.0.0
-      next: 16.1.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      next: 16.1.5(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react: 19.2.0
 
-  next@16.1.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  next@16.1.5(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       '@next/env': 16.1.5
       '@swc/helpers': 0.5.15
@@ -5870,6 +6007,7 @@ snapshots:
       '@next/swc-linux-x64-musl': 16.1.5
       '@next/swc-win32-arm64-msvc': 16.1.5
       '@next/swc-win32-x64-msvc': 16.1.5
+      '@opentelemetry/api': 1.9.0
       sharp: 0.34.5
     transitivePeerDependencies:
       - '@babel/core'
@@ -5883,12 +6021,12 @@ snapshots:
     dependencies:
       abbrev: 1.1.1
 
-  nuqs@2.8.9(next@16.1.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0):
+  nuqs@2.8.9(next@16.1.5(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0):
     dependencies:
       '@standard-schema/spec': 1.0.0
       react: 19.2.0
     optionalDependencies:
-      next: 16.1.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      next: 16.1.5(@opentelemetry/api@1.9.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
   nypm@0.6.5:
     dependencies:
@@ -6510,9 +6648,17 @@ snapshots:
       express: 5.2.1
       swagger-ui-dist: 5.32.0
 
+  swr@2.4.1(react@19.2.0):
+    dependencies:
+      dequal: 2.0.3
+      react: 19.2.0
+      use-sync-external-store: 1.6.0(react@19.2.0)
+
   tailwindcss@4.2.1: {}
 
   tapable@2.3.0: {}
+
+  throttleit@2.1.0: {}
 
   tinybench@2.9.0: {}
 
@@ -6687,7 +6833,7 @@ snapshots:
       tsx: 4.21.0
       yaml: 2.0.0-1
 
-  vitest@4.0.18(@types/node@22.15.3)(@vitest/ui@4.0.18)(happy-dom@20.8.3)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.0.0-1):
+  vitest@4.0.18(@opentelemetry/api@1.9.0)(@types/node@22.15.3)(@vitest/ui@4.0.18)(happy-dom@20.8.3)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.0.0-1):
     dependencies:
       '@vitest/expect': 4.0.18
       '@vitest/mocker': 4.0.18(vite@7.3.1(@types/node@22.15.3)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.0.0-1))
@@ -6710,6 +6856,7 @@ snapshots:
       vite: 7.3.1(@types/node@22.15.3)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.0.0-1)
       why-is-node-running: 2.3.0
     optionalDependencies:
+      '@opentelemetry/api': 1.9.0
       '@types/node': 22.15.3
       '@vitest/ui': 4.0.18(vitest@4.0.18)
       happy-dom: 20.8.3

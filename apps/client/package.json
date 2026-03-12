@@ -11,9 +11,13 @@
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^3.0.41",
+    "@ai-sdk/react": "^3.0.118",
     "@clerk/nextjs": "^7.0.2",
     "@meilisearch/instant-meilisearch": "^0.30.0",
     "@repo/types": "workspace:*",
+    "ai": "^6.0.116",
+    "driver.js": "^1.4.0",
     "next": "16.1.5",
     "nuqs": "^2.8.9",
     "react": "^19.2.0",
