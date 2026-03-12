@@ -3,6 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Product } from '@repo/types';
 import { StarRating } from '../ui/star-rating';
+import { WishlistButton } from './wishlist-button';
+import { CompareCheckbox } from './compare-checkbox';
 
 interface ProductCardProps {
   product: Product & {
@@ -19,7 +21,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const onSale = product.compareAtPrice && product.compareAtPrice > product.price;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-200">
+    <div className="group/card bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-200">
       <Link href={`/products/${product.slug}`} className="block">
         <div className="aspect-square relative bg-gray-100">
           {hasImage ? (
@@ -56,6 +58,21 @@ export function ProductCard({ product }: ProductCardProps) {
               </svg>
             </div>
           )}
+
+          {/* Wishlist button — top-right overlay */}
+          <div className="absolute top-2 right-2 z-10 opacity-0 group-hover/card:opacity-100 sm:opacity-0 sm:group-hover/card:opacity-100 opacity-100 transition-opacity duration-200">
+            <WishlistButton productId={product.id} price={product.price} size="sm" />
+          </div>
+
+          {/* Compare checkbox — top-left overlay */}
+          <div className="absolute top-2 left-2 z-10 opacity-0 group-hover/card:opacity-100 sm:opacity-0 sm:group-hover/card:opacity-100 opacity-100 transition-opacity duration-200">
+            <CompareCheckbox
+              productId={product.id}
+              name={product.name}
+              imageUrl={imageUrl || ''}
+              slug={product.slug}
+            />
+          </div>
         </div>
 
         <div className="p-4">
