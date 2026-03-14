@@ -499,7 +499,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 **Plans**: 5 plans
 
 Plans:
-- [ ] 22-00-PLAN.md — Wave 0: Install AI SDK and Driver.js packages, create test stubs for all Phase 22 behaviors
+- [x] 22-00-PLAN.md — Wave 0: Install AI SDK and Driver.js packages, create test stubs for all Phase 22 behaviors (completed 2026-03-14)
 - [ ] 22-01-PLAN.md — Client AI shopping assistant: chat API route with rate limiting and ChatWidget components
 - [ ] 22-02-PLAN.md — Admin AI helper: chat API route with admin system prompt and AdminChatWidget components
 - [ ] 22-03-PLAN.md — Guidance system: HelpTooltip, useTour hook with Driver.js, tour step definitions for client and admin
