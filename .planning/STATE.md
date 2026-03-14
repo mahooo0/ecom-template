@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 09-03: Mini Cart Drawer"
-last_updated: "2026-03-14T19:52:28.827Z"
+stopped_at: "Completed 09-04: Cart Page UI"
+last_updated: "2026-03-14T19:54:21.612Z"
 last_activity: "2026-03-11 -- Completed plan 05-02: Search API Endpoints and Admin Settings"
 progress:
   total_phases: 23
-  completed_phases: 10
+  completed_phases: 11
   total_plans: 65
-  completed_plans: 64
+  completed_plans: 65
   percent: 84
 ---
 
@@ -120,6 +120,7 @@ Progress: [████████░░] 84%
 | Phase 09 P01 | 259 | 2 tasks | 5 files |
 | Phase 09 P02 | 2 | 2 tasks | 4 files |
 | Phase 09 P03 | 102 | 2 tasks | 4 files |
+| Phase 09 P04 | 3 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -297,6 +298,8 @@ Recent decisions affecting current work:
 - [Phase 09-02]: api.cart methods all accept token as last parameter and forward via Authorization Bearer — consistent with server auth middleware
 - [Phase 09]: Controlled MiniCartDrawer with open/onClose props — CartHeaderButton owns drawer open state, cleaner separation than event pattern
 - [Phase 09]: useCartSync placed inside CartHeaderButton rather than separate provider — reduces component tree depth, follows WishlistHeaderBadge pattern
+- [Phase 09-04]: Fire-and-forget pattern for cart mutations: Zustand update is optimistic, API call runs in background for auth users
+- [Phase 09-04]: Stock validation fires on mount and items change — validates on page load and quantity change
 
 ### Roadmap Evolution
 
@@ -313,6 +316,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T19:52:28.824Z
-Stopped at: Completed 09-03: Mini Cart Drawer
+Last session: 2026-03-14T19:54:21.608Z
+Stopped at: Completed 09-04: Cart Page UI
 Resume file: None
