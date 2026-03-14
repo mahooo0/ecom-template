@@ -13,6 +13,7 @@ type EventMap = {
   'inventory.stockUpdated': { variantId: string; warehouseId: string; quantity: number; available: number };
   'wishlist.priceDrop': { productId: string; oldPrice: number; newPrice: number; affectedUserIds: string[] };
   'wishlist.restock': { productId: string; affectedUserIds: string[] };
+  'cart.updated': { cartId: string; userId?: string; sessionId?: string; itemCount: number };
 };
 
 class EventBus {
