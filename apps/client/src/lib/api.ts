@@ -1,4 +1,4 @@
-import type { ApiResponse, PaginatedResponse, Product, Order, Category, Collection, Brand } from '@repo/types';
+import type { ApiResponse, PaginatedResponse, Product, Order, Category, Collection, Brand, CartItem } from '@repo/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
 
@@ -136,5 +136,61 @@ export const api = {
   brands: {
     getAll: () => fetcher<ApiResponse<Brand[]>>('/brands'),
     getBySlug: (slug: string) => fetcher<ApiResponse<Brand>>(`/brands/slug/${slug}`),
+  },
+  cart: {
+    get: (token: string) =>
+      fetcher<ApiResponse<{ items: CartItem[]; couponCode?: string | null; discountAmount?: number }>>('/cart', {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    addItem: (item: CartItem, token: string) =>
+      fetcher<ApiResponse<unknown>>('/cart/items', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify(item),
+      }),
+    updateQuantity: (productId: string, variantId: string | undefined, quantity: number, token: string) =>
+      fetcher<ApiResponse<unknown>>('/cart/items', {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ productId, variantId, quantity }),
+      }),
+    removeItem: (productId: string, variantId: string | undefined, token: string) =>
+      fetcher<ApiResponse<unknown>>('/cart/items', {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ productId, variantId }),
+      }),
+    clear: (token: string) =>
+      fetcher<ApiResponse<unknown>>('/cart', {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    merge: (items: CartItem[], couponCode: string | null, token: string) =>
+      fetcher<ApiResponse<unknown>>('/cart/merge', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ items, couponCode }),
+      }),
+    applyCoupon: (code: string, token: string) =>
+      fetcher<ApiResponse<unknown>>('/cart/coupon', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ code }),
+      }),
+    removeCoupon: (token: string) =>
+      fetcher<ApiResponse<unknown>>('/cart/coupon', {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    validateCoupon: (code: string, token: string) =>
+      fetcher<ApiResponse<unknown>>('/cart/coupon/validate', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ code }),
+      }),
+    validateStock: (token: string) =>
+      fetcher<ApiResponse<unknown>>('/cart/stock-validation', {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
   },
 };

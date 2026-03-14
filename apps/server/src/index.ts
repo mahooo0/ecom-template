@@ -17,6 +17,7 @@ import { searchRoutes } from './modules/search/search.routes.js';
 import { inventoryRoutes } from './modules/inventory/inventory.routes.js';
 import { startReservationCleanup } from './modules/inventory/reservation.cleanup.js';
 import { wishlistRoutes } from './modules/wishlist/wishlist.routes.js';
+import { cartRoutes } from './modules/cart/cart.routes.js';
 import { registerWishlistEventListeners } from './modules/wishlist/wishlist.events.js';
 import { searchService } from './modules/search/search.service.js';
 import './modules/search/sync.service.js'; // Side-effect import: registers event listeners
@@ -47,6 +48,7 @@ app.use('/api/shipping', shippingRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/cart', cartRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {
