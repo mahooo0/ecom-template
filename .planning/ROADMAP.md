@@ -467,7 +467,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 6. Filter System | 6/6 | Complete   | 2026-03-11 |
 | 7. Product Page | 6/6 | Complete   | 2026-03-11 |
 | 8. Wishlist & Compare | 6/6 | Complete   | 2026-03-12 |
-| 9. Cart System | 0/5 | Planning complete | - |
+| 9. Cart System | 1/5 | In Progress|  |
 | 10. Checkout | 0/7 | Not started | - |
 | 11. Payments | 0/5 | Not started | - |
 | 12. Order System | 0/7 | Not started | - |
@@ -508,7 +508,7 @@ Plans:
 **Goal:** [To be planned]
 **Requirements**: TBD
 **Depends on:** Phase 22
-**Plans:** 5/5 plans complete
+**Plans:** 1/5 plans executed
 
 Plans:
 - [ ] TBD (run /gsd:plan-phase 23 to break down)

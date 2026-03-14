@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 22-04: Wire AI Assistants into App Layouts (Phase 22 complete)"
-last_updated: "2026-03-14T19:20:35.720Z"
+stopped_at: "Completed 09-00: Cart Test Infrastructure"
+last_updated: "2026-03-14T19:37:09.873Z"
 last_activity: "2026-03-11 -- Completed plan 05-02: Search API Endpoints and Admin Settings"
 progress:
   total_phases: 23
   completed_phases: 10
-  total_plans: 57
-  completed_plans: 60
+  total_plans: 65
+  completed_plans: 61
   percent: 84
 ---
 
@@ -116,6 +116,7 @@ Progress: [████████░░] 84%
 | Phase 22 P02 | 101 | 2 tasks | 4 files |
 | Phase 22 P04 | 2 | 1 tasks | 2 files |
 | Phase 22 P04 | 2 | 2 tasks | 2 files |
+| Phase 09 P00 | 99 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -283,6 +284,9 @@ Recent decisions affecting current work:
 - [Phase 22]: AdminChatWidget placed after flex container closing tag — available on all admin pages without sidebar interference
 - [Phase 22]: ChatWidget placed after {children} inside NuqsAdapter as fixed-position element — no layout impact
 - [Phase 22]: AdminChatWidget placed after flex container closing tag — available on all admin pages without sidebar interference
+- [Phase 09-00]: coupon mock added to prismaMock in setup.ts following wishlist/shippingZone pattern
+- [Phase 09-00]: Cart fixtures use MongoDB shape (_id, userId/sessionId) distinct from Prisma shape
+- [Phase 09-00]: mockCartItemNoVariant uses variantId: undefined for simple product testing
 
 ### Roadmap Evolution
 
@@ -299,6 +303,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T19:16:48.731Z
-Stopped at: Completed 22-04: Wire AI Assistants into App Layouts (Phase 22 complete)
+Last session: 2026-03-14T19:37:09.869Z
+Stopped at: Completed 09-00: Cart Test Infrastructure
 Resume file: None

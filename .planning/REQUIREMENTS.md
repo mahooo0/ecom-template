@@ -101,15 +101,15 @@ Requirements for initial release. Each maps to roadmap phases. 21 features, each
 
 ### Cart System
 
-- [ ] **CART-01**: User can add products to cart with selected variant, quantity
-- [ ] **CART-02**: Cart supports guest users (localStorage/cookie) and authenticated users (database)
-- [ ] **CART-03**: Guest cart merges with authenticated cart on login
-- [ ] **CART-04**: Cart persists across browser sessions
-- [ ] **CART-05**: User can update quantity, remove items, and clear cart
-- [ ] **CART-06**: Cart shows real-time price calculation (subtotal, tax estimate, shipping estimate)
-- [ ] **CART-07**: User can apply coupon/promo codes to cart with validation feedback
-- [ ] **CART-08**: Cart validates stock availability before checkout and shows warnings for low/out-of-stock items
-- [ ] **CART-09**: Mini cart (slide-out/dropdown) accessible from header on all pages
+- [x] **CART-01**: User can add products to cart with selected variant, quantity
+- [x] **CART-02**: Cart supports guest users (localStorage/cookie) and authenticated users (database)
+- [x] **CART-03**: Guest cart merges with authenticated cart on login
+- [x] **CART-04**: Cart persists across browser sessions
+- [x] **CART-05**: User can update quantity, remove items, and clear cart
+- [x] **CART-06**: Cart shows real-time price calculation (subtotal, tax estimate, shipping estimate)
+- [x] **CART-07**: User can apply coupon/promo codes to cart with validation feedback
+- [x] **CART-08**: Cart validates stock availability before checkout and shows warnings for low/out-of-stock items
+- [x] **CART-09**: Mini cart (slide-out/dropdown) accessible from header on all pages
 
 ### Checkout
 
@@ -346,15 +346,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | WISH-04 | Phase 8: Wishlist & Compare | Complete |
 | WISH-05 | Phase 8: Wishlist & Compare | Complete |
 | WISH-06 | Phase 8: Wishlist & Compare | Complete |
-| CART-01 | Phase 9: Cart System | Pending |
-| CART-02 | Phase 9: Cart System | Pending |
-| CART-03 | Phase 9: Cart System | Pending |
-| CART-04 | Phase 9: Cart System | Pending |
-| CART-05 | Phase 9: Cart System | Pending |
-| CART-06 | Phase 9: Cart System | Pending |
-| CART-07 | Phase 9: Cart System | Pending |
-| CART-08 | Phase 9: Cart System | Pending |
-| CART-09 | Phase 9: Cart System | Pending |
+| CART-01 | Phase 9: Cart System | Complete |
+| CART-02 | Phase 9: Cart System | Complete |
+| CART-03 | Phase 9: Cart System | Complete |
+| CART-04 | Phase 9: Cart System | Complete |
+| CART-05 | Phase 9: Cart System | Complete |
+| CART-06 | Phase 9: Cart System | Complete |
+| CART-07 | Phase 9: Cart System | Complete |
+| CART-08 | Phase 9: Cart System | Complete |
+| CART-09 | Phase 9: Cart System | Complete |
 | CHKT-01 | Phase 10: Checkout | Pending |
 | CHKT-02 | Phase 10: Checkout | Pending |
 | CHKT-03 | Phase 10: Checkout | Pending |
