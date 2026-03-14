@@ -481,7 +481,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 20. Multi-Store | 0/5 | Not started | - |
 | 21. Admin Panel | 0/6 | Not started | - |
 | 22. In-App Guidance & AI Assistant | 5/5 | Complete    | 2026-03-14 |
-| 23. UI Design System & Component Library | 0/0 | Not started | - |
+| 23. UI Design System & Component Library | 0/5 | Planning complete | - |
 
 ### Phase 22: In-App Guidance & AI Assistant
 
@@ -505,10 +505,21 @@ Plans:
 
 ### Phase 23: E-Commerce UI Design System & Component Library
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** The client app has a unified minimalist luxury design system with Tailwind v4 theme tokens, reusable UI primitives, polished layout (header/footer), landing page sections, and redesigned product listing components
+**Requirements**: DS-01, DS-02, DS-03, DS-04, DS-05, DS-06, DS-07
 **Depends on:** Phase 22
-**Plans:** 1/5 plans executed
+**Success Criteria** (what must be TRUE):
+  1. Tailwind v4 @theme defines OKLCH color tokens, typography scale, and transition curves for consistent luxury aesthetic
+  2. 10+ UI primitive components (Button, Input, Badge, Sheet, Dialog, Toast, Skeleton, Accordion, Spinner, VisuallyHidden) are available with variant props and className overrides
+  3. Site header has transparent-to-solid scroll behavior, announcement bar, and mobile navigation drawer
+  4. Homepage displays hero sections, category grid, product carousels, trust bar, and newsletter signup
+  5. Product cards use no border/shadow/radius, crossfade image on hover, badges, and hover-revealed quick-add
+  6. Global utilities (BackToTop, CookieConsent, Toaster) are wired into the root layout
+**Plans**: 5 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 23 to break down)
+- [ ] 23-01-PLAN.md — Design tokens (Tailwind v4 @theme), cn() utility, and 10 UI primitive components
+- [ ] 23-02-PLAN.md — Layout system: SiteHeader with scroll behavior, AnnouncementBar, MobileMenuDrawer, SiteFooter
+- [ ] 23-03-PLAN.md — Landing page sections (HeroFullBleed, CategoryGrid, ProductCarousel, TrustBar, NewsletterSignup) and homepage assembly
+- [ ] 23-04-PLAN.md — Product card and listing redesign: crossfade hover, badges, quick-add, color swatches, tight grid
+- [ ] 23-05-PLAN.md — Shared utilities (BackToTop, EmptyState, CookieConsent) and product detail enhancements (ProductAccordion, StockIndicator, DeliveryEstimate)
