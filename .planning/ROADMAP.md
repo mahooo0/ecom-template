@@ -205,16 +205,14 @@ Plans:
   3. Cart persists across browser sessions -- closing and reopening the browser retains cart contents
   4. Cart page shows real-time price calculation (subtotal, tax estimate, shipping estimate) and user can apply coupon codes with validation feedback
   5. Mini cart (slide-out panel) is accessible from the header on all pages, and cart validates stock availability before checkout with warnings for low/out-of-stock items
-**Plans**: TBD (estimated 7-9)
+**Plans**: 5 plans
 
 Plans:
-- [ ] 09-01: TBD
-- [ ] 09-02: TBD
-- [ ] 09-03: TBD
-- [ ] 09-04: TBD
-- [ ] 09-05: TBD
-- [ ] 09-06: TBD
-- [ ] 09-07: TBD
+- [ ] 09-00-PLAN.md — Wave 0: Cart test infrastructure with coupon Prisma mock, fixtures, and test stubs for all CART requirements
+- [ ] 09-01-PLAN.md — Server cart module: Zod validation, CartService CRUD, guest-to-auth merge, coupon validation, stock check, controller, routes
+- [ ] 09-02-PLAN.md — Zustand store extension (coupon state), useCartSync hook, api.cart client, server route wiring, EventMap extension
+- [ ] 09-03-PLAN.md — Mini cart drawer: CartHeaderButton with badge, MiniCartDrawer slide-out, CartItemRow, layout integration
+- [ ] 09-04-PLAN.md — Cart page: CouponSection with validation feedback, PriceSummary breakdown, StockWarning badges, full cart page route
 
 ### Phase 10: Checkout
 **Goal**: Users can complete a purchase through a guided multi-step checkout flow with guest support and mobile optimization
@@ -469,7 +467,7 @@ Note: Some phases share dependencies and could theoretically run in parallel (e.
 | 6. Filter System | 6/6 | Complete   | 2026-03-11 |
 | 7. Product Page | 6/6 | Complete   | 2026-03-11 |
 | 8. Wishlist & Compare | 6/6 | Complete   | 2026-03-12 |
-| 9. Cart System | 0/7 | Not started | - |
+| 9. Cart System | 0/5 | Planning complete | - |
 | 10. Checkout | 0/7 | Not started | - |
 | 11. Payments | 0/5 | Not started | - |
 | 12. Order System | 0/7 | Not started | - |
