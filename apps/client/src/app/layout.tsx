@@ -6,6 +6,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { MegaMenu } from '@/components/navigation/mega-menu';
 import { SearchBar } from '@/components/search/search-bar';
 import { WishlistHeaderBadge } from '@/components/wishlist/wishlist-header-badge';
+import { CartHeaderButton } from '@/components/cart/cart-header-button';
 import { ChatWidget } from '@/components/ai-assistant/ChatWidget';
 import './globals.css';
 
@@ -35,9 +36,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   Products
                 </a>
                 <WishlistHeaderBadge />
-                <a href="/cart" className="text-sm hover:text-gray-600">
-                  Cart
-                </a>
+                <CartHeaderButton />
                 {userId ? (
                   <>
                     <a href="/profile" className="text-sm hover:text-gray-600">
