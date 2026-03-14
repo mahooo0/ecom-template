@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 09-01: Server Cart Module"
-last_updated: "2026-03-14T19:44:25.905Z"
+stopped_at: "Completed 09-02: Client Cart Integration"
+last_updated: "2026-03-14T19:48:44.498Z"
 last_activity: "2026-03-11 -- Completed plan 05-02: Search API Endpoints and Admin Settings"
 progress:
   total_phases: 23
   completed_phases: 10
   total_plans: 65
-  completed_plans: 62
+  completed_plans: 63
   percent: 84
 ---
 
@@ -118,6 +118,7 @@ Progress: [████████░░] 84%
 | Phase 22 P04 | 2 | 2 tasks | 2 files |
 | Phase 09 P00 | 99 | 2 tasks | 7 files |
 | Phase 09 P01 | 259 | 2 tasks | 5 files |
+| Phase 09 P02 | 2 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -291,6 +292,8 @@ Recent decisions affecting current work:
 - [Phase 09-01]: Zod schemas use nested body format matching validate middleware signature — consistent with inventory.validation.ts, not flat like wishlist validation
 - [Phase 09-01]: applyCoupon controller computes subtotal server-side before validateCoupon — never trusts client-provided subtotal
 - [Phase 09-01]: mergeGuestCart silently skips items with zero available stock rather than failing merge
+- [Phase 09-02]: Sequential merge-then-fetch in useCartSync: await POST /api/cart/merge before GET /api/cart to prevent stale cart hydration
+- [Phase 09-02]: api.cart methods all accept token as last parameter and forward via Authorization Bearer — consistent with server auth middleware
 
 ### Roadmap Evolution
 
@@ -307,6 +310,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T19:44:25.898Z
-Stopped at: Completed 09-01: Server Cart Module
+Last session: 2026-03-14T19:48:44.495Z
+Stopped at: Completed 09-02: Client Cart Integration
 Resume file: None
