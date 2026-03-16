@@ -81,12 +81,12 @@ export default async function ProductPage({ params }: PageProps) {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="mx-auto max-w-container px-4 py-12 sm:px-6 lg:px-8">
       {/* Above the fold: client island */}
       <ProductPageClient product={product} />
 
       {/* Below the fold: server-rendered sections */}
-      <div className="mt-12 space-y-8">
+      <div className="mt-16 space-y-12 border-t border-neutral-200 pt-12">
         {/* Digital product info */}
         {isDigital && product.digitalMeta && (
           <section>

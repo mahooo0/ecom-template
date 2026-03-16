@@ -2,15 +2,28 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useAuth } from '@clerk/nextjs';
 import { api } from '@/lib/api';
-import { CreateMethodForm } from './create-method-form';
+import { MethodSheet } from './method-sheet';
 import type { ShippingZone, ShippingMethod } from '@repo/types';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { DataTableRowActions } from '@/components/DataTableRowActions';
+import { ArrowLeft, Pencil, Trash2 } from 'lucide-react';
 
 export default function ZoneDetailPage() {
-  const params = useParams();
+  const { id: zoneId } = useParams<{ id: string }>();
   const router = useRouter();
-  const zoneId = params.id as string;
+  const { getToken } = useAuth();
 
   const [zone, setZone] = useState<(ShippingZone & { methods: ShippingMethod[] }) | null>(null);
   const [loading, setLoading] = useState(true);
@@ -24,7 +37,8 @@ export default function ZoneDetailPage() {
   const fetchZone = async () => {
     try {
       setLoading(true);
-      const response = await api.shipping.zones.getById(zoneId);
+      const token = await getToken();
+      const response = await api.shipping.zones.getById(zoneId, token || undefined);
       if (response.success && response.data) {
         setZone(response.data);
         setZoneName(response.data.name);
@@ -50,6 +64,7 @@ export default function ZoneDetailPage() {
     if (!zone) return;
 
     try {
+      const token = await getToken();
       const data: any = {
         name: zoneName.trim(),
         isActive: zoneActive,
@@ -58,7 +73,7 @@ export default function ZoneDetailPage() {
       if (zoneThreshold) {
         const threshold = parseFloat(zoneThreshold);
         if (isNaN(threshold) || threshold < 0) {
-          alert('Free shipping threshold must be a valid positive number');
+          setError('Free shipping threshold must be a valid positive number');
           return;
         }
         data.freeShippingThreshold = Math.round(threshold * 100);
@@ -66,24 +81,21 @@ export default function ZoneDetailPage() {
         data.freeShippingThreshold = null;
       }
 
-      await api.shipping.zones.update(zoneId, data);
+      await api.shipping.zones.update(zoneId, data, token || undefined);
       await fetchZone();
       setEditingZone(false);
     } catch (err: any) {
-      alert(err.message || 'Failed to update zone');
+      setError(err.message || 'Failed to update zone');
     }
   };
 
-  const handleDeleteMethod = async (methodId: string, methodName: string) => {
-    if (!window.confirm(`Are you sure you want to delete method "${methodName}"?`)) {
-      return;
-    }
-
+  const handleDeleteMethod = async (methodId: string) => {
     try {
-      await api.shipping.methods.delete(methodId);
+      const token = await getToken();
+      await api.shipping.methods.delete(methodId, token || undefined);
       await fetchZone();
     } catch (err: any) {
-      alert(err.message || 'Failed to delete method');
+      setError(err.message || 'Failed to delete method');
     }
   };
 
@@ -94,14 +106,10 @@ export default function ZoneDetailPage() {
 
   const getRateTypeBadgeColor = (rateType: string) => {
     switch (rateType) {
-      case 'FLAT_RATE':
-        return 'bg-blue-100 text-blue-800';
-      case 'WEIGHT_BASED':
-        return 'bg-green-100 text-green-800';
-      case 'PRICE_BASED':
-        return 'bg-purple-100 text-purple-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
+      case 'FLAT_RATE': return 'bg-blue-100 text-blue-800';
+      case 'WEIGHT_BASED': return 'bg-green-100 text-green-800';
+      case 'PRICE_BASED': return 'bg-purple-100 text-purple-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -129,61 +137,56 @@ export default function ZoneDetailPage() {
   if (loading) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <div className="text-gray-500">Loading zone...</div>
+        <div className="text-muted-foreground">Loading zone...</div>
       </div>
     );
   }
 
-  if (error || !zone) {
+  if (error && !zone) {
     return (
       <div className="space-y-4">
         <div className="rounded-md bg-red-50 p-4 text-sm text-red-800">
           {error || 'Zone not found'}
         </div>
-        <Link
-          href="/dashboard/shipping/zones"
-          className="inline-block text-blue-600 hover:text-blue-900"
-        >
-          &larr; Back to zones
-        </Link>
+        <Button variant="ghost" onClick={() => router.push('/dashboard/shipping/zones')}>
+          <ArrowLeft className="h-4 w-4 mr-2" /> Back to zones
+        </Button>
       </div>
     );
   }
 
+  if (!zone) return null;
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Link
-            href="/dashboard/shipping/zones"
-            className="text-blue-600 hover:text-blue-900"
-          >
-            &larr; Back
-          </Link>
-          <h1 className="text-3xl font-bold">Zone: {zone.name}</h1>
-        </div>
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" onClick={() => router.push('/dashboard/shipping/zones')}>
+          <ArrowLeft className="h-4 w-4 mr-2" /> Back
+        </Button>
+        <h1 className="text-2xl font-bold">Zone: {zone.name}</h1>
+        <Badge variant="secondary">
+          {zone.isActive ? 'Active' : 'Inactive'}
+        </Badge>
       </div>
 
+      {error && (
+        <div className="rounded-md bg-red-50 p-4 text-sm text-red-800">{error}</div>
+      )}
+
       {/* Zone Info Card */}
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow">
+      <div className="rounded-lg border bg-card p-6 shadow-sm">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold">Zone Information</h2>
+          <h2 className="text-lg font-semibold">Zone Information</h2>
           {!editingZone ? (
-            <button
-              onClick={() => setEditingZone(true)}
-              className="text-sm text-blue-600 hover:text-blue-900"
-            >
-              Edit
-            </button>
+            <Button variant="outline" size="sm" onClick={() => setEditingZone(true)}>
+              <Pencil className="h-4 w-4 mr-2" /> Edit
+            </Button>
           ) : (
             <div className="flex gap-2">
-              <button
-                onClick={handleUpdateZone}
-                className="rounded-md bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700"
-              >
-                Save
-              </button>
-              <button
+              <Button size="sm" onClick={handleUpdateZone}>Save</Button>
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => {
                   setEditingZone(false);
                   setZoneName(zone.name);
@@ -194,62 +197,60 @@ export default function ZoneDetailPage() {
                   );
                   setZoneActive(zone.isActive);
                 }}
-                className="rounded-md border border-gray-300 px-3 py-1 text-sm text-gray-700 hover:bg-gray-50"
               >
                 Cancel
-              </button>
+              </Button>
             </div>
           )}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Zone Name</label>
+            <label className="block text-sm font-medium text-muted-foreground">Zone Name</label>
             {editingZone ? (
-              <input
-                type="text"
+              <Input
                 value={zoneName}
                 onChange={(e) => setZoneName(e.target.value)}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="mt-1"
               />
             ) : (
-              <p className="mt-1 text-gray-900">{zone.name}</p>
+              <p className="mt-1 text-foreground">{zone.name}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Countries</label>
-            <p className="mt-1 text-gray-900">{zone.countries.join(', ')}</p>
+            <label className="block text-sm font-medium text-muted-foreground">Countries</label>
+            <p className="mt-1 text-foreground">{zone.countries.join(', ')}</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">States/Provinces</label>
-            <p className="mt-1 text-gray-900">
+            <label className="block text-sm font-medium text-muted-foreground">States/Provinces</label>
+            <p className="mt-1 text-foreground">
               {zone.states.length > 0 ? zone.states.join(', ') : 'All'}
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-muted-foreground">
               Free Shipping Threshold
             </label>
             {editingZone ? (
               <div className="relative mt-1">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <span className="text-gray-500">$</span>
+                  <span className="text-muted-foreground">$</span>
                 </div>
-                <input
+                <Input
                   type="number"
                   value={zoneThreshold}
                   onChange={(e) => setZoneThreshold(e.target.value)}
                   step="0.01"
                   min="0"
-                  className="block w-full rounded-md border border-gray-300 py-2 pl-7 pr-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                  className="pl-7"
                   placeholder="0.00"
                 />
               </div>
             ) : (
-              <p className="mt-1 text-gray-900">
+              <p className="mt-1 text-foreground">
                 {zone.freeShippingThreshold
                   ? `$${(zone.freeShippingThreshold / 100).toFixed(2)}`
                   : 'None'}
@@ -258,136 +259,111 @@ export default function ZoneDetailPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Status</label>
+            <label className="block text-sm font-medium text-muted-foreground">Status</label>
             {editingZone ? (
               <div className="mt-1 flex items-center">
                 <input
                   type="checkbox"
                   checked={zoneActive}
                   onChange={(e) => setZoneActive(e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="h-4 w-4 rounded border-input"
                 />
-                <span className="ml-2 text-sm text-gray-700">Active</span>
+                <span className="ml-2 text-sm text-foreground">Active</span>
               </div>
             ) : (
-              <span
-                className={`mt-1 inline-flex rounded-full px-2 py-1 text-xs font-semibold leading-5 ${
-                  zone.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                }`}
-              >
+              <Badge variant="secondary" className="mt-1">
                 {zone.isActive ? 'Active' : 'Inactive'}
-              </span>
+              </Badge>
             )}
           </div>
         </div>
       </div>
 
       {/* Shipping Methods */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold">Shipping Methods</h2>
-          <button
-            onClick={() => setShowMethodForm(!showMethodForm)}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+      <div className="rounded-lg border bg-card shadow-sm">
+        <div className="flex items-center justify-between p-6 border-b">
+          <h2 className="text-lg font-semibold">Shipping Methods</h2>
+          <Button
+            size="sm"
+            onClick={() => setShowMethodForm(true)}
           >
-            {showMethodForm ? 'Cancel' : 'Add Method'}
-          </button>
+            Add Method
+          </Button>
         </div>
 
-        {showMethodForm && (
-          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow">
-            <h3 className="mb-4 text-lg font-semibold">Create New Method</h3>
-            <CreateMethodForm zoneId={zoneId} onSuccess={handleMethodSuccess} />
-          </div>
-        )}
+        <MethodSheet
+          open={showMethodForm}
+          onOpenChange={setShowMethodForm}
+          zoneId={zoneId}
+          onSuccess={handleMethodSuccess}
+        />
 
         {zone.methods.length === 0 ? (
-          <div className="rounded-lg border border-gray-200 bg-white p-8 text-center">
-            <p className="text-gray-500">
+          <div className="p-8 text-center">
+            <p className="text-muted-foreground">
               No shipping methods configured. Add one to get started.
             </p>
           </div>
         ) : (
-          <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                    Rate Type
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                    Rate Details
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                    Delivery
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                    Position
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 bg-white">
-                {zone.methods
-                  .sort((a, b) => a.position - b.position)
-                  .map((method) => (
-                    <tr key={method.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">{method.name}</div>
-                        {method.description && (
-                          <div className="text-sm text-gray-500">{method.description}</div>
-                        )}
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4">
-                        <span
-                          className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold leading-5 ${getRateTypeBadgeColor(method.rateType)}`}
-                        >
-                          {method.rateType.replace('_', ' ')}
-                        </span>
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                        {formatRateDetails(method)}
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                        {method.estimatedDaysMin && method.estimatedDaysMax
-                          ? `${method.estimatedDaysMin}-${method.estimatedDaysMax} days`
-                          : 'N/A'}
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                        {method.position}
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4">
-                        <span
-                          className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold leading-5 ${
-                            method.isActive
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-gray-100 text-gray-800'
-                          }`}
-                        >
-                          {method.isActive ? 'Active' : 'Inactive'}
-                        </span>
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
-                        <button
-                          onClick={() => handleDeleteMethod(method.id, method.name)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Rate Type</TableHead>
+                <TableHead>Rate Details</TableHead>
+                <TableHead>Delivery</TableHead>
+                <TableHead>Position</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {zone.methods
+                .sort((a, b) => a.position - b.position)
+                .map((method) => (
+                  <TableRow key={method.id}>
+                    <TableCell>
+                      <div className="font-medium text-foreground">{method.name}</div>
+                      {method.description && (
+                        <div className="text-sm text-muted-foreground">{method.description}</div>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="secondary" className={getRateTypeBadgeColor(method.rateType)}>
+                        {method.rateType.replace('_', ' ')}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {formatRateDetails(method)}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {method.estimatedDaysMin && method.estimatedDaysMax
+                        ? `${method.estimatedDaysMin}-${method.estimatedDaysMax} days`
+                        : 'N/A'}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {method.position}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="secondary">
+                        {method.isActive ? 'Active' : 'Inactive'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <DataTableRowActions actions={[
+                        {
+                          label: 'Delete',
+                          onClick: () => handleDeleteMethod(method.id),
+                          variant: 'destructive',
+                          icon: <Trash2 className="h-4 w-4" />,
+                          confirm: `Delete method "${method.name}"?`,
+                        },
+                      ]} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
         )}
       </div>
     </div>

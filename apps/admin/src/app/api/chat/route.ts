@@ -62,8 +62,8 @@ If asked about technical issues or bugs, suggest checking the documentation or c
   const result = streamText({
     model: openai('gpt-4o-mini'),
     system: systemPrompt,
-    messages: convertToModelMessages(messages),
-    maxTokens: 500,
+    messages: await convertToModelMessages(messages),
+    maxOutputTokens: 500,
   });
 
   return result.toUIMessageStreamResponse();

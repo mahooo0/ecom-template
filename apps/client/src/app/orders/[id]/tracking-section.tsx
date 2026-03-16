@@ -31,38 +31,38 @@ export default function TrackingSection({ order }: TrackingSectionProps) {
 
   const getStatusBadgeColor = (status: string) => {
     const colors: Record<string, string> = {
-      PENDING: 'bg-yellow-100 text-yellow-800',
-      PAID: 'bg-green-100 text-green-800',
-      PROCESSING: 'bg-blue-100 text-blue-800',
-      SHIPPED: 'bg-purple-100 text-purple-800',
-      DELIVERED: 'bg-green-100 text-green-800',
-      CANCELLED: 'bg-red-100 text-red-800',
-      RETURNED: 'bg-orange-100 text-orange-800',
-      REFUND_REQUESTED: 'bg-pink-100 text-pink-800',
+      PENDING: 'bg-utility-warning-50 text-utility-warning-700',
+      PAID: 'bg-utility-success-50 text-utility-success-700',
+      PROCESSING: 'bg-utility-brand-50 text-utility-brand-700',
+      SHIPPED: 'bg-utility-purple-50 text-utility-purple-700',
+      DELIVERED: 'bg-utility-success-50 text-utility-success-700',
+      CANCELLED: 'bg-utility-error-50 text-utility-error-700',
+      RETURNED: 'bg-utility-orange-50 text-utility-orange-700',
+      REFUND_REQUESTED: 'bg-utility-pink-50 text-utility-pink-700',
     };
-    return colors[status] || 'bg-gray-100 text-gray-800';
+    return colors[status] || 'bg-secondary_subtle text-primary';
   };
 
   return (
-    <div className="border rounded-lg p-6 bg-white shadow-sm">
+    <div className="border border-border-secondary rounded-lg p-6 bg-primary shadow-sm">
       <h2 className="text-lg font-semibold mb-4">Tracking Information</h2>
 
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-gray-600">Status</span>
+          <span className="text-tertiary">Status</span>
           <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusBadgeColor(order.status)}`}>
             {order.status}
           </span>
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-gray-600">Carrier</span>
+          <span className="text-tertiary">Carrier</span>
           <span className="font-medium">{carrier}</span>
         </div>
 
         <div className="flex flex-col gap-1">
-          <span className="text-gray-600">Tracking Number</span>
-          <span className="font-mono text-sm bg-gray-100 px-3 py-2 rounded break-all">
+          <span className="text-tertiary">Tracking Number</span>
+          <span className="font-mono text-sm bg-secondary_subtle px-3 py-2 rounded break-all">
             {trackingNumber}
           </span>
         </div>
@@ -73,7 +73,7 @@ export default function TrackingSection({ order }: TrackingSectionProps) {
               href={trackingUrl(trackingNumber)}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block w-full text-center bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+              className="inline-block w-full text-center bg-brand-solid text-white py-2 px-4 rounded-md hover:bg-brand-solid_hover transition-colors"
             >
               Track Package
             </a>
@@ -81,15 +81,15 @@ export default function TrackingSection({ order }: TrackingSectionProps) {
         )}
 
         {shippedAt && (
-          <div className="flex items-center justify-between pt-2 border-t">
-            <span className="text-gray-600">Shipped</span>
+          <div className="flex items-center justify-between pt-2 border-t border-border-secondary">
+            <span className="text-tertiary">Shipped</span>
             <span className="font-medium">{formatDate(shippedAt)}</span>
           </div>
         )}
 
         {estimatedDelivery && (
           <div className="flex items-center justify-between">
-            <span className="text-gray-600">Estimated Delivery</span>
+            <span className="text-tertiary">Estimated Delivery</span>
             <span className="font-medium">{formatDate(estimatedDelivery)}</span>
           </div>
         )}

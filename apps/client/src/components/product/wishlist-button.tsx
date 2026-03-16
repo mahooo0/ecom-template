@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth, useUser } from '@clerk/nextjs';
 import { useWishlistStore } from '../../stores/wishlist-store';
+import { api } from '@/lib/api';
 
 interface WishlistButtonProps {
   productId: string;
@@ -15,78 +16,57 @@ export function WishlistButton({ productId, price, size = 'md', className = '' }
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const { hasItem, toggleItem, addItem, removeItem } = useWishlistStore((s) => ({
-    hasItem: s.hasItem,
-    toggleItem: s.toggleItem,
-    addItem: s.addItem,
-    removeItem: s.removeItem,
-  }));
+  const items = useWishlistStore((s) => s.items);
+  const toggleItem = useWishlistStore((s) => s.toggleItem);
+  const addItem = useWishlistStore((s) => s.addItem);
+  const removeItem = useWishlistStore((s) => s.removeItem);
 
   const { isSignedIn } = useUser();
   const { getToken } = useAuth();
 
-  const isInWishlist = mounted ? hasItem(productId) : false;
+  const isInWishlist = mounted ? items.some((i) => i.productId === productId) : false;
 
-  const iconSize = size === 'sm' ? 'w-4 h-4' : 'w-5 h-5';
+  const iconSize = size === 'sm' ? 'size-4' : 'size-5';
 
   const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    const wasInWishlist = hasItem(productId);
+    const wasInWishlist = items.some((i) => i.productId === productId);
 
-    // Step 1: Optimistic update
     toggleItem(productId, price);
 
-    // Step 2: Background API sync for authenticated users
     if (isSignedIn) {
       try {
         const token = await getToken();
+        if (!token) return;
         if (wasInWishlist) {
-          // Was removing
-          const res = await fetch(`/api/wishlist/${productId}`, {
-            method: 'DELETE',
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (!res.ok) throw new Error('Failed to remove from wishlist');
+          await api.wishlist.removeItem(productId, token);
         } else {
-          // Was adding
-          const res = await fetch('/api/wishlist', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ productId, priceAtAdd: price }),
-          });
-          if (!res.ok) throw new Error('Failed to add to wishlist');
+          await api.wishlist.addItem(productId, price, token);
         }
       } catch {
-        // Step 3: Revert on failure
         if (wasInWishlist) {
-          // Was removing but failed — re-add
           addItem({ productId, priceAtAdd: price });
         } else {
-          // Was adding but failed — remove
           removeItem(productId);
         }
       }
     }
-    // Guest users: localStorage-only, no API call needed
   };
 
   return (
     <button
       onClick={handleClick}
       aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
-      className={`flex items-center justify-center rounded-full bg-white bg-opacity-80 hover:bg-opacity-100 p-1.5 shadow-sm transition-all duration-200 ${className}`}
+      className={`flex items-center justify-center rounded-full bg-white/90 p-1.5 shadow-sm backdrop-blur-sm transition hover:bg-white ${className}`}
     >
       <svg
         className={`${iconSize} transition-colors duration-200 ${
-          isInWishlist ? 'fill-red-500 text-red-500' : 'fill-none text-gray-400 hover:text-red-400'
+          isInWishlist ? 'fill-neutral-900 text-neutral-900' : 'fill-none text-neutral-400 hover:text-neutral-700'
         }`}
         stroke="currentColor"
-        strokeWidth={2}
+        strokeWidth={1.5}
         viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"
       >

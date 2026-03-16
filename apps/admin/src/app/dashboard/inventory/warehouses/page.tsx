@@ -1,8 +1,26 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import { api } from '@/lib/api';
-import { WarehouseForm } from './warehouse-form';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { DataTableRowActions } from '@/components/DataTableRowActions';
+import { DataTableFilters, type FilterConfig } from '@/components/DataTableFilters';
+import { Pencil, Power, PowerOff } from 'lucide-react';
+import { WarehouseSheet } from './warehouse-sheet';
+
+const warehouseFilterConfigs: FilterConfig[] = [
+  { key: 'search', label: 'Search', type: 'search', placeholder: 'Search warehouses...' },
+];
 
 interface Warehouse {
   id: string;
@@ -16,16 +34,27 @@ interface Warehouse {
 }
 
 export default function WarehousesPage() {
+  const { getToken } = useAuth();
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showForm, setShowForm] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
   const [editingWarehouse, setEditingWarehouse] = useState<Warehouse | null>(null);
+  const [filterValues, setFilterValues] = useState<Record<string, any>>({ search: '' });
+
+  const filteredWarehouses = useMemo(() => {
+    const search = (filterValues.search as string || '').toLowerCase();
+    if (!search) return warehouses;
+    return warehouses.filter(
+      (w) => w.name.toLowerCase().includes(search) || w.code.toLowerCase().includes(search)
+    );
+  }, [warehouses, filterValues.search]);
 
   const fetchWarehouses = async () => {
     try {
       setLoading(true);
-      const response = await api.inventory.warehouses.getAll();
+      const token = await getToken();
+      const response = await api.inventory.warehouses.getAll(token || undefined);
       if (response.success && response.data) {
         setWarehouses(response.data);
       }
@@ -42,41 +71,34 @@ export default function WarehousesPage() {
 
   const handleToggleActive = async (warehouse: Warehouse) => {
     const action = warehouse.isActive ? 'deactivate' : 'activate';
-    if (!window.confirm(`Are you sure you want to ${action} "${warehouse.name}"?`)) {
-      return;
-    }
     try {
+      const token = await getToken();
       if (warehouse.isActive) {
-        await api.inventory.warehouses.delete(warehouse.id);
+        await api.inventory.warehouses.delete(warehouse.id, token || undefined);
       } else {
-        await api.inventory.warehouses.update(warehouse.id, { isActive: true });
+        await api.inventory.warehouses.update(warehouse.id, { isActive: true }, token || undefined);
       }
       await fetchWarehouses();
     } catch (err: any) {
-      alert(err.message || `Failed to ${action} warehouse`);
+      setError(err.message || `Failed to ${action} warehouse`);
     }
   };
 
   const handleEdit = (warehouse: Warehouse) => {
     setEditingWarehouse(warehouse);
-    setShowForm(true);
+    setSheetOpen(true);
   };
 
   const handleFormSave = () => {
-    setShowForm(false);
+    setSheetOpen(false);
     setEditingWarehouse(null);
     fetchWarehouses();
-  };
-
-  const handleFormCancel = () => {
-    setShowForm(false);
-    setEditingWarehouse(null);
   };
 
   if (loading) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <div className="text-gray-500">Loading warehouses...</div>
+        <div className="text-muted-foreground">Loading warehouses...</div>
       </div>
     );
   }
@@ -85,121 +107,93 @@ export default function WarehousesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Warehouses</h1>
-        <button
-          onClick={() => {
-            setEditingWarehouse(null);
-            setShowForm(!showForm);
-          }}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-        >
-          {showForm && !editingWarehouse ? 'Cancel' : 'Add Warehouse'}
-        </button>
+        <Button onClick={() => { setEditingWarehouse(null); setSheetOpen(true); }}>
+          Add Warehouse
+        </Button>
       </div>
+
+      <DataTableFilters
+        filters={warehouseFilterConfigs}
+        values={filterValues}
+        onChange={(key, value) => setFilterValues((prev) => ({ ...prev, [key]: value }))}
+        onReset={() => setFilterValues({ search: '' })}
+      />
 
       {error && (
         <div className="rounded-md bg-red-50 p-4 text-sm text-red-800">{error}</div>
       )}
 
-      {showForm && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow">
-          <h2 className="mb-4 text-xl font-semibold">
-            {editingWarehouse ? 'Edit Warehouse' : 'Create New Warehouse'}
-          </h2>
-          <WarehouseForm
-            warehouse={editingWarehouse ?? undefined}
-            onSave={handleFormSave}
-            onCancel={handleFormCancel}
-          />
-        </div>
-      )}
-
-      {warehouses.length === 0 ? (
-        <div className="rounded-lg border border-gray-200 bg-white p-8 text-center">
-          <p className="text-gray-500">
+      {filteredWarehouses.length === 0 && !loading ? (
+        <div className="rounded-lg border bg-card p-8 text-center">
+          <p className="text-muted-foreground">
             No warehouses configured. Add one to get started.
           </p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Code
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  City / State
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Country
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Priority
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
-              {warehouses.map((warehouse) => (
-                <tr key={warehouse.id} className="hover:bg-gray-50">
-                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+        <div className="overflow-hidden rounded-lg border bg-card shadow">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Code</TableHead>
+                <TableHead>City / State</TableHead>
+                <TableHead>Country</TableHead>
+                <TableHead>Priority</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredWarehouses.map((warehouse) => (
+                <TableRow key={warehouse.id}>
+                  <TableCell className="font-medium text-foreground">
                     {warehouse.name}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 font-mono">
+                  </TableCell>
+                  <TableCell className="font-mono text-muted-foreground">
                     {warehouse.code}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
                     {[warehouse.city, warehouse.state].filter(Boolean).join(', ') || '—'}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 uppercase">
+                  </TableCell>
+                  <TableCell className="uppercase text-muted-foreground">
                     {warehouse.country || '—'}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
                     {warehouse.priority}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4">
-                    <span
-                      className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold leading-5 ${
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      variant="secondary"
+                      className={
                         warehouse.isActive
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-gray-100 text-gray-800'
-                      }`}
+                          ? 'bg-green-100 text-green-800 hover:bg-green-100'
+                          : 'bg-gray-100 text-gray-800 hover:bg-gray-100'
+                      }
                     >
                       {warehouse.isActive ? 'Active' : 'Inactive'}
-                    </span>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
-                    <button
-                      onClick={() => handleEdit(warehouse)}
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleToggleActive(warehouse)}
-                      className={`ml-4 ${
-                        warehouse.isActive
-                          ? 'text-red-600 hover:text-red-900'
-                          : 'text-green-600 hover:text-green-900'
-                      }`}
-                    >
-                      {warehouse.isActive ? 'Deactivate' : 'Activate'}
-                    </button>
-                  </td>
-                </tr>
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <DataTableRowActions actions={[
+                      { label: 'Edit', onClick: () => handleEdit(warehouse), icon: <Pencil className="h-4 w-4" /> },
+                      warehouse.isActive
+                        ? { label: 'Deactivate', onClick: () => handleToggleActive(warehouse), variant: 'destructive' as const, icon: <PowerOff className="h-4 w-4" />, confirm: `Are you sure you want to deactivate "${warehouse.name}"?` }
+                        : { label: 'Activate', onClick: () => handleToggleActive(warehouse), icon: <Power className="h-4 w-4" />, confirm: `Are you sure you want to activate "${warehouse.name}"?` },
+                    ]} />
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
+
+      <WarehouseSheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        warehouse={editingWarehouse}
+        onSuccess={handleFormSave}
+      />
     </div>
   );
 }

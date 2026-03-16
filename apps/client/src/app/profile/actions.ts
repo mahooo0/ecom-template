@@ -1,7 +1,7 @@
 'use server';
 
 import { auth, clerkClient } from '@clerk/nextjs/server';
-import { prisma } from '@repo/db';
+import { prisma } from '@repo/db/prisma';
 import { revalidatePath } from 'next/cache';
 
 export async function updateProfile(formData: FormData) {

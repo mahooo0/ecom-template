@@ -86,12 +86,12 @@ export function CouponSection({
     return (
       <div className="py-3">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600">Promo code:</span>
-          <span className="inline-flex items-center gap-1 bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
+          <span className="text-sm text-tertiary">Promo code:</span>
+          <span className="inline-flex items-center gap-1 bg-utility-success-50 text-utility-success-700 text-sm font-medium px-3 py-1 rounded-full">
             {currentCode}
             <button
               onClick={onCouponRemoved}
-              className="ml-1 text-green-600 hover:text-green-900 transition-colors"
+              className="ml-1 text-utility-success-700 hover:text-utility-success-700 transition-colors"
               aria-label="Remove coupon"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,7 +109,7 @@ export function CouponSection({
       {!expanded ? (
         <button
           onClick={() => setExpanded(true)}
-          className="text-sm text-gray-600 hover:text-gray-900 underline transition-colors"
+          className="text-sm text-tertiary hover:text-primary underline transition-colors"
         >
           Have a promo code?
         </button>
@@ -126,22 +126,22 @@ export function CouponSection({
                 }}
                 onKeyDown={handleKeyDown}
                 placeholder="Enter promo code"
-                className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 ${
+                className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand ${
                   error
-                    ? 'border-red-500 focus:ring-red-300'
-                    : 'border-gray-300'
+                    ? 'border-error-primary focus:ring-error-primary'
+                    : 'border-border-primary'
                 }`}
                 disabled={loading}
                 autoFocus
               />
               {error && (
-                <p className="mt-1 text-xs text-red-600">{error}</p>
+                <p className="mt-1 text-xs text-error-primary">{error}</p>
               )}
             </div>
             <button
               onClick={() => void handleApply()}
               disabled={loading}
-              className="px-4 py-2 text-sm font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 text-sm font-medium bg-primary-solid text-white rounded-lg hover:bg-primary-solid_hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? 'Applying...' : 'Apply'}
             </button>
@@ -152,7 +152,7 @@ export function CouponSection({
               setInputValue('');
               setError(null);
             }}
-            className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+            className="text-xs text-tertiary hover:text-secondary transition-colors"
           >
             Cancel
           </button>

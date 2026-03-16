@@ -21,6 +21,7 @@ import { cartRoutes } from './modules/cart/cart.routes.js';
 import { registerWishlistEventListeners } from './modules/wishlist/wishlist.events.js';
 import { searchService } from './modules/search/search.service.js';
 import './modules/search/sync.service.js'; // Side-effect import: registers event listeners
+import './modules/payment/payment.events.js'; // Side-effect import: registers payment event listeners
 import { eventBus } from './common/events/event-bus.js';
 
 const app = express();
@@ -29,8 +30,9 @@ const app = express();
 app.use(cors({ origin: [config.clientUrl, config.adminUrl] }));
 app.use(clerkMiddleware());
 
-// Webhook route needs raw body for signature verification
+// Webhook routes need raw body for signature verification
 app.use('/api/auth/webhooks', express.raw({ type: 'application/json' }));
+app.use('/api/payments/webhook', express.raw({ type: 'application/json' }));
 
 // Regular JSON parsing for all other routes
 app.use(express.json());

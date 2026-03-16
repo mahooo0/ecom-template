@@ -6,8 +6,9 @@ class TagController {
     try {
       const page = req.query.page ? parseInt(req.query.page as string) : 1;
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
+      const type = req.query.type as string | undefined;
 
-      const result = await tagService.getAll({ page, limit });
+      const result = await tagService.getAll({ page, limit, type });
 
       res.json({
         success: true,
@@ -23,6 +24,19 @@ class TagController {
       const tag = await tagService.create(req.body);
 
       res.status(201).json({
+        success: true,
+        data: tag,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      const tag = await tagService.update(req.params.id as string, req.body);
+
+      res.json({
         success: true,
         data: tag,
       });

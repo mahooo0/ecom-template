@@ -26,11 +26,6 @@ export function SortableImage({ id, url, onRemove }: SortableImageProps) {
     opacity: isDragging ? 0.5 : 1,
   };
 
-  // Extract Cloudinary transformation parameters for thumbnail
-  const thumbnailUrl = url.includes('/upload/')
-    ? url.replace('/upload/', '/upload/w_200,h_200,c_fill/')
-    : url;
-
   return (
     <div
       ref={setNodeRef}
@@ -40,7 +35,7 @@ export function SortableImage({ id, url, onRemove }: SortableImageProps) {
       {/* Image */}
       <div className="aspect-square relative">
         <Image
-          src={thumbnailUrl}
+          src={url}
           alt="Product image"
           fill
           className="object-cover"

@@ -28,26 +28,26 @@ export function SortSelector({ currentSort = 'createdAt', currentOrder = 'desc' 
   const currentValue = `${currentSort}-${currentOrder}`;
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const [sortBy, sortOrder] = e.target.value.split('-');
+    const parts = e.target.value.split('-');
+    const sortBy = parts[0] ?? 'createdAt';
+    const sortOrder = parts[1] ?? 'desc';
     const params = new URLSearchParams(searchParams.toString());
-
     params.set('sortBy', sortBy);
     params.set('sortOrder', sortOrder);
-    params.set('page', '1'); // Reset to page 1 on sort change
-
+    params.set('page', '1');
     router.push(`?${params.toString()}`);
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <label htmlFor="sort" className="text-sm font-medium text-gray-700">
-        Sort by:
+    <div className="flex items-center gap-3">
+      <label htmlFor="sort" className="text-xs font-medium tracking-wider text-neutral-400 uppercase">
+        Sort
       </label>
       <select
         id="sort"
         value={currentValue}
         onChange={handleSortChange}
-        className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-neutral-900 focus:outline-none"
       >
         {sortOptions.map((option) => (
           <option key={`${option.sortBy}-${option.sortOrder}`} value={`${option.sortBy}-${option.sortOrder}`}>

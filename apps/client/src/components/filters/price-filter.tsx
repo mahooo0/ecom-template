@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { useFilters } from '../../hooks/use-filters';
 
@@ -25,7 +25,11 @@ export function PriceFilter({ minPrice, maxPrice }: PriceFilterProps) {
   const [localMin, setLocalMin] = useState(filters.minPrice || minPrice);
   const [localMax, setLocalMax] = useState(filters.maxPrice !== 999999 ? filters.maxPrice : maxPrice);
 
-  // Sync local state when URL filters change from outside
+  const minThumbRef = useRef<HTMLDivElement>(null);
+  const maxThumbRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const draggingRef = useRef<'min' | 'max' | null>(null);
+
   useEffect(() => {
     setLocalMin(filters.minPrice || minPrice);
     setLocalMax(filters.maxPrice !== 999999 ? filters.maxPrice : maxPrice);
@@ -42,30 +46,85 @@ export function PriceFilter({ minPrice, maxPrice }: PriceFilterProps) {
     300
   );
 
-  const handleSliderChange = useCallback(
-    (type: 'min' | 'max', value: number) => {
-      if (type === 'min') {
-        const clampedMin = Math.min(value, localMax - 100);
-        setLocalMin(clampedMin);
-        debouncedUpdateUrl(clampedMin, localMax);
+  const range = maxPrice - minPrice;
+  const minPercent = range > 0 ? ((localMin - minPrice) / range) * 100 : 0;
+  const maxPercent = range > 0 ? ((localMax - minPrice) / range) * 100 : 100;
+
+  const GAP = 100; // minimum gap in cents ($1)
+
+  const getValueFromPosition = useCallback(
+    (clientX: number): number => {
+      if (!trackRef.current) return minPrice;
+      const rect = trackRef.current.getBoundingClientRect();
+      const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+      // Snap to step
+      const raw = minPrice + percent * range;
+      return Math.round(raw / GAP) * GAP;
+    },
+    [minPrice, range]
+  );
+
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent, type: 'min' | 'max') => {
+      e.preventDefault();
+      (e.target as HTMLElement).setPointerCapture(e.pointerId);
+      draggingRef.current = type;
+    },
+    []
+  );
+
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      if (!draggingRef.current) return;
+      const value = getValueFromPosition(e.clientX);
+
+      if (draggingRef.current === 'min') {
+        const clamped = Math.max(minPrice, Math.min(value, localMax - GAP));
+        setLocalMin(clamped);
+        debouncedUpdateUrl(clamped, localMax);
       } else {
-        const clampedMax = Math.max(value, localMin + 100);
-        setLocalMax(clampedMax);
-        debouncedUpdateUrl(localMin, clampedMax);
+        const clamped = Math.min(maxPrice, Math.max(value, localMin + GAP));
+        setLocalMax(clamped);
+        debouncedUpdateUrl(localMin, clamped);
       }
     },
-    [localMin, localMax, debouncedUpdateUrl]
+    [getValueFromPosition, localMin, localMax, minPrice, maxPrice, debouncedUpdateUrl]
+  );
+
+  const handlePointerUp = useCallback(() => {
+    draggingRef.current = null;
+  }, []);
+
+  // Click on track — move nearest thumb
+  const handleTrackClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (draggingRef.current) return;
+      const value = getValueFromPosition(e.clientX);
+      const distToMin = Math.abs(value - localMin);
+      const distToMax = Math.abs(value - localMax);
+
+      if (distToMin <= distToMax) {
+        const clamped = Math.max(minPrice, Math.min(value, localMax - GAP));
+        setLocalMin(clamped);
+        debouncedUpdateUrl(clamped, localMax);
+      } else {
+        const clamped = Math.min(maxPrice, Math.max(value, localMin + GAP));
+        setLocalMax(clamped);
+        debouncedUpdateUrl(localMin, clamped);
+      }
+    },
+    [getValueFromPosition, localMin, localMax, minPrice, maxPrice, debouncedUpdateUrl]
   );
 
   const handleInputChange = useCallback(
     (type: 'min' | 'max', value: string) => {
       const cents = displayDollarsToCents(value);
       if (type === 'min') {
-        const clamped = Math.max(minPrice, Math.min(cents, localMax - 100));
+        const clamped = Math.max(minPrice, Math.min(cents, localMax - GAP));
         setLocalMin(clamped);
         debouncedUpdateUrl(clamped, localMax);
       } else {
-        const clamped = Math.min(maxPrice, Math.max(cents, localMin + 100));
+        const clamped = Math.min(maxPrice, Math.max(cents, localMin + GAP));
         setLocalMax(clamped);
         debouncedUpdateUrl(localMin, clamped);
       }
@@ -79,20 +138,16 @@ export function PriceFilter({ minPrice, maxPrice }: PriceFilterProps) {
     setFilters({ minPrice: 0, maxPrice: 999999, page: 1 });
   };
 
-  const range = maxPrice - minPrice;
-  const minPercent = range > 0 ? ((localMin - minPrice) / range) * 100 : 0;
-  const maxPercent = range > 0 ? ((localMax - minPrice) / range) * 100 : 100;
-
   const hasActiveFilter = localMin > minPrice || localMax < maxPrice;
 
   return (
     <div className="space-y-4" data-testid="price-filter">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-gray-900">Price Range</h3>
+        <h3 className="text-sm font-semibold text-primary">Price Range</h3>
         {hasActiveFilter && (
           <button
             onClick={handleReset}
-            className="text-xs text-blue-600 hover:text-blue-800"
+            className="text-xs font-medium text-brand-secondary hover:text-brand-primary transition-colors"
             data-testid="price-filter-reset"
           >
             Reset
@@ -100,67 +155,120 @@ export function PriceFilter({ minPrice, maxPrice }: PriceFilterProps) {
         )}
       </div>
 
-      {/* Dual-handle range slider */}
-      <div className="relative pt-1" data-testid="price-slider">
-        <div className="relative h-2 bg-gray-200 rounded-full">
-          {/* Active range track */}
+      {/* Custom dual-thumb range slider */}
+      <div
+        className="relative h-10 flex items-center select-none touch-none"
+        data-testid="price-slider"
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+      >
+        {/* Track background */}
+        <div
+          ref={trackRef}
+          className="relative w-full h-1.5 rounded-full bg-secondary_subtle cursor-pointer"
+          onClick={handleTrackClick}
+        >
+          {/* Active range fill */}
           <div
-            className="absolute h-2 bg-blue-500 rounded-full"
+            className="absolute h-full rounded-full bg-brand-solid transition-[left,right] duration-75"
             style={{ left: `${minPercent}%`, right: `${100 - maxPercent}%` }}
           />
-          {/* Min handle */}
-          <input
-            type="range"
-            min={minPrice}
-            max={maxPrice}
-            step={100}
-            value={localMin}
-            onChange={(e) => handleSliderChange('min', parseInt(e.target.value))}
-            className="absolute w-full h-2 appearance-none bg-transparent cursor-pointer"
-            style={{ zIndex: localMin > maxPrice - (maxPrice - minPrice) * 0.1 ? 5 : 3 }}
-            data-testid="price-slider-min"
-            aria-label="Minimum price"
-          />
-          {/* Max handle */}
-          <input
-            type="range"
-            min={minPrice}
-            max={maxPrice}
-            step={100}
-            value={localMax}
-            onChange={(e) => handleSliderChange('max', parseInt(e.target.value))}
-            className="absolute w-full h-2 appearance-none bg-transparent cursor-pointer"
-            style={{ zIndex: 4 }}
-            data-testid="price-slider-max"
-            aria-label="Maximum price"
-          />
         </div>
+
+        {/* Min thumb */}
+        <div
+          ref={minThumbRef}
+          role="slider"
+          tabIndex={0}
+          aria-label="Minimum price"
+          aria-valuemin={minPrice / 100}
+          aria-valuemax={maxPrice / 100}
+          aria-valuenow={localMin / 100}
+          aria-valuetext={`$${centsToDisplayDollars(localMin)}`}
+          className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 w-5 h-5 rounded-full border-2 shadow-sm cursor-grab active:cursor-grabbing active:scale-110 transition-transform focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+          style={{
+            left: `${minPercent}%`,
+            backgroundColor: 'var(--color-slider-handle-bg)',
+            borderColor: 'var(--color-slider-handle-border)',
+            zIndex: draggingRef.current === 'min' ? 20 : 10,
+          }}
+          onPointerDown={(e) => handlePointerDown(e, 'min')}
+          onKeyDown={(e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+              e.preventDefault();
+              const next = Math.min(localMin + GAP, localMax - GAP);
+              setLocalMin(next);
+              debouncedUpdateUrl(next, localMax);
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+              e.preventDefault();
+              const next = Math.max(localMin - GAP, minPrice);
+              setLocalMin(next);
+              debouncedUpdateUrl(next, localMax);
+            }
+          }}
+          data-testid="price-slider-min"
+        />
+
+        {/* Max thumb */}
+        <div
+          ref={maxThumbRef}
+          role="slider"
+          tabIndex={0}
+          aria-label="Maximum price"
+          aria-valuemin={minPrice / 100}
+          aria-valuemax={maxPrice / 100}
+          aria-valuenow={localMax / 100}
+          aria-valuetext={`$${centsToDisplayDollars(localMax)}`}
+          className="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 w-5 h-5 rounded-full border-2 shadow-sm cursor-grab active:cursor-grabbing active:scale-110 transition-transform focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
+          style={{
+            left: `${maxPercent}%`,
+            backgroundColor: 'var(--color-slider-handle-bg)',
+            borderColor: 'var(--color-slider-handle-border)',
+            zIndex: draggingRef.current === 'max' ? 20 : 10,
+          }}
+          onPointerDown={(e) => handlePointerDown(e, 'max')}
+          onKeyDown={(e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+              e.preventDefault();
+              const next = Math.min(localMax + GAP, maxPrice);
+              setLocalMax(next);
+              debouncedUpdateUrl(localMin, next);
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+              e.preventDefault();
+              const next = Math.max(localMax - GAP, localMin + GAP);
+              setLocalMax(next);
+              debouncedUpdateUrl(localMin, next);
+            }
+          }}
+          data-testid="price-slider-max"
+        />
       </div>
 
       {/* Min/Max input fields */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         <div className="flex-1">
-          <label className="text-xs text-gray-500 mb-1 block">Min ($)</label>
+          <label className="text-xs font-medium text-tertiary mb-1 block">Min ($)</label>
           <input
             type="number"
             min={0}
             max={parseInt(centsToDisplayDollars(localMax)) - 1}
             value={centsToDisplayDollars(localMin)}
             onChange={(e) => handleInputChange('min', e.target.value)}
-            className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full px-3 py-1.5 text-sm text-primary bg-primary border border-border-primary rounded-md focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand-solid transition-colors"
             data-testid="price-input-min"
             aria-label="Minimum price input"
           />
         </div>
-        <span className="text-gray-400 mt-4">-</span>
+        <span className="text-tertiary mt-5 text-sm">—</span>
         <div className="flex-1">
-          <label className="text-xs text-gray-500 mb-1 block">Max ($)</label>
+          <label className="text-xs font-medium text-tertiary mb-1 block">Max ($)</label>
           <input
             type="number"
             min={parseInt(centsToDisplayDollars(localMin)) + 1}
             value={centsToDisplayDollars(localMax)}
             onChange={(e) => handleInputChange('max', e.target.value)}
-            className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full px-3 py-1.5 text-sm text-primary bg-primary border border-border-primary rounded-md focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand-solid transition-colors"
             data-testid="price-input-max"
             aria-label="Maximum price input"
           />

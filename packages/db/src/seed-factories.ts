@@ -54,7 +54,7 @@ export function createCategory(
   overrides?: CategoryInput
 ) {
   const name = overrides?.name ?? faker.commerce.department();
-  const slug = overrides?.slug ?? faker.helpers.slugify(name).toLowerCase();
+  const slug = overrides?.slug ?? `${faker.helpers.slugify(name).toLowerCase()}-${faker.string.alphanumeric(4)}`;
   const path = parentPath ? `${parentPath}.${slug}` : slug;
 
   return {
@@ -257,6 +257,7 @@ export interface OrderDataInput {
   totalAmount?: number;
   couponCode?: string;
   notes?: string;
+  createdAt?: Date;
 }
 
 export function createOrderData(
@@ -274,11 +275,30 @@ export function createOrderData(
     'cancelled',
   ]);
 
-  const subtotal = overrides?.subtotal ?? faker.number.int({ min: 5000, max: 50000 });
+  // Spread creation dates across the last 90 days
+  const createdAt = overrides?.createdAt ?? faker.date.between({
+    from: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
+    to: new Date(),
+  });
+
+  const subtotal = overrides?.subtotal ?? items.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0);
   const taxAmount = overrides?.taxAmount ?? Math.floor(subtotal * 0.08);
   const shippingCost = overrides?.shippingCost ?? faker.number.int({ min: 599, max: 1999 });
-  const discountAmount = overrides?.discountAmount ?? 0;
+
+  // Some orders have discounts
+  const hasDiscount = overrides?.couponCode || faker.datatype.boolean({ probability: 0.2 });
+  const maxDiscount = Math.max(500, Math.min(3000, Math.floor(subtotal * 0.3)));
+  const discountAmount = overrides?.discountAmount ?? (hasDiscount ? faker.number.int({ min: 100, max: maxDiscount }) : 0);
+  const couponCode = hasDiscount ? (overrides?.couponCode ?? faker.helpers.arrayElement(['SAVE10', 'WELCOME15', 'SUMMER20', 'VIP25'])) : undefined;
+
   const totalAmount = overrides?.totalAmount ?? (subtotal + taxAmount + shippingCost - discountAmount);
+
+  // Build coherent status history
+  const statusHistory = buildStatusHistory(status, createdAt);
+
+  // Payment dates based on status
+  const isPaid = ['paid', 'processing', 'shipped', 'delivered'].includes(status);
+  const paidAt = isPaid ? new Date(createdAt.getTime() + faker.number.int({ min: 60000, max: 3600000 })) : undefined;
 
   return {
     orderNumber,
@@ -286,12 +306,7 @@ export function createOrderData(
     guestEmail: overrides?.guestEmail,
     items,
     status,
-    statusHistory: [{
-      from: 'pending',
-      to: status,
-      changedAt: faker.date.recent(),
-      note: 'Order status initialized',
-    }],
+    statusHistory,
     subtotal,
     taxAmount,
     shippingCost,
@@ -302,7 +317,7 @@ export function createOrderData(
       lastName: faker.person.lastName(),
       street: faker.location.streetAddress(),
       city: faker.location.city(),
-      state: faker.location.state(),
+      state: faker.location.state({ abbreviated: true }),
       zipCode: faker.location.zipCode(),
       country: 'US',
       phone: faker.phone.number(),
@@ -312,33 +327,73 @@ export function createOrderData(
       lastName: faker.person.lastName(),
       street: faker.location.streetAddress(),
       city: faker.location.city(),
-      state: faker.location.state(),
+      state: faker.location.state({ abbreviated: true }),
       zipCode: faker.location.zipCode(),
       country: 'US',
       phone: faker.phone.number(),
     },
     shipping: status === 'shipped' || status === 'delivered' ? {
-      method: faker.helpers.arrayElement(['Standard', 'Express', 'Overnight']),
-      carrier: faker.helpers.arrayElement(['USPS', 'UPS', 'FedEx']),
-      trackingNumber: faker.string.alphanumeric(12).toUpperCase(),
-      estimatedDelivery: faker.date.future(),
-      shippedAt: status === 'shipped' || status === 'delivered' ? faker.date.recent() : undefined,
-      deliveredAt: status === 'delivered' ? faker.date.recent() : undefined,
+      method: faker.helpers.arrayElement(['Standard Shipping', 'Express Shipping', 'Overnight']),
+      carrier: faker.helpers.arrayElement(['USPS', 'UPS', 'FedEx', 'DHL']),
+      trackingNumber: `1Z${faker.string.alphanumeric(16).toUpperCase()}`,
+      estimatedDelivery: faker.date.soon({ days: 7, refDate: createdAt }),
+      shippedAt: new Date(createdAt.getTime() + faker.number.int({ min: 86400000, max: 259200000 })),
+      deliveredAt: status === 'delivered' ? new Date(createdAt.getTime() + faker.number.int({ min: 259200000, max: 604800000 })) : undefined,
       cost: shippingCost,
     } : undefined,
     payment: {
       provider: 'stripe',
-      paymentIntentId: `pi_${faker.string.alphanumeric(24)}`,
-      status: status === 'paid' || status === 'processing' || status === 'shipped' || status === 'delivered'
-        ? 'succeeded'
-        : 'pending',
+      paymentIntentId: `pi_test_${faker.string.alphanumeric(24)}`,
+      status: isPaid ? 'succeeded' : status === 'cancelled' ? 'failed' : 'pending',
       amount: totalAmount,
       refundedAmount: 0,
-      paidAt: status !== 'pending' ? faker.date.recent() : undefined,
+      paidAt,
     },
-    couponCode: overrides?.couponCode,
+    couponCode,
     notes: overrides?.notes,
+    createdAt,
+    updatedAt: createdAt,
   };
+}
+
+function buildStatusHistory(finalStatus: string, createdAt: Date) {
+  const history: Array<{ from: string; to: string; changedAt: Date; note: string }> = [];
+
+  // Every order starts as pending
+  const statusFlow: Record<string, string[]> = {
+    pending: ['pending'],
+    paid: ['pending', 'paid'],
+    processing: ['pending', 'paid', 'processing'],
+    shipped: ['pending', 'paid', 'processing', 'shipped'],
+    delivered: ['pending', 'paid', 'processing', 'shipped', 'delivered'],
+    cancelled: ['pending', 'cancelled'],
+  };
+
+  const flow = statusFlow[finalStatus] || ['pending', finalStatus];
+  let elapsed = 0;
+
+  for (let i = 1; i < flow.length; i++) {
+    elapsed += faker.number.int({ min: 1800000, max: 86400000 }); // 30min to 1 day
+    history.push({
+      from: flow[i - 1],
+      to: flow[i],
+      changedAt: new Date(createdAt.getTime() + elapsed),
+      note: getStatusNote(flow[i]),
+    });
+  }
+
+  return history;
+}
+
+function getStatusNote(status: string): string {
+  const notes: Record<string, string[]> = {
+    paid: ['Payment confirmed via Stripe', 'Payment received', 'Card charged successfully'],
+    processing: ['Order is being prepared', 'Items picked from warehouse', 'Processing started'],
+    shipped: ['Package shipped via carrier', 'Tracking number assigned', 'Package dispatched'],
+    delivered: ['Package delivered', 'Delivery confirmed', 'Left at front door'],
+    cancelled: ['Cancelled by customer', 'Order cancelled', 'Payment declined — order cancelled'],
+  };
+  return faker.helpers.arrayElement(notes[status] || ['Status updated']);
 }
 
 // ============================================================================

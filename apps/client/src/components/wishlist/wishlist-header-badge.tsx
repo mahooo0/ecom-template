@@ -9,7 +9,6 @@ export function WishlistHeaderBadge() {
   const [mounted, setMounted] = useState(false);
   const totalItems = useWishlistStore((s) => s.totalItems);
 
-  // Run guest-to-auth sync at layout level
   useWishlistSync();
 
   useEffect(() => {
@@ -22,16 +21,9 @@ export function WishlistHeaderBadge() {
     <Link
       href="/wishlist"
       aria-label={`Wishlist${count > 0 ? ` (${count} items)` : ''}`}
-      className="relative flex items-center text-sm hover:text-gray-600"
+      className="relative flex items-center text-neutral-600 transition hover:text-neutral-900"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="w-6 h-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-      >
+      <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -39,7 +31,7 @@ export function WishlistHeaderBadge() {
         />
       </svg>
       {count > 0 && (
-        <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold leading-none">
+        <span className="absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full bg-neutral-900 text-[10px] font-bold text-white leading-none">
           {count > 99 ? '99+' : count}
         </span>
       )}

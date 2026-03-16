@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@clerk/nextjs';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { productSchema, type ProductFormData } from '@repo/types';
@@ -12,6 +13,17 @@ import { VariableFields } from './variable-fields';
 import { WeightedFields } from './weighted-fields';
 import { DigitalFields } from './digital-fields';
 import { BundledFields } from './bundled-fields';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface Category {
   id: string;
@@ -61,6 +73,7 @@ export function ProductForm({
   productId,
 }: ProductFormProps) {
   const router = useRouter();
+  const { getToken } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -88,13 +101,14 @@ export function ProductForm({
     setError(null);
 
     try {
+      const token = await getToken();
       if (isEdit && productId) {
-        await api.products.update(productId, data as any);
+        await api.products.update(productId, data as any, token || undefined);
       } else {
-        await api.products.create(data as any);
+        await api.products.create(data as any, token || undefined);
       }
 
-      router.push('/products');
+      router.push('/dashboard/products');
       router.refresh();
     } catch (err) {
       setError((err as Error).message || 'Failed to save product');
@@ -129,8 +143,8 @@ export function ProductForm({
     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
       {/* Error Display */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-red-700 text-sm">{error}</p>
+        <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
+          <p className="text-destructive text-sm">{error}</p>
         </div>
       )}
 
@@ -139,32 +153,37 @@ export function ProductForm({
         {/* Left Column - Base Fields */}
         <div className="lg:col-span-2 space-y-8">
           {/* Basic Information */}
-          <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">Basic Information</h2>
+          <div className="bg-card border rounded-lg p-6 space-y-4">
+            <h2 className="text-xl font-semibold text-foreground">Basic Information</h2>
 
             {/* Product Type */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Product Type *
               </label>
-              <select
-                {...form.register('productType')}
+              <Select
+                value={form.watch('productType')}
+                onValueChange={(v) => form.setValue('productType', v)}
                 disabled={isEdit}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
               >
-                <option value="SIMPLE">Simple Product</option>
-                <option value="VARIABLE">Variable Product</option>
-                <option value="WEIGHTED">Weighted Product</option>
-                <option value="DIGITAL">Digital Product</option>
-                <option value="BUNDLED">Bundled Product</option>
-              </select>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="SIMPLE">Simple Product</SelectItem>
+                  <SelectItem value="VARIABLE">Variable Product</SelectItem>
+                  <SelectItem value="WEIGHTED">Weighted Product</SelectItem>
+                  <SelectItem value="DIGITAL">Digital Product</SelectItem>
+                  <SelectItem value="BUNDLED">Bundled Product</SelectItem>
+                </SelectContent>
+              </Select>
               {isEdit && (
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-muted-foreground">
                   Product type cannot be changed after creation
                 </p>
               )}
               {form.formState.errors.productType && (
-                <p className="mt-1 text-sm text-red-600">
+                <p className="mt-1 text-sm text-destructive">
                   {String(form.formState.errors.productType.message)}
                 </p>
               )}
@@ -172,18 +191,17 @@ export function ProductForm({
 
             {/* Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Product Name *
               </label>
-              <input
+              <Input
                 {...form.register('name')}
                 type="text"
                 onChange={handleNameChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Enter product name"
               />
               {form.formState.errors.name && (
-                <p className="mt-1 text-sm text-red-600">
+                <p className="mt-1 text-sm text-destructive">
                   {String(form.formState.errors.name.message)}
                 </p>
               )}
@@ -191,17 +209,16 @@ export function ProductForm({
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 Description *
               </label>
-              <textarea
-                {...form.register('description')}
-                rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+              <RichTextEditor
+                value={form.watch('description') || ''}
+                onChange={(html) => form.setValue('description', html, { shouldDirty: true })}
                 placeholder="Describe your product"
               />
               {form.formState.errors.description && (
-                <p className="mt-1 text-sm text-red-600">
+                <p className="mt-1 text-sm text-destructive">
                   {String(form.formState.errors.description.message)}
                 </p>
               )}
@@ -209,20 +226,19 @@ export function ProductForm({
 
             {/* SKU */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-muted-foreground mb-1">
                 SKU *
               </label>
-              <input
+              <Input
                 {...form.register('sku')}
                 type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 placeholder="PRODUCT-SKU-001"
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-muted-foreground">
                 Unique product identifier (auto-generated from name if empty)
               </p>
               {form.formState.errors.sku && (
-                <p className="mt-1 text-sm text-red-600">
+                <p className="mt-1 text-sm text-destructive">
                   {String(form.formState.errors.sku.message)}
                 </p>
               )}
@@ -230,28 +246,27 @@ export function ProductForm({
           </div>
 
           {/* Pricing */}
-          <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">Pricing</h2>
+          <div className="bg-card border rounded-lg p-6 space-y-4">
+            <h2 className="text-xl font-semibold text-foreground">Pricing</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Base Price */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   Base Price (cents) *
                 </label>
-                <input
+                <Input
                   {...form.register('price', { valueAsNumber: true })}
                   type="number"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                   placeholder="1999"
                   min="0"
                   step="1"
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-muted-foreground">
                   Price in cents (e.g., 1999 = $19.99)
                 </p>
                 {form.formState.errors.price && (
-                  <p className="mt-1 text-sm text-red-600">
+                  <p className="mt-1 text-sm text-destructive">
                     {String(form.formState.errors.price.message)}
                   </p>
                 )}
@@ -259,22 +274,21 @@ export function ProductForm({
 
               {/* Compare At Price */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   Compare At Price (cents)
                 </label>
-                <input
+                <Input
                   {...form.register('compareAtPrice', { valueAsNumber: true })}
                   type="number"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                   placeholder="2499"
                   min="0"
                   step="1"
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-muted-foreground">
                   Optional - show as strikethrough price
                 </p>
                 {form.formState.errors.compareAtPrice && (
-                  <p className="mt-1 text-sm text-red-600">
+                  <p className="mt-1 text-sm text-destructive">
                     {String(form.formState.errors.compareAtPrice.message)}
                   </p>
                 )}
@@ -283,28 +297,32 @@ export function ProductForm({
           </div>
 
           {/* Organization */}
-          <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900">Organization</h2>
+          <div className="bg-card border rounded-lg p-6 space-y-4">
+            <h2 className="text-xl font-semibold text-foreground">Organization</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Category */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   Category *
                 </label>
-                <select
-                  {...form.register('categoryId')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                <Select
+                  value={form.watch('categoryId') || ''}
+                  onValueChange={(v) => form.setValue('categoryId', v)}
                 >
-                  <option value="">Select a category</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.path || category.name}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.path || category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 {form.formState.errors.categoryId && (
-                  <p className="mt-1 text-sm text-red-600">
+                  <p className="mt-1 text-sm text-destructive">
                     {String(form.formState.errors.categoryId.message)}
                   </p>
                 )}
@@ -312,42 +330,51 @@ export function ProductForm({
 
               {/* Brand */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   Brand
                 </label>
-                <select
-                  {...form.register('brandId')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                <Select
+                  value={form.watch('brandId') || ''}
+                  onValueChange={(v) => form.setValue('brandId', v)}
                 >
-                  <option value="">Select a brand (optional)</option>
-                  {brands.map((brand) => (
-                    <option key={brand.id} value={brand.id}>
-                      {brand.name}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a brand (optional)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {brands.map((brand) => (
+                      <SelectItem key={brand.id} value={brand.id}>
+                        {brand.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Status */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   Status *
                 </label>
-                <select
-                  {...form.register('status')}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                <Select
+                  value={form.watch('status') || 'DRAFT'}
+                  onValueChange={(v) => form.setValue('status', v)}
                 >
-                  <option value="DRAFT">Draft</option>
-                  <option value="ACTIVE">Active</option>
-                  <option value="ARCHIVED">Archived</option>
-                </select>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="DRAFT">Draft</SelectItem>
+                    <SelectItem value="ACTIVE">Active</SelectItem>
+                    <SelectItem value="ARCHIVED">Archived</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
 
           {/* Type-Specific Fields */}
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+          <div className="bg-card border rounded-lg p-6">
+            <h2 className="text-xl font-semibold text-foreground mb-4">
               Product Type Details
             </h2>
 
@@ -368,8 +395,8 @@ export function ProductForm({
 
         {/* Right Column - Media */}
         <div className="lg:col-span-1">
-          <div className="bg-white border border-gray-200 rounded-lg p-6 sticky top-4">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Media</h2>
+          <div className="bg-card border rounded-lg p-6 sticky top-4">
+            <h2 className="text-xl font-semibold text-foreground mb-4">Media</h2>
             <ImageManager
               images={images || []}
               onChange={handleImageChange}
@@ -380,22 +407,21 @@ export function ProductForm({
       </div>
 
       {/* Submit Button - Sticky at bottom */}
-      <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4 -mx-4 flex justify-end space-x-4">
-        <button
+      <div className="sticky bottom-0 bg-card border-t p-4 -mx-4 flex justify-end space-x-4">
+        <Button
           type="button"
-          onClick={() => router.push('/products')}
-          className="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+          variant="outline"
+          onClick={() => router.push('/dashboard/products')}
           disabled={isSubmitting}
         >
           Cancel
-        </button>
-        <button
+        </Button>
+        <Button
           type="submit"
           disabled={isSubmitting}
-          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? 'Saving...' : isEdit ? 'Update Product' : 'Create Product'}
-        </button>
+        </Button>
       </div>
     </form>
   );

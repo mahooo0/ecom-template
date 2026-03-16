@@ -1,5 +1,5 @@
-export { prisma, PrismaClient } from './prisma.js';
-export { OrderModel, CartModel, connectMongoDB, mongoose } from './mongoose.js';
+export { prisma, PrismaClient } from './prisma';
+export { OrderModel, CartModel, connectMongoDB, mongoose } from './mongoose';
 export type {
   IOrder,
   IOrderItem,
@@ -9,4 +9,4 @@ export type {
   IOrderStatusChange,
   ICart,
   ICartItem
-} from './mongoose.js';
+} from './mongoose';

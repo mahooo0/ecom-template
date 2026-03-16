@@ -1,13 +1,51 @@
 import { OrderModel, type IOrder } from '@repo/db';
 import { eventBus } from '../../common/events/event-bus.js';
 import { AppError } from '../../common/middleware/error-handler.js';
+import { paymentService } from '../payment/payment.service.js';
+
+interface GetAllParams {
+  page?: number;
+  limit?: number;
+  status?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  minAmount?: number;
+  maxAmount?: number;
+  search?: string;
+}
 
 export class OrderService {
-  async getAll(page = 1, limit = 20) {
+  async getAll(params: GetAllParams = {}) {
+    const { page = 1, limit = 20, status, dateFrom, dateTo, minAmount, maxAmount, search } = params;
     const skip = (page - 1) * limit;
+
+    const filter: Record<string, any> = {};
+
+    if (status) {
+      filter.status = status;
+    }
+    if (dateFrom || dateTo) {
+      filter.createdAt = {};
+      if (dateFrom) filter.createdAt.$gte = new Date(dateFrom);
+      if (dateTo) filter.createdAt.$lte = new Date(dateTo);
+    }
+    if (minAmount !== undefined || maxAmount !== undefined) {
+      filter.totalAmount = {};
+      if (minAmount !== undefined) filter.totalAmount.$gte = minAmount;
+      if (maxAmount !== undefined) filter.totalAmount.$lte = maxAmount;
+    }
+    if (search) {
+      filter.$or = [
+        { orderNumber: { $regex: search, $options: 'i' } },
+        { 'shippingAddress.firstName': { $regex: search, $options: 'i' } },
+        { 'shippingAddress.lastName': { $regex: search, $options: 'i' } },
+        { guestEmail: { $regex: search, $options: 'i' } },
+      ];
+    }
+
     const [orders, total] = await Promise.all([
-      OrderModel.find().sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
-      OrderModel.countDocuments(),
+      OrderModel.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      OrderModel.countDocuments(filter),
     ]);
 
     return {
@@ -19,8 +57,27 @@ export class OrderService {
     };
   }
 
-  async getByUserId(userId: string) {
-    return OrderModel.find({ userId }).sort({ createdAt: -1 }).lean();
+  async getByUserId(userId: string, params: { page?: number; limit?: number; status?: string } = {}) {
+    const { page = 1, limit = 20, status } = params;
+    const skip = (page - 1) * limit;
+
+    const filter: Record<string, any> = { userId };
+    if (status) {
+      filter.status = status;
+    }
+
+    const [orders, total] = await Promise.all([
+      OrderModel.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      OrderModel.countDocuments(filter),
+    ]);
+
+    return {
+      data: orders,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async getById(id: string) {
@@ -34,13 +91,10 @@ export class OrderService {
     items: IOrder['items'];
     shippingAddress: IOrder['shippingAddress'];
     totalAmount: number;
-  }) {
+  } & Record<string, any>) {
     const order = await OrderModel.create({
-      userId: data.userId,
-      items: data.items,
-      shippingAddress: data.shippingAddress,
-      totalAmount: data.totalAmount,
-      status: 'pending',
+      ...data,
+      status: data.status || 'pending',
     });
 
     eventBus.emit('order.created', {
@@ -65,17 +119,14 @@ export class OrderService {
     trackingNumber: string;
     estimatedDelivery?: Date;
   }) {
-    // 1. Find the current order to get its status for statusHistory
     const currentOrder = await OrderModel.findById(id);
     if (!currentOrder) throw new AppError(404, 'Order not found');
 
-    // 2. Validate order is in a shippable state (paid or processing)
     const shippableStatuses = ['paid', 'processing'];
     if (!shippableStatuses.includes(currentOrder.status)) {
       throw new AppError(400, `Cannot add tracking to order with status: ${currentOrder.status}`);
     }
 
-    // 3. Update order with tracking info and status change
     const order = await OrderModel.findByIdAndUpdate(
       id,
       {
@@ -98,7 +149,6 @@ export class OrderService {
       { new: true }
     );
 
-    // 4. Emit order.shipped event
     eventBus.emit('order.shipped', {
       orderId: id,
       userId: order!.userId,
@@ -107,6 +157,75 @@ export class OrderService {
     });
 
     return order;
+  }
+
+  async getOrderStats() {
+    const [
+      totalOrders,
+      revenueResult,
+      statusCounts,
+    ] = await Promise.all([
+      OrderModel.countDocuments(),
+      OrderModel.aggregate([
+        { $match: { status: { $in: ['paid', 'processing', 'shipped', 'delivered'] } } },
+        { $group: { _id: null, total: { $sum: '$totalAmount' }, avg: { $avg: '$totalAmount' } } },
+      ]),
+      OrderModel.aggregate([
+        { $group: { _id: '$status', count: { $sum: 1 } } },
+      ]),
+    ]);
+
+    const revenue = revenueResult[0]?.total || 0;
+    const avgOrderValue = revenueResult[0]?.avg || 0;
+    const byStatus: Record<string, number> = {};
+    for (const s of statusCounts) {
+      byStatus[s._id] = s.count;
+    }
+
+    return {
+      totalOrders,
+      revenue,
+      avgOrderValue: Math.round(avgOrderValue),
+      byStatus,
+    };
+  }
+
+  async processRefund(id: string, amount?: number) {
+    const order = await OrderModel.findById(id);
+    if (!order) throw new AppError(404, 'Order not found');
+
+    if (!order.payment?.paymentIntentId) {
+      throw new AppError(400, 'No payment intent found for this order');
+    }
+
+    const refund = await paymentService.createRefund(order.payment.paymentIntentId, amount);
+
+    const refundedAmount = (order.payment.refundedAmount || 0) + refund.amount;
+    const isFullRefund = refundedAmount >= order.payment.amount;
+
+    await OrderModel.findByIdAndUpdate(id, {
+      $set: {
+        'payment.refundedAmount': refundedAmount,
+        'payment.status': isFullRefund ? 'refunded' : 'partially_refunded',
+        status: isFullRefund ? 'cancelled' : order.status,
+      },
+      $push: {
+        statusHistory: {
+          from: order.status,
+          to: isFullRefund ? 'cancelled' : order.status,
+          changedAt: new Date(),
+          note: `Refund of $${(refund.amount / 100).toFixed(2)} processed`,
+        },
+      },
+    });
+
+    eventBus.emit('order.refunded', {
+      orderId: id,
+      refundId: refund.id,
+      amount: refund.amount,
+    });
+
+    return refund;
   }
 }
 

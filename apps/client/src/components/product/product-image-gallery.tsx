@@ -79,7 +79,7 @@ export default function ProductImageGallery({
       <div className="hidden md:block">
         {/* Hero image with zoom */}
         <div
-          className="relative w-full aspect-square overflow-hidden rounded-lg bg-gray-100 cursor-zoom-in"
+          className="relative w-full aspect-square overflow-hidden rounded-lg bg-secondary_subtle cursor-zoom-in"
           onMouseMove={handleMouseMove}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -110,7 +110,7 @@ export default function ProductImageGallery({
           {/* Fullscreen button */}
           <button
             type="button"
-            className="absolute top-3 right-3 z-10 bg-white/80 hover:bg-white text-gray-800 rounded-md p-1.5 shadow transition-colors pointer-events-auto"
+            className="absolute top-3 right-3 z-10 bg-primary/80 hover:bg-primary text-secondary rounded-md p-1.5 shadow transition-colors pointer-events-auto"
             onClick={(e) => {
               e.stopPropagation();
               setIsLightboxOpen(true);
@@ -143,8 +143,8 @@ export default function ProductImageGallery({
                 onClick={() => setActiveIndex(i)}
                 className={`flex-shrink-0 w-16 h-16 rounded-md overflow-hidden border-2 transition-colors ${
                   i === activeIndex
-                    ? 'border-blue-500'
-                    : 'border-transparent hover:border-gray-300'
+                    ? 'border-border-brand'
+                    : 'border-transparent hover:border-border-primary'
                 }`}
                 aria-label={`View image ${i + 1}`}
               >
@@ -174,7 +174,7 @@ export default function ProductImageGallery({
           {displayImages.map((img, i) => (
             <div
               key={i}
-              className="relative min-w-full aspect-square flex-shrink-0 snap-start bg-gray-100"
+              className="relative min-w-full aspect-square flex-shrink-0 snap-start bg-secondary_subtle"
               onClick={() => {
                 setActiveIndex(i);
                 setIsLightboxOpen(true);
@@ -201,7 +201,7 @@ export default function ProductImageGallery({
                 type="button"
                 onClick={() => scrollToIndex(i)}
                 className={`w-2 h-2 rounded-full transition-colors ${
-                  i === mobileActiveIndex ? 'bg-blue-500' : 'bg-gray-300'
+                  i === mobileActiveIndex ? 'bg-brand-solid' : 'bg-quaternary'
                 }`}
                 aria-label={`Go to image ${i + 1}`}
               />

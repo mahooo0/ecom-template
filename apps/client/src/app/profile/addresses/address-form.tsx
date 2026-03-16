@@ -23,6 +23,8 @@ interface AddressFormProps {
   onCancel: () => void;
 }
 
+const inputClass = "w-full rounded-md border border-border-primary px-3 py-2 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand";
+
 export function AddressForm({ address, onCancel }: AddressFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -47,7 +49,7 @@ export function AddressForm({ address, onCancel }: AddressFormProps) {
     <form action={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="firstName" className="mb-1 block text-sm font-medium text-gray-700">
+          <label htmlFor="firstName" className="mb-1 block text-sm font-medium text-secondary">
             First Name *
           </label>
           <input
@@ -56,12 +58,12 @@ export function AddressForm({ address, onCancel }: AddressFormProps) {
             name="firstName"
             defaultValue={address?.firstName || ''}
             required
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className={inputClass}
           />
         </div>
 
         <div>
-          <label htmlFor="lastName" className="mb-1 block text-sm font-medium text-gray-700">
+          <label htmlFor="lastName" className="mb-1 block text-sm font-medium text-secondary">
             Last Name *
           </label>
           <input
@@ -70,13 +72,13 @@ export function AddressForm({ address, onCancel }: AddressFormProps) {
             name="lastName"
             defaultValue={address?.lastName || ''}
             required
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className={inputClass}
           />
         </div>
       </div>
 
       <div>
-        <label htmlFor="street" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="street" className="mb-1 block text-sm font-medium text-secondary">
           Street Address *
         </label>
         <input
@@ -85,12 +87,12 @@ export function AddressForm({ address, onCancel }: AddressFormProps) {
           name="street"
           defaultValue={address?.street || ''}
           required
-          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className={inputClass}
         />
       </div>
 
       <div>
-        <label htmlFor="street2" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="street2" className="mb-1 block text-sm font-medium text-secondary">
           Apartment, Suite, etc. (Optional)
         </label>
         <input
@@ -98,13 +100,13 @@ export function AddressForm({ address, onCancel }: AddressFormProps) {
           id="street2"
           name="street2"
           defaultValue={address?.street2 || ''}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className={inputClass}
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="city" className="mb-1 block text-sm font-medium text-gray-700">
+          <label htmlFor="city" className="mb-1 block text-sm font-medium text-secondary">
             City *
           </label>
           <input
@@ -113,12 +115,12 @@ export function AddressForm({ address, onCancel }: AddressFormProps) {
             name="city"
             defaultValue={address?.city || ''}
             required
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className={inputClass}
           />
         </div>
 
         <div>
-          <label htmlFor="state" className="mb-1 block text-sm font-medium text-gray-700">
+          <label htmlFor="state" className="mb-1 block text-sm font-medium text-secondary">
             State *
           </label>
           <input
@@ -127,14 +129,14 @@ export function AddressForm({ address, onCancel }: AddressFormProps) {
             name="state"
             defaultValue={address?.state || ''}
             required
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className={inputClass}
           />
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="zipCode" className="mb-1 block text-sm font-medium text-gray-700">
+          <label htmlFor="zipCode" className="mb-1 block text-sm font-medium text-secondary">
             Zip Code *
           </label>
           <input
@@ -143,12 +145,12 @@ export function AddressForm({ address, onCancel }: AddressFormProps) {
             name="zipCode"
             defaultValue={address?.zipCode || ''}
             required
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className={inputClass}
           />
         </div>
 
         <div>
-          <label htmlFor="country" className="mb-1 block text-sm font-medium text-gray-700">
+          <label htmlFor="country" className="mb-1 block text-sm font-medium text-secondary">
             Country *
           </label>
           <input
@@ -157,13 +159,13 @@ export function AddressForm({ address, onCancel }: AddressFormProps) {
             name="country"
             defaultValue={address?.country || ''}
             required
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className={inputClass}
           />
         </div>
       </div>
 
       <div>
-        <label htmlFor="phone" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="phone" className="mb-1 block text-sm font-medium text-secondary">
           Phone (Optional)
         </label>
         <input
@@ -171,12 +173,12 @@ export function AddressForm({ address, onCancel }: AddressFormProps) {
           id="phone"
           name="phone"
           defaultValue={address?.phone || ''}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className={inputClass}
         />
       </div>
 
       <div>
-        <label htmlFor="label" className="mb-1 block text-sm font-medium text-gray-700">
+        <label htmlFor="label" className="mb-1 block text-sm font-medium text-secondary">
           Label (Optional)
         </label>
         <input
@@ -185,7 +187,7 @@ export function AddressForm({ address, onCancel }: AddressFormProps) {
           name="label"
           defaultValue={address?.label || ''}
           placeholder="Home, Work, etc."
-          className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className={inputClass}
         />
       </div>
 
@@ -196,9 +198,9 @@ export function AddressForm({ address, onCancel }: AddressFormProps) {
           name="isDefault"
           value="true"
           defaultChecked={address?.isDefault || false}
-          className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          className="h-4 w-4 rounded border-border-primary text-brand-solid focus:ring-brand"
         />
-        <label htmlFor="isDefault" className="ml-2 text-sm text-gray-700">
+        <label htmlFor="isDefault" className="ml-2 text-sm text-secondary">
           Set as default address
         </label>
       </div>
@@ -207,7 +209,7 @@ export function AddressForm({ address, onCancel }: AddressFormProps) {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+          className="rounded-md bg-brand-solid px-4 py-2 font-medium text-white hover:bg-brand-solid_hover focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 disabled:opacity-50"
         >
           {isSubmitting ? 'Saving...' : address ? 'Update Address' : 'Add Address'}
         </button>
@@ -215,7 +217,7 @@ export function AddressForm({ address, onCancel }: AddressFormProps) {
           type="button"
           onClick={onCancel}
           disabled={isSubmitting}
-          className="rounded-md bg-gray-100 px-4 py-2 font-medium text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50"
+          className="rounded-md bg-secondary_subtle px-4 py-2 font-medium text-secondary hover:bg-primary_hover focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2 disabled:opacity-50"
         >
           Cancel
         </button>

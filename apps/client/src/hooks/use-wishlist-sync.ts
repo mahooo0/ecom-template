@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { useUser, useAuth } from '@clerk/nextjs';
 import { useWishlistStore } from '@/stores/wishlist-store';
+import { api } from '@/lib/api';
 
 export function useWishlistSync() {
   const { isSignedIn } = useUser();
@@ -23,29 +24,18 @@ export function useWishlistSync() {
 
         if (items.length > 0) {
           // Fire-and-forget: sync local guest items to server
-          fetch('/api/wishlist/sync', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ items }),
-          }).catch(() => {
+          api.wishlist.sync(items, token).catch(() => {
             // Silently fail — local state remains intact
           });
         }
 
         // Fetch full wishlist from server to update local store
-        const res = await fetch('/api/wishlist', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          const data = (await res.json()) as { items?: Array<{ productId: string; priceAtAdd: number }> };
-          if (data.items && Array.isArray(data.items)) {
-            data.items.forEach((item) => {
-              addItem({ productId: item.productId, priceAtAdd: item.priceAtAdd });
-            });
-          }
+        const res = await api.wishlist.get(token);
+        const serverItems = res.data;
+        if (Array.isArray(serverItems)) {
+          serverItems.forEach((item) => {
+            addItem({ productId: item.productId, priceAtAdd: item.priceAtAdd });
+          });
         }
       } catch {
         // Silently fail — local state remains intact

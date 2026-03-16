@@ -16,7 +16,11 @@ import {
   createCartData,
 } from '../src/seed-factories.js';
 
-// Load environment variables
+// Load environment variables (root .env first, then local)
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 dotenv.config();
 
 // Set seed for reproducibility
@@ -103,7 +107,7 @@ async function main() {
   });
 
   const customers = await Promise.all(
-    Array.from({ length: 7 }).map(() =>
+    Array.from({ length: 20 }).map(() =>
       prisma.user.create({
         data: createUser({ role: 'CUSTOMER' }),
       })
@@ -183,7 +187,7 @@ async function main() {
       await prisma.categoryAttribute.create({
         data: {
           name: faker.commerce.productAdjective(),
-          key: faker.helpers.slugify(faker.commerce.productAdjective()).toLowerCase(),
+          key: `attr-${i}-${faker.string.alphanumeric(4)}`,
           type: faker.helpers.arrayElement(['SELECT', 'RANGE', 'BOOLEAN', 'TEXT']),
           values: Array.from({ length: 3 }).map(() => faker.commerce.productMaterial()),
           unit: faker.helpers.arrayElement([null, 'inch', 'cm', 'GB']),
@@ -411,7 +415,7 @@ async function main() {
   }
 
   // ~5 BUNDLED products
-  const simpleProd ucts = products.filter((p) => p.productType === 'SIMPLE').slice(0, 10);
+  const simpleProducts = products.filter((p) => p.productType === 'SIMPLE').slice(0, 10);
   for (let i = 0; i < 5; i++) {
     const category = faker.helpers.arrayElement(leafCategories);
     const brand = faker.helpers.arrayElement([...brands, null]);
@@ -753,16 +757,49 @@ async function main() {
     const selectedWarehouses = faker.helpers.arrayElements(warehouses, warehouseCount);
 
     for (const warehouse of selectedWarehouses) {
-      const quantity = faker.number.int({ min: 5, max: 100 });
-      const lowStock = faker.datatype.boolean();
+      // Create variety: some healthy stock, some low, some critically low/out
+      const stockProfile = faker.helpers.weightedArrayElement([
+        { value: 'healthy', weight: 5 },
+        { value: 'low', weight: 3 },
+        { value: 'critical', weight: 1 },
+        { value: 'out', weight: 1 },
+      ]);
+
+      let quantity: number;
+      let reserved: number;
+      let lowStockThreshold: number;
+
+      switch (stockProfile) {
+        case 'healthy':
+          quantity = faker.number.int({ min: 50, max: 200 });
+          reserved = faker.number.int({ min: 0, max: 10 });
+          lowStockThreshold = 10;
+          break;
+        case 'low':
+          quantity = faker.number.int({ min: 8, max: 15 });
+          reserved = faker.number.int({ min: 0, max: 3 });
+          lowStockThreshold = 15;
+          break;
+        case 'critical':
+          quantity = faker.number.int({ min: 2, max: 5 });
+          reserved = faker.number.int({ min: 0, max: 2 });
+          lowStockThreshold = 10;
+          break;
+        case 'out':
+        default:
+          quantity = faker.number.int({ min: 0, max: 2 });
+          reserved = quantity;
+          lowStockThreshold = 5;
+          break;
+      }
 
       const inventoryItem = await prisma.inventoryItem.create({
         data: {
           variantId: variant.id,
           warehouseId: warehouse.id,
           quantity,
-          reserved: 0,
-          lowStockThreshold: lowStock ? quantity + 5 : 5,
+          reserved,
+          lowStockThreshold,
         },
       });
 
@@ -783,17 +820,27 @@ async function main() {
   console.log(`✅ Created ${inventoryItemCount} inventory items\n`);
 
   // ========================================================================
-  // SEED MONGODB: ORDERS (10-15)
+  // SEED MONGODB: ORDERS (50+)
   // ========================================================================
   console.log('📋 Seeding orders (MongoDB)...');
 
-  const orderStatuses = ['pending', 'paid', 'processing', 'shipped', 'delivered', 'cancelled'];
-  const ordersToCreate = 12;
+  // Distribution: more delivered/shipped, fewer cancelled — realistic mix
+  const statusDistribution = [
+    ...Array(15).fill('pending'),
+    ...Array(25).fill('paid'),
+    ...Array(20).fill('processing'),
+    ...Array(30).fill('shipped'),
+    ...Array(40).fill('delivered'),
+    ...Array(10).fill('cancelled'),
+    ...Array(5).fill('returned'),
+    ...Array(5).fill('refund_requested'),
+  ];
+  const ordersToCreate = 150;
   const createdOrders = [];
 
   for (let i = 0; i < ordersToCreate; i++) {
     const customer = faker.helpers.arrayElement(customers);
-    const itemCount = faker.number.int({ min: 1, max: 4 });
+    const itemCount = faker.number.int({ min: 1, max: 5 });
     const selectedProducts = faker.helpers.arrayElements(products, itemCount);
 
     const orderItems = selectedProducts.map((product) => ({
@@ -807,8 +854,29 @@ async function main() {
       attributes: {},
     }));
 
-    const status = faker.helpers.arrayElement(orderStatuses);
-    const orderData = createOrderData(customer.id, orderItems, { status });
+    const status = statusDistribution[i % statusDistribution.length];
+
+    // Spread orders: 60% in last 30 days, 30% in days 31-60, 10% in days 61-90
+    let createdAt: Date;
+    const roll = faker.number.float({ min: 0, max: 1 });
+    if (roll < 0.6) {
+      createdAt = faker.date.between({
+        from: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        to: new Date(),
+      });
+    } else if (roll < 0.9) {
+      createdAt = faker.date.between({
+        from: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000),
+        to: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+      });
+    } else {
+      createdAt = faker.date.between({
+        from: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
+        to: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000),
+      });
+    }
+
+    const orderData = createOrderData(customer.id, orderItems, { status, createdAt });
 
     const order = await OrderModel.create(orderData);
     createdOrders.push(order);
@@ -896,7 +964,7 @@ async function main() {
   console.log(`  - Shipping Methods: 3`);
   console.log(`  - Warehouses: ${warehouses.length}`);
   console.log(`  - Inventory Items: ${inventoryItemCount}`);
-  console.log(`  - Orders (MongoDB): ${createdOrders.length}`);
+  console.log(`  - Orders (MongoDB): ${createdOrders.length} (150 across 90 days)`);
   console.log(`  - Carts (MongoDB): ${cartsToCreate.length}`);
 }
 

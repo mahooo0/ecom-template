@@ -1,29 +1,21 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAuth } from '@clerk/nextjs';
 import Link from 'next/link';
 import { useWishlistStore } from '@/stores/wishlist-store';
-import { PriceDropBadge } from '@/components/wishlist/price-drop-badge';
 import { WishlistButton } from '@/components/product/wishlist-button';
-import { formatPrice } from '@/lib/utils';
+import { api } from '@/lib/api';
+import type { Product } from '@repo/types';
 
 interface WishlistProduct {
   productId: string;
   priceAtAdd: number;
-  notifyPriceDrop: boolean;
-  notifyRestock: boolean;
-  product?: {
-    id: string;
-    name: string;
-    price: number;
-    images: string[];
-    slug: string;
-  };
+  product?: Product;
 }
 
+const formatPrice = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+
 export function WishlistPageClient() {
-  const { isSignedIn, getToken } = useAuth();
   const storeItems = useWishlistStore((s) => s.items);
   const [mounted, setMounted] = useState(false);
   const [wishlistItems, setWishlistItems] = useState<WishlistProduct[]>([]);
@@ -34,66 +26,29 @@ export function WishlistPageClient() {
   }, []);
 
   useEffect(() => {
-    if (!mounted) return;
-
-    const load = async () => {
-      setLoading(true);
-      try {
-        if (isSignedIn) {
-          const token = await getToken();
-          if (!token) return;
-          const res = await fetch('/api/wishlist', {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (res.ok) {
-            const data = (await res.json()) as { items?: WishlistProduct[] };
-            setWishlistItems(data.items ?? []);
-          }
-        } else {
-          // Guest: use store items directly (no product detail fetch in this iteration)
-          const guestItems: WishlistProduct[] = storeItems.map((item) => ({
-            productId: item.productId,
-            priceAtAdd: item.priceAtAdd,
-            notifyPriceDrop: false,
-            notifyRestock: false,
-          }));
-          setWishlistItems(guestItems);
-        }
-      } catch {
-        // Silently fail
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void load();
-  }, [mounted, isSignedIn]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handleNotifyToggle = async (
-    productId: string,
-    field: 'notifyPriceDrop' | 'notifyRestock',
-    value: boolean,
-  ) => {
-    try {
-      const token = await getToken();
-      if (!token) return;
-      await fetch(`/api/wishlist/${productId}/notify`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ [field]: value }),
-      });
-      setWishlistItems((prev) =>
-        prev.map((item) =>
-          item.productId === productId ? { ...item, [field]: value } : item,
-        ),
-      );
-    } catch {
-      // Silently fail
+    if (!mounted || storeItems.length === 0) {
+      setWishlistItems([]);
+      setLoading(false);
+      return;
     }
-  };
+
+    setLoading(true);
+    const ids = storeItems.map((item) => item.productId);
+    api.products.getByIds(ids)
+      .then((res) => {
+        const productMap = new Map(res.data.map((p) => [p.id, p]));
+        setWishlistItems(
+          storeItems.map((item) => ({
+            ...item,
+            product: productMap.get(item.productId),
+          })),
+        );
+      })
+      .catch(() => {
+        setWishlistItems(storeItems.map((item) => ({ ...item })));
+      })
+      .finally(() => setLoading(false));
+  }, [mounted, storeItems]);
 
   if (!mounted || loading) {
     return (
@@ -101,10 +56,10 @@ export function WishlistPageClient() {
         <h1 className="text-2xl font-bold mb-6">My Wishlist</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="rounded-lg border border-gray-200 p-4 animate-pulse">
-              <div className="bg-gray-200 h-48 rounded mb-3" />
-              <div className="bg-gray-200 h-4 rounded mb-2" />
-              <div className="bg-gray-200 h-4 rounded w-1/2" />
+            <div key={i} className="rounded-lg border border-border-secondary p-4 animate-pulse">
+              <div className="bg-secondary_subtle h-48 rounded mb-3" />
+              <div className="bg-secondary_subtle h-4 rounded mb-2" />
+              <div className="bg-secondary_subtle h-4 rounded w-1/2" />
             </div>
           ))}
         </div>
@@ -115,7 +70,7 @@ export function WishlistPageClient() {
   if (wishlistItems.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-6 py-16 text-center">
-        <div className="mb-4 text-gray-300">
+        <div className="mb-4 text-fg-quaternary">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="mx-auto h-16 w-16"
@@ -131,11 +86,11 @@ export function WishlistPageClient() {
             />
           </svg>
         </div>
-        <h2 className="text-xl font-semibold text-gray-700 mb-2">Your wishlist is empty</h2>
-        <p className="text-gray-500 mb-6">Save products you love and come back to them later.</p>
+        <h2 className="text-xl font-semibold text-secondary mb-2">Your wishlist is empty</h2>
+        <p className="text-tertiary mb-6">Save products you love and come back to them later.</p>
         <Link
           href="/products"
-          className="inline-block bg-gray-900 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors"
+          className="inline-block bg-primary-solid text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-primary-solid_hover transition-colors"
         >
           Browse Products
         </Link>
@@ -147,7 +102,7 @@ export function WishlistPageClient() {
     <div className="max-w-7xl mx-auto px-6 py-8">
       <h1 className="text-2xl font-bold mb-6">
         My Wishlist{' '}
-        <span className="text-gray-400 text-lg font-normal">({wishlistItems.length})</span>
+        <span className="text-quaternary text-lg font-normal">({wishlistItems.length})</span>
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {wishlistItems.map((item) => {
@@ -160,7 +115,7 @@ export function WishlistPageClient() {
           return (
             <div
               key={item.productId}
-              className="rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+              className="rounded-lg border border-border-secondary overflow-hidden hover:shadow-md transition-shadow"
             >
               {/* Product image */}
               <div className="relative">
@@ -172,8 +127,8 @@ export function WishlistPageClient() {
                       className="w-full h-48 object-cover"
                     />
                   ) : (
-                    <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
-                      <span className="text-gray-400 text-sm">No image</span>
+                    <div className="w-full h-48 bg-secondary_subtle flex items-center justify-center">
+                      <span className="text-quaternary text-sm">No image</span>
                     </div>
                   )}
                 </Link>
@@ -189,67 +144,20 @@ export function WishlistPageClient() {
               {/* Product info */}
               <div className="p-4">
                 <Link href={`/products/${productSlug}`} className="hover:underline">
-                  <h3 className="font-medium text-gray-900 text-sm line-clamp-2 mb-1">
+                  <h3 className="font-medium text-primary text-sm line-clamp-2 mb-1">
                     {productName}
                   </h3>
                 </Link>
 
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="font-semibold text-gray-900">{formatPrice(currentPrice)}</span>
+                  <span className="font-semibold text-primary">{formatPrice(currentPrice)}</span>
                 </div>
 
-                {/* Price-drop badge */}
-                <div className="mb-3">
-                  <PriceDropBadge priceAtAdd={item.priceAtAdd} currentPrice={currentPrice} />
-                </div>
-
-                {/* Add to cart */}
-                <button className="w-full bg-gray-900 text-white text-sm py-2 rounded-lg hover:bg-gray-700 transition-colors mb-3">
-                  Add to Cart
-                </button>
-
-                {/* Notify toggles (authenticated only) */}
-                {isSignedIn && (
-                  <div className="space-y-2 border-t border-gray-100 pt-3">
-                    <div className="flex items-center justify-between text-xs text-gray-600">
-                      <span>Price drop alerts</span>
-                      <button
-                        role="switch"
-                        aria-checked={item.notifyPriceDrop}
-                        onClick={() =>
-                          handleNotifyToggle(item.productId, 'notifyPriceDrop', !item.notifyPriceDrop)
-                        }
-                        className={`relative inline-flex h-4 w-8 items-center rounded-full transition-colors ${
-                          item.notifyPriceDrop ? 'bg-green-500' : 'bg-gray-200'
-                        }`}
-                      >
-                        <span
-                          className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
-                            item.notifyPriceDrop ? 'translate-x-4' : 'translate-x-0.5'
-                          }`}
-                        />
-                      </button>
-                    </div>
-                    <div className="flex items-center justify-between text-xs text-gray-600">
-                      <span>Restock alerts</span>
-                      <button
-                        role="switch"
-                        aria-checked={item.notifyRestock}
-                        onClick={() =>
-                          handleNotifyToggle(item.productId, 'notifyRestock', !item.notifyRestock)
-                        }
-                        className={`relative inline-flex h-4 w-8 items-center rounded-full transition-colors ${
-                          item.notifyRestock ? 'bg-green-500' : 'bg-gray-200'
-                        }`}
-                      >
-                        <span
-                          className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
-                            item.notifyRestock ? 'translate-x-4' : 'translate-x-0.5'
-                          }`}
-                        />
-                      </button>
-                    </div>
-                  </div>
+                {/* Price drop indicator */}
+                {item.priceAtAdd > currentPrice && (
+                  <p className="text-xs text-utility-success-700 font-medium mb-2">
+                    Price dropped from {formatPrice(item.priceAtAdd)}!
+                  </p>
                 )}
               </div>
             </div>

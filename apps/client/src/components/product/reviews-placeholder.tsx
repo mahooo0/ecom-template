@@ -39,17 +39,17 @@ export function ReviewsPlaceholder({
   const displayedReviews = reviews.slice(0, 3);
 
   return (
-    <section className="mt-8 border-t border-gray-200 pt-8">
-      <h2 className="text-xl font-semibold text-gray-900 mb-6">Customer Reviews</h2>
+    <section className="mt-8 border-t border-border-secondary pt-8">
+      <h2 className="text-xl font-semibold text-primary mb-6">Customer Reviews</h2>
 
       {/* Average rating summary */}
       <div className="flex flex-col sm:flex-row gap-8 mb-8">
         <div className="flex flex-col items-center justify-center min-w-[120px]">
-          <span className="text-5xl font-bold text-gray-900">{averageRating.toFixed(1)}</span>
+          <span className="text-5xl font-bold text-primary">{averageRating.toFixed(1)}</span>
           <div className="mt-2">
             <StarRating rating={averageRating} size="md" />
           </div>
-          <span className="mt-1 text-sm text-gray-500">
+          <span className="mt-1 text-sm text-tertiary">
             {reviewCount} {reviewCount === 1 ? 'review' : 'reviews'}
           </span>
         </div>
@@ -61,14 +61,14 @@ export function ReviewsPlaceholder({
             const widthPercent = reviews.length > 0 ? (count / maxCount) * 100 : 0;
             return (
               <div key={star} className="flex items-center gap-3">
-                <span className="text-sm text-gray-600 w-12 shrink-0">{star} stars</span>
-                <div className="flex-1 bg-gray-200 rounded-full h-2">
+                <span className="text-sm text-tertiary w-12 shrink-0">{star} stars</span>
+                <div className="flex-1 bg-secondary_subtle rounded-full h-2">
                   <div
-                    className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
+                    className="bg-utility-warning-500 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${widthPercent}%` }}
                   />
                 </div>
-                <span className="text-sm text-gray-500 w-6 text-right">{count}</span>
+                <span className="text-sm text-tertiary w-6 text-right">{count}</span>
               </div>
             );
           })}
@@ -79,23 +79,23 @@ export function ReviewsPlaceholder({
       {displayedReviews.length > 0 ? (
         <div className="space-y-6">
           {displayedReviews.map((review) => (
-            <div key={review.id} className="border-b border-gray-100 pb-6 last:border-b-0">
+            <div key={review.id} className="border-b border-border-secondary pb-6 last:border-b-0">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <StarRating rating={review.rating} size="sm" />
                   {review.title && (
-                    <span className="font-medium text-gray-900">{review.title}</span>
+                    <span className="font-medium text-primary">{review.title}</span>
                   )}
                 </div>
-                <span className="text-sm text-gray-500">{formatDate(review.createdAt)}</span>
+                <span className="text-sm text-tertiary">{formatDate(review.createdAt)}</span>
               </div>
-              <p className="text-sm font-medium text-gray-700 mb-1">{review.userName}</p>
-              <p className="text-gray-600">{review.comment}</p>
+              <p className="text-sm font-medium text-secondary mb-1">{review.userName}</p>
+              <p className="text-tertiary">{review.comment}</p>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-gray-500 text-center py-6">
+        <p className="text-tertiary text-center py-6">
           No reviews yet. Be the first to review this product.
         </p>
       )}

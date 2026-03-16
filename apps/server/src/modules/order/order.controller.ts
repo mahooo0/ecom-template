@@ -4,9 +4,16 @@ import { orderService } from './order.service.js';
 export class OrderController {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 20;
-      const result = await orderService.getAll(page, limit);
+      const result = await orderService.getAll({
+        page: parseInt(req.query.page as string) || 1,
+        limit: parseInt(req.query.limit as string) || 20,
+        status: req.query.status as string,
+        dateFrom: req.query.dateFrom as string,
+        dateTo: req.query.dateTo as string,
+        minAmount: req.query.minAmount ? parseInt(req.query.minAmount as string) : undefined,
+        maxAmount: req.query.maxAmount ? parseInt(req.query.maxAmount as string) : undefined,
+        search: req.query.search as string,
+      });
       res.json({ success: true, ...result });
     } catch (error) {
       next(error);
@@ -15,8 +22,12 @@ export class OrderController {
 
   async getByUserId(req: Request, res: Response, next: NextFunction) {
     try {
-      const orders = await orderService.getByUserId(req.params.userId as string);
-      res.json({ success: true, data: orders });
+      const result = await orderService.getByUserId(req.params.userId as string, {
+        page: parseInt(req.query.page as string) || 1,
+        limit: parseInt(req.query.limit as string) || 20,
+        status: req.query.status as string,
+      });
+      res.json({ success: true, ...result });
     } catch (error) {
       next(error);
     }
@@ -53,7 +64,6 @@ export class OrderController {
     try {
       const { carrier, trackingNumber, estimatedDelivery } = req.body;
 
-      // Validate required fields
       if (!carrier || !trackingNumber) {
         return res.status(400).json({
           success: false,
@@ -68,6 +78,25 @@ export class OrderController {
       });
 
       res.json({ success: true, data: order });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getStats(req: Request, res: Response, next: NextFunction) {
+    try {
+      const stats = await orderService.getOrderStats();
+      res.json({ success: true, data: stats });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async processRefund(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { amount } = req.body;
+      const refund = await orderService.processRefund(req.params.id as string, amount);
+      res.json({ success: true, data: refund });
     } catch (error) {
       next(error);
     }

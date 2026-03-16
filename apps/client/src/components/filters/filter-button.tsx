@@ -11,11 +11,10 @@ export function FilterButton({ activeFilterCount, onClick }: FilterButtonProps) 
   return (
     <button
       onClick={onClick}
-      className="lg:hidden inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="lg:hidden inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-secondary bg-primary border border-border-primary rounded-lg hover:bg-primary_hover focus:outline-none focus-visible:outline-2 focus-visible:outline-focus-ring transition-colors"
       data-testid="filter-button"
       aria-label="Open filters"
     >
-      {/* Filter icon (SVG) */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="16"
@@ -33,7 +32,7 @@ export function FilterButton({ activeFilterCount, onClick }: FilterButtonProps) 
       Filters
       {activeFilterCount > 0 && (
         <span
-          className="inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-blue-600 rounded-full"
+          className="inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-fg-white bg-brand-solid rounded-full"
           data-testid="filter-count-badge"
         >
           {activeFilterCount}

@@ -8,6 +8,11 @@ import { useAuth } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { Brand } from '@repo/types';
+import { ImageUpload } from '@/components/ui/image-upload';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 const brandSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -34,6 +39,7 @@ export default function BrandForm({ brand, onSuccess }: BrandFormProps) {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<any>({
     resolver: zodResolver(brandSchema),
@@ -96,16 +102,15 @@ export default function BrandForm({ brand, onSuccess }: BrandFormProps) {
       )}
 
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+        <Label htmlFor="name" className="mb-1">
           Name <span className="text-red-500">*</span>
-        </label>
-        <input
+        </Label>
+        <Input
           type="text"
           id="name"
           {...register('name', {
             onChange: handleNameChange,
           })}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Nike"
         />
         {errors.name && (
@@ -114,14 +119,13 @@ export default function BrandForm({ brand, onSuccess }: BrandFormProps) {
       </div>
 
       <div>
-        <label htmlFor="slug" className="block text-sm font-medium text-gray-700 mb-1">
+        <Label htmlFor="slug" className="mb-1">
           Slug <span className="text-red-500">*</span>
-        </label>
-        <input
+        </Label>
+        <Input
           type="text"
           id="slug"
           {...register('slug')}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="nike"
         />
         {errors.slug && (
@@ -130,28 +134,25 @@ export default function BrandForm({ brand, onSuccess }: BrandFormProps) {
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+        <Label htmlFor="description" className="mb-1">
           Description
-        </label>
-        <textarea
+        </Label>
+        <Textarea
           id="description"
           {...register('description')}
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="A leading sports brand"
         />
       </div>
 
       <div>
-        <label htmlFor="logo" className="block text-sm font-medium text-gray-700 mb-1">
-          Logo URL
-        </label>
-        <input
-          type="text"
-          id="logo"
-          {...register('logo')}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="https://example.com/logo.png"
+        <Label className="mb-1">
+          Logo
+        </Label>
+        <ImageUpload
+          value={watch('logo') || ''}
+          onChange={(val) => setValue('logo', val, { shouldValidate: true })}
+          preset="brand"
         />
         {errors.logo && (
           <p className="mt-1 text-sm text-red-600">{String(errors.logo.message)}</p>
@@ -159,14 +160,13 @@ export default function BrandForm({ brand, onSuccess }: BrandFormProps) {
       </div>
 
       <div>
-        <label htmlFor="website" className="block text-sm font-medium text-gray-700 mb-1">
+        <Label htmlFor="website" className="mb-1">
           Website
-        </label>
-        <input
+        </Label>
+        <Input
           type="text"
           id="website"
           {...register('website')}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="https://example.com"
         />
         {errors.website && (
@@ -175,19 +175,15 @@ export default function BrandForm({ brand, onSuccess }: BrandFormProps) {
       </div>
 
       <div className="flex space-x-3 pt-4">
-        <button
+        <Button
           type="submit"
           disabled={isSubmitting}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {isSubmitting ? 'Saving...' : brand ? 'Update Brand' : 'Create Brand'}
-        </button>
-        <a
-          href="/dashboard/brands"
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-        >
-          Cancel
-        </a>
+        </Button>
+        <Button variant="outline" asChild>
+          <a href="/dashboard/brands">Cancel</a>
+        </Button>
       </div>
     </form>
   );

@@ -1,7 +1,17 @@
 'use client';
 
 import { useState } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import { api } from '@/lib/api';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface AddTrackingFormProps {
   orderId: string;
@@ -9,6 +19,7 @@ interface AddTrackingFormProps {
 }
 
 export default function AddTrackingForm({ orderId, onSuccess }: AddTrackingFormProps) {
+  const { getToken } = useAuth();
   const [carrier, setCarrier] = useState('');
   const [trackingNumber, setTrackingNumber] = useState('');
   const [estimatedDelivery, setEstimatedDelivery] = useState('');
@@ -21,6 +32,7 @@ export default function AddTrackingForm({ orderId, onSuccess }: AddTrackingFormP
     setLoading(true);
 
     try {
+      const token = await getToken();
       const data: { carrier: string; trackingNumber: string; estimatedDelivery?: string } = {
         carrier,
         trackingNumber,
@@ -30,7 +42,7 @@ export default function AddTrackingForm({ orderId, onSuccess }: AddTrackingFormP
         data.estimatedDelivery = estimatedDelivery;
       }
 
-      await api.orders.addTracking(orderId, data);
+      await api.orders.addTracking(orderId, data, token || undefined);
       onSuccess();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to add tracking');
@@ -40,7 +52,7 @@ export default function AddTrackingForm({ orderId, onSuccess }: AddTrackingFormP
   };
 
   return (
-    <form onSubmit={handleSubmit} className="border rounded-lg p-6 bg-white shadow-sm">
+    <form onSubmit={handleSubmit} className="border rounded-lg p-6 bg-card shadow-sm">
       <h2 className="text-lg font-semibold mb-4">Add Tracking Information</h2>
 
       {error && (
@@ -51,62 +63,57 @@ export default function AddTrackingForm({ orderId, onSuccess }: AddTrackingFormP
 
       <div className="space-y-4">
         <div>
-          <label htmlFor="carrier" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="carrier" className="block text-sm font-medium text-foreground mb-1">
             Carrier <span className="text-red-500">*</span>
           </label>
-          <select
-            id="carrier"
-            value={carrier}
-            onChange={(e) => setCarrier(e.target.value)}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Select a carrier</option>
-            <option value="USPS">USPS</option>
-            <option value="FedEx">FedEx</option>
-            <option value="UPS">UPS</option>
-            <option value="DHL">DHL</option>
-            <option value="Other">Other</option>
-          </select>
+          <Select value={carrier} onValueChange={setCarrier}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select a carrier" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="USPS">USPS</SelectItem>
+              <SelectItem value="FedEx">FedEx</SelectItem>
+              <SelectItem value="UPS">UPS</SelectItem>
+              <SelectItem value="DHL">DHL</SelectItem>
+              <SelectItem value="Other">Other</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <div>
-          <label htmlFor="trackingNumber" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="trackingNumber" className="block text-sm font-medium text-foreground mb-1">
             Tracking Number <span className="text-red-500">*</span>
           </label>
-          <input
+          <Input
             type="text"
             id="trackingNumber"
             value={trackingNumber}
             onChange={(e) => setTrackingNumber(e.target.value)}
             disabled={!carrier}
-            required
-            placeholder={carrier ? "Enter tracking number" : "Select a carrier first"}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            placeholder={carrier ? 'Enter tracking number' : 'Select a carrier first'}
           />
         </div>
 
         <div>
-          <label htmlFor="estimatedDelivery" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="estimatedDelivery" className="block text-sm font-medium text-foreground mb-1">
             Estimated Delivery Date
           </label>
-          <input
+          <Input
             type="date"
             id="estimatedDelivery"
             value={estimatedDelivery}
             onChange={(e) => setEstimatedDelivery(e.target.value)}
             min={new Date().toISOString().split('T')[0]}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
-        <button
+        <Button
           type="submit"
           disabled={loading || !carrier || !trackingNumber}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
+          className="w-full"
         >
           {loading ? 'Submitting...' : 'Mark as Shipped'}
-        </button>
+        </Button>
       </div>
     </form>
   );

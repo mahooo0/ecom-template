@@ -573,10 +573,18 @@ model Brand {
   @@map("brands")
 }
 
+enum TagType {
+  PRODUCT
+  COLLECTION
+  BLOG
+  CUSTOM
+}
+
 model Tag {
   id              String       @id @default(cuid())
   name            String       @unique
   slug            String       @unique
+  type            TagType      @default(PRODUCT)
   products        ProductTag[]
   createdAt       DateTime     @default(now())
 

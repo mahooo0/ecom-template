@@ -37,7 +37,6 @@ export function FilterDrawer({ categoryAttributes, facetCounts }: FilterDrawerPr
   const [open, setOpen] = useState(false);
   const [pendingFilters, setPendingFilters] = useState({ ...DEFAULT_FILTERS });
 
-  // Snapshot current filters when drawer opens
   const handleOpen = () => {
     setPendingFilters({
       minPrice: filters.minPrice,
@@ -73,7 +72,6 @@ export function FilterDrawer({ categoryAttributes, facetCounts }: FilterDrawerPr
 
   const activeFilterCount = countActiveFilters(filters);
 
-  // Prevent body scroll when drawer is open
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
@@ -101,18 +99,18 @@ export function FilterDrawer({ categoryAttributes, facetCounts }: FilterDrawerPr
 
           {/* Drawer */}
           <div
-            className="fixed inset-y-0 left-0 z-50 w-full sm:max-w-md bg-white flex flex-col lg:hidden"
+            className="fixed inset-y-0 left-0 z-50 w-full sm:max-w-md bg-primary flex flex-col lg:hidden"
             role="dialog"
             aria-modal="true"
             aria-label="Filters"
             data-testid="filter-drawer-content"
           >
-            {/* Drawer header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-              <h2 className="text-base font-semibold text-gray-900">Filters</h2>
+            {/* Header */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-border-secondary">
+              <h2 className="text-base font-semibold text-primary">Filters</h2>
               <button
                 onClick={handleClose}
-                className="p-1 rounded text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="p-1.5 rounded-md text-quaternary hover:text-primary hover:bg-primary_hover focus:outline-none focus-visible:outline-2 focus-visible:outline-focus-ring transition-colors"
                 aria-label="Close filters"
                 data-testid="close-drawer-button"
               >
@@ -134,7 +132,7 @@ export function FilterDrawer({ categoryAttributes, facetCounts }: FilterDrawerPr
               </button>
             </div>
 
-            {/* Scrollable filter content */}
+            {/* Scrollable content */}
             <div className="flex-1 overflow-y-auto px-4 py-4">
               <FilterContent
                 categoryAttributes={categoryAttributes}
@@ -143,17 +141,17 @@ export function FilterDrawer({ categoryAttributes, facetCounts }: FilterDrawerPr
             </div>
 
             {/* Bottom action bar */}
-            <div className="px-4 py-3 border-t border-gray-200 flex items-center gap-3">
+            <div className="px-4 py-3 border-t border-border-secondary flex items-center gap-3">
               <button
                 onClick={handleClearAll}
-                className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 px-4 py-2.5 text-sm font-medium text-secondary bg-primary border border-border-primary rounded-lg hover:bg-primary_hover focus:outline-none focus-visible:outline-2 focus-visible:outline-focus-ring transition-colors"
                 data-testid="clear-all-filters-button"
               >
                 Clear All
               </button>
               <button
                 onClick={handleApply}
-                className="flex-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 px-4 py-2.5 text-sm font-medium text-fg-white bg-brand-solid rounded-lg hover:bg-brand-solid_hover focus:outline-none focus-visible:outline-2 focus-visible:outline-focus-ring transition-colors"
                 data-testid="apply-filters-button"
               >
                 Apply

@@ -10,22 +10,19 @@ type FilterSidebarProps = FilterContentProps;
 export function FilterSidebar({ categoryAttributes, facetCounts }: FilterSidebarProps) {
   return (
     <aside
-      className="hidden lg:block w-64 shrink-0"
+      className="hidden w-64 shrink-0 lg:block"
       data-testid="filter-sidebar"
     >
       <div className="sticky top-20">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-semibold text-gray-900">Filters</h2>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-xs font-semibold tracking-[0.2em] text-neutral-900 uppercase">Filters</h2>
         </div>
 
-        {/* Active filters summary */}
         <div className="mb-4">
           <ActiveFilters />
         </div>
 
-        {/* Scrollable filter content */}
-        <div className="overflow-y-auto max-h-[calc(100vh-10rem)] pr-1">
+        <div className="max-h-[calc(100vh-10rem)] overflow-y-auto pr-1">
           <FilterContent
             categoryAttributes={categoryAttributes}
             facetCounts={facetCounts}

@@ -8,6 +8,12 @@ import { useAuth } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { Collection } from '@repo/types';
+import { ImageUpload } from '@/components/ui/image-upload';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const collectionSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -99,16 +105,15 @@ export default function CollectionForm({ collection, onSuccess }: CollectionForm
       )}
 
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+        <Label htmlFor="name" className="mb-1">
           Name <span className="text-red-500">*</span>
-        </label>
-        <input
+        </Label>
+        <Input
           type="text"
           id="name"
           {...register('name', {
             onChange: handleNameChange,
           })}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Summer Collection"
         />
         {errors.name && (
@@ -117,14 +122,13 @@ export default function CollectionForm({ collection, onSuccess }: CollectionForm
       </div>
 
       <div>
-        <label htmlFor="slug" className="block text-sm font-medium text-gray-700 mb-1">
+        <Label htmlFor="slug" className="mb-1">
           Slug <span className="text-red-500">*</span>
-        </label>
-        <input
+        </Label>
+        <Input
           type="text"
           id="slug"
           {...register('slug')}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="summer-collection"
         />
         {errors.slug && (
@@ -133,60 +137,52 @@ export default function CollectionForm({ collection, onSuccess }: CollectionForm
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+        <Label htmlFor="description" className="mb-1">
           Description
-        </label>
-        <textarea
+        </Label>
+        <Textarea
           id="description"
           {...register('description')}
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Curated products for the summer season"
         />
       </div>
 
       <div>
-        <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">
-          Image URL
-        </label>
-        <input
-          type="text"
-          id="image"
-          {...register('image')}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="https://example.com/image.jpg"
+        <Label className="mb-1">
+          Image
+        </Label>
+        <ImageUpload
+          value={watch('image') || ''}
+          onChange={(val) => setValue('image', val as string, { shouldValidate: true })}
+          preset="collection"
         />
         {errors.image && (
           <p className="mt-1 text-sm text-red-600">{String(errors.image.message)}</p>
         )}
       </div>
 
-      <div className="flex items-center">
-        <input
-          type="checkbox"
+      <div className="flex items-center space-x-2">
+        <Checkbox
           id="isActive"
-          {...register('isActive')}
-          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          checked={watch('isActive')}
+          onCheckedChange={(checked) => setValue('isActive', !!checked)}
         />
-        <label htmlFor="isActive" className="ml-2 block text-sm text-gray-700">
+        <Label htmlFor="isActive" className="text-sm">
           Active
-        </label>
+        </Label>
       </div>
 
       <div className="flex space-x-3 pt-4">
-        <button
+        <Button
           type="submit"
           disabled={isSubmitting}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           {isSubmitting ? 'Saving...' : collection ? 'Update Collection' : 'Create Collection'}
-        </button>
-        <a
-          href="/dashboard/collections"
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-        >
-          Cancel
-        </a>
+        </Button>
+        <Button variant="outline" asChild>
+          <a href="/dashboard/collections">Cancel</a>
+        </Button>
       </div>
     </form>
   );

@@ -150,7 +150,7 @@ export function VariantSelector({ variants, onVariantChange }: VariantSelectorPr
         <div key={group.name}>
           <label
             htmlFor={`variant-${group.name}`}
-            className="block text-sm font-medium text-gray-700 mb-1"
+            className="block text-sm font-medium text-secondary mb-1"
           >
             {group.displayName}
           </label>
@@ -158,7 +158,7 @@ export function VariantSelector({ variants, onVariantChange }: VariantSelectorPr
             id={`variant-${group.name}`}
             value={selections[group.name] ?? ''}
             onChange={(e) => handleChange(group.name, e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 bg-white w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="border border-border-primary rounded-lg px-3 py-2 bg-primary w-full focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent"
           >
             {group.values.map((value) => {
               const available = isValueAvailable(
@@ -173,7 +173,7 @@ export function VariantSelector({ variants, onVariantChange }: VariantSelectorPr
                   key={value}
                   value={value}
                   disabled={!available}
-                  className={!available ? 'opacity-50 text-gray-400' : ''}
+                  className={!available ? 'opacity-50 text-quaternary' : ''}
                 >
                   {value}
                 </option>

@@ -20,6 +20,48 @@ async function verifyAdmin() {
 }
 
 /**
+ * Create a new user via Clerk Backend API and sync to local DB
+ */
+export async function createUser(formData: FormData) {
+  await verifyAdmin();
+
+  const firstName = formData.get('firstName') as string;
+  const lastName = formData.get('lastName') as string;
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
+  const role = (formData.get('role') as string) || 'CUSTOMER';
+
+  if (!firstName || !lastName || !email || !password) {
+    throw new Error('All fields are required');
+  }
+
+  const clerk = await clerkClient();
+
+  // Create user in Clerk
+  const clerkUser = await clerk.users.createUser({
+    firstName,
+    lastName,
+    emailAddress: [email],
+    password,
+    publicMetadata: { role },
+  });
+
+  // Sync to local database
+  await prisma.user.create({
+    data: {
+      clerkId: clerkUser.id,
+      email,
+      firstName,
+      lastName,
+      role: role as 'CUSTOMER' | 'ADMIN' | 'SUPER_ADMIN',
+    },
+  });
+
+  revalidatePath('/dashboard/users');
+  return { success: true, userId: clerkUser.id };
+}
+
+/**
  * Get paginated list of all users
  */
 export async function getUsers(page = 1, limit = 20) {
@@ -80,7 +122,7 @@ export async function getUserDetail(userId: string) {
   }
 
   // Get Clerk user for status info
-  const clerkUser = await clerkClient().users.getUser(dbUser.clerkId);
+  const clerkUser = await (await clerkClient()).users.getUser(dbUser.clerkId);
 
   return {
     ...dbUser,
@@ -108,7 +150,7 @@ export async function setUserRole(
   }
 
   // Update Clerk metadata
-  await clerkClient().users.updateUserMetadata(dbUser.clerkId, {
+  await (await clerkClient()).users.updateUserMetadata(dbUser.clerkId, {
     publicMetadata: { role: newRole },
   });
 
@@ -143,9 +185,9 @@ export async function toggleUserStatus(userId: string, shouldBan: boolean) {
 
   // Ban or unban in Clerk
   if (shouldBan) {
-    await clerkClient().users.banUser(dbUser.clerkId);
+    await (await clerkClient()).users.banUser(dbUser.clerkId);
   } else {
-    await clerkClient().users.unbanUser(dbUser.clerkId);
+    await (await clerkClient()).users.unbanUser(dbUser.clerkId);
   }
 
   // Update local database

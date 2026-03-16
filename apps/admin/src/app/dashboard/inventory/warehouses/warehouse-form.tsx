@@ -1,7 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import { api } from '@/lib/api';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface WarehouseFormProps {
   warehouse?: any;
@@ -10,6 +15,7 @@ interface WarehouseFormProps {
 }
 
 export function WarehouseForm({ warehouse, onSave, onCancel }: WarehouseFormProps) {
+  const { getToken } = useAuth();
   const [formData, setFormData] = useState({
     name: warehouse?.name ?? '',
     code: warehouse?.code ?? '',
@@ -57,10 +63,11 @@ export function WarehouseForm({ warehouse, onSave, onCancel }: WarehouseFormProp
 
     try {
       setSubmitting(true);
+      const token = await getToken();
       if (warehouse?.id) {
-        await api.inventory.warehouses.update(warehouse.id, payload);
+        await api.inventory.warehouses.update(warehouse.id, payload, token || undefined);
       } else {
-        await api.inventory.warehouses.create(payload);
+        await api.inventory.warehouses.create(payload, token || undefined);
       }
       onSave();
     } catch (err: any) {
@@ -78,163 +85,152 @@ export function WarehouseForm({ warehouse, onSave, onCancel }: WarehouseFormProp
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <Label>
             Name <span className="text-red-500">*</span>
-          </label>
-          <input
+          </Label>
+          <Input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1"
             placeholder="Main Warehouse"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <Label>
             Code <span className="text-red-500">*</span>
-          </label>
-          <input
+          </Label>
+          <Input
             type="text"
             name="code"
             value={formData.code}
             onChange={handleChange}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 uppercase"
+            className="mt-1 uppercase"
             placeholder="WH-MAIN"
           />
         </div>
 
         <div className="sm:col-span-2">
-          <label className="block text-sm font-medium text-gray-700">Address</label>
-          <input
+          <Label>Address</Label>
+          <Input
             type="text"
             name="address"
             value={formData.address}
             onChange={handleChange}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1"
             placeholder="123 Warehouse St"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">City</label>
-          <input
+          <Label>City</Label>
+          <Input
             type="text"
             name="city"
             value={formData.city}
             onChange={handleChange}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">State</label>
-          <input
+          <Label>State</Label>
+          <Input
             type="text"
             name="state"
             value={formData.state}
             onChange={handleChange}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <Label>
             Country (2-char)
-          </label>
-          <input
+          </Label>
+          <Input
             type="text"
             name="country"
             value={formData.country}
             onChange={handleChange}
             maxLength={2}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 uppercase"
+            className="mt-1 uppercase"
             placeholder="US"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Zip Code</label>
-          <input
+          <Label>Zip Code</Label>
+          <Input
             type="text"
             name="zipCode"
             value={formData.zipCode}
             onChange={handleChange}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <Label>
             Latitude (optional)
-          </label>
-          <input
+          </Label>
+          <Input
             type="number"
             name="latitude"
             value={formData.latitude}
             onChange={handleChange}
             step="any"
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <Label>
             Longitude (optional)
-          </label>
-          <input
+          </Label>
+          <Input
             type="number"
             name="longitude"
             value={formData.longitude}
             onChange={handleChange}
             step="any"
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Priority</label>
-          <input
+          <Label>Priority</Label>
+          <Input
             type="number"
             name="priority"
             value={formData.priority}
             onChange={handleChange}
             min={1}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="mt-1"
           />
         </div>
 
-        <div className="flex items-center sm:col-span-2">
-          <input
-            type="checkbox"
-            name="isActive"
+        <div className="flex items-center space-x-2 sm:col-span-2">
+          <Checkbox
             id="isActive"
             checked={formData.isActive}
-            onChange={handleChange}
-            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isActive: !!checked }))}
           />
-          <label htmlFor="isActive" className="ml-2 text-sm text-gray-700">
+          <Label htmlFor="isActive" className="text-sm">
             Active
-          </label>
+          </Label>
         </div>
       </div>
 
       <div className="flex justify-end gap-3 pt-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-        >
+        <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
-        </button>
-        <button
-          type="submit"
-          disabled={submitting}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-        >
+        </Button>
+        <Button type="submit" disabled={submitting}>
           {submitting ? 'Saving...' : warehouse?.id ? 'Update Warehouse' : 'Create Warehouse'}
-        </button>
+        </Button>
       </div>
     </form>
   );

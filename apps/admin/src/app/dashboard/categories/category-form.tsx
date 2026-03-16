@@ -8,6 +8,12 @@ import type { Category } from '@repo/types';
 import { useAuth } from '@clerk/nextjs';
 import { api } from '@/lib/api';
 import { useRouter } from 'next/navigation';
+import { ImageUpload } from '@/components/ui/image-upload';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const categoryFormSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100, 'Name must be 100 characters or less'),
@@ -24,9 +30,10 @@ type CategoryFormData = z.infer<typeof categoryFormSchema>;
 interface CategoryFormProps {
   category?: Category;
   categories: Category[];
+  onSuccess?: () => void;
 }
 
-export default function CategoryForm({ category, categories }: CategoryFormProps) {
+export default function CategoryForm({ category, categories, onSuccess }: CategoryFormProps) {
   const { getToken } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -101,8 +108,13 @@ export default function CategoryForm({ category, categories }: CategoryFormProps
       }
 
       // Refresh the page and close the form
-      router.push('/dashboard/categories');
-      router.refresh();
+      if (onSuccess) {
+        router.refresh();
+        onSuccess();
+      } else {
+        router.push('/dashboard/categories');
+        router.refresh();
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to save category');
     } finally {
@@ -120,14 +132,13 @@ export default function CategoryForm({ category, categories }: CategoryFormProps
 
       {/* Name */}
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+        <Label htmlFor="name" className="mb-1">
           Name *
-        </label>
-        <input
+        </Label>
+        <Input
           {...register('name')}
           id="name"
           type="text"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         {errors.name && (
           <p className="text-sm text-red-600 mt-1">{String(errors.name.message)}</p>
@@ -136,14 +147,13 @@ export default function CategoryForm({ category, categories }: CategoryFormProps
 
       {/* Description */}
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+        <Label htmlFor="description" className="mb-1">
           Description
-        </label>
-        <textarea
+        </Label>
+        <Textarea
           {...register('description')}
           id="description"
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         {errors.description && (
           <p className="text-sm text-red-600 mt-1">{String(errors.description.message)}</p>
@@ -152,37 +162,34 @@ export default function CategoryForm({ category, categories }: CategoryFormProps
 
       {/* Parent Category */}
       <div>
-        <label htmlFor="parentId" className="block text-sm font-medium text-gray-700 mb-1">
+        <Label htmlFor="parentId" className="mb-1">
           Parent Category
-        </label>
-        <select
-          {...register('parentId')}
-          id="parentId"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">None (Root Category)</option>
-          {availableParents.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {'—'.repeat(cat.depth)} {cat.name}
-            </option>
-          ))}
-        </select>
+        </Label>
+        <Select value={watch('parentId') || 'none'} onValueChange={(v) => setValue('parentId', v === 'none' ? null : v)}>
+          <SelectTrigger className="w-full"><SelectValue placeholder="None (Root Category)" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="none">None (Root Category)</SelectItem>
+            {availableParents.map((cat) => (
+              <SelectItem key={cat.id} value={cat.id}>
+                {'\u2014'.repeat(cat.depth)} {cat.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         {errors.parentId && (
           <p className="text-sm text-red-600 mt-1">{String(errors.parentId.message)}</p>
         )}
       </div>
 
-      {/* Image URL */}
+      {/* Image */}
       <div>
-        <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">
-          Image URL
-        </label>
-        <input
-          {...register('image')}
-          id="image"
-          type="text"
-          placeholder="https://example.com/image.jpg"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        <Label className="mb-1">
+          Image
+        </Label>
+        <ImageUpload
+          value={watch('image') || ''}
+          onChange={(val) => setValue('image', val as string, { shouldValidate: true })}
+          preset="category"
         />
         {errors.image && (
           <p className="text-sm text-red-600 mt-1">{String(errors.image.message)}</p>
@@ -195,10 +202,10 @@ export default function CategoryForm({ category, categories }: CategoryFormProps
 
         {/* Slug */}
         <div className="mb-4">
-          <label htmlFor="slug" className="block text-sm font-medium text-gray-700 mb-1">
+          <Label htmlFor="slug" className="mb-1">
             URL Slug
-          </label>
-          <input
+          </Label>
+          <Input
             {...register('slug')}
             id="slug"
             type="text"
@@ -206,10 +213,9 @@ export default function CategoryForm({ category, categories }: CategoryFormProps
               setSlugManuallyEdited(true);
               register('slug').onChange(e);
             }}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           {slug && (
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Preview: /categories/{slug}
             </p>
           )}
@@ -220,18 +226,17 @@ export default function CategoryForm({ category, categories }: CategoryFormProps
 
         {/* Meta Title */}
         <div className="mb-4">
-          <label htmlFor="metaTitle" className="block text-sm font-medium text-gray-700 mb-1">
+          <Label htmlFor="metaTitle" className="mb-1">
             Meta Title
-            <span className="text-xs text-gray-500 ml-2">
+            <span className="text-xs text-muted-foreground ml-2">
               ({metaTitle?.length || 0}/60)
             </span>
-          </label>
-          <input
+          </Label>
+          <Input
             {...register('metaTitle')}
             id="metaTitle"
             type="text"
             maxLength={60}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           {errors.metaTitle && (
             <p className="text-sm text-red-600 mt-1">{String(errors.metaTitle.message)}</p>
@@ -240,18 +245,17 @@ export default function CategoryForm({ category, categories }: CategoryFormProps
 
         {/* Meta Description */}
         <div>
-          <label htmlFor="metaDescription" className="block text-sm font-medium text-gray-700 mb-1">
+          <Label htmlFor="metaDescription" className="mb-1">
             Meta Description
-            <span className="text-xs text-gray-500 ml-2">
+            <span className="text-xs text-muted-foreground ml-2">
               ({metaDescription?.length || 0}/160)
             </span>
-          </label>
-          <textarea
+          </Label>
+          <Textarea
             {...register('metaDescription')}
             id="metaDescription"
             rows={2}
             maxLength={160}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           {errors.metaDescription && (
             <p className="text-sm text-red-600 mt-1">{String(errors.metaDescription.message)}</p>
@@ -261,21 +265,20 @@ export default function CategoryForm({ category, categories }: CategoryFormProps
 
       {/* Buttons */}
       <div className="flex gap-2 pt-4">
-        <button
+        <Button
           type="submit"
           disabled={isLoading}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? 'Saving...' : category ? 'Update Category' : 'Create Category'}
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
+          variant="outline"
           onClick={() => router.push('/dashboard/categories')}
           disabled={isLoading}
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 disabled:opacity-50"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </form>
   );

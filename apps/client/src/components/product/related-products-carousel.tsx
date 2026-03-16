@@ -40,7 +40,7 @@ export function RelatedProductsCarousel({ products }: RelatedProductsCarouselPro
 
   return (
     <section className="mt-12">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">Related Products</h2>
+      <h2 className="text-xl font-semibold text-primary mb-4">Related Products</h2>
 
       <div className="relative">
         {/* Left arrow */}
@@ -48,9 +48,9 @@ export function RelatedProductsCarousel({ products }: RelatedProductsCarouselPro
           <button
             onClick={scrollLeft}
             aria-label="Scroll left"
-            className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 items-center justify-center bg-white shadow-lg rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
+            className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 items-center justify-center bg-primary shadow-lg rounded-full border border-border-secondary hover:bg-primary_hover transition-colors"
           >
-            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
@@ -78,9 +78,9 @@ export function RelatedProductsCarousel({ products }: RelatedProductsCarouselPro
           <button
             onClick={scrollRight}
             aria-label="Scroll right"
-            className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 items-center justify-center bg-white shadow-lg rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
+            className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 items-center justify-center bg-primary shadow-lg rounded-full border border-border-secondary hover:bg-primary_hover transition-colors"
           >
-            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>

@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -15,8 +14,8 @@ import {
   arrayMove,
   rectSortingStrategy,
 } from '@dnd-kit/sortable';
-import { CldUploadWidget } from 'next-cloudinary';
 import { SortableImage } from './sortable-image';
+import { ImageUpload } from '../ui/image-upload';
 
 interface ImageManagerProps {
   images: string[];
@@ -29,13 +28,11 @@ export function ImageManager({
   onChange,
   maxFiles = 10,
 }: ImageManagerProps) {
-  const [isUploading, setIsUploading] = useState(false);
-
   // Set up drag-and-drop sensors
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 5, // Prevents accidental drags
+        distance: 5,
       },
     }),
     useSensor(KeyboardSensor)
@@ -60,109 +57,40 @@ export function ImageManager({
     onChange(images.filter((img) => img !== url));
   };
 
-  // Handle upload success
-  const handleUploadSuccess = (result: any) => {
-    if (result?.info?.secure_url) {
-      onChange([...images, result.info.secure_url]);
-    }
-    setIsUploading(false);
-  };
-
-  const canUploadMore = images.length < maxFiles;
-
   return (
     <div className="space-y-4">
-      {/* Upload button */}
-      <CldUploadWidget
-        uploadPreset="products"
-        signatureEndpoint="/api/sign-cloudinary"
-        onSuccess={handleUploadSuccess}
-        onOpen={() => setIsUploading(true)}
-        onClose={() => setIsUploading(false)}
-        options={{
-          multiple: true,
-          maxFiles: maxFiles - images.length,
-          resourceType: 'image',
-          clientAllowedFormats: ['jpg', 'jpeg', 'png', 'webp'],
-          maxFileSize: 5000000, // 5MB
-        }}
-      >
-        {({ open }) => (
-          <button
-            type="button"
-            onClick={() => open()}
-            disabled={!canUploadMore || isUploading}
-            className="w-full border-2 border-dashed border-gray-300 rounded-lg p-8 hover:border-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+      {/* Upload with cropping */}
+      <ImageUpload
+        value={images}
+        onChange={(val) => onChange(val as string[])}
+        preset="product"
+        multiple
+        maxFiles={maxFiles}
+      />
+
+      {/* Sortable images grid (drag-and-drop reordering) */}
+      {images.length > 1 && (
+        <>
+          <p className="text-xs text-gray-500">Drag to reorder images. First image is the main product image.</p>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
           >
-            <div className="flex flex-col items-center justify-center space-y-2">
-              {/* Camera/Upload icon */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-12 w-12 text-gray-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-              <div className="text-sm text-gray-600">
-                {isUploading ? (
-                  <span>Uploading...</span>
-                ) : canUploadMore ? (
-                  <span>
-                    <span className="font-semibold">Click to upload</span> or
-                    drag and drop
-                  </span>
-                ) : (
-                  <span className="text-gray-500">Maximum files reached</span>
-                )}
+            <SortableContext items={images} strategy={rectSortingStrategy}>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {images.map((url) => (
+                  <SortableImage
+                    key={url}
+                    id={url}
+                    url={url}
+                    onRemove={handleRemove}
+                  />
+                ))}
               </div>
-              <div className="text-xs text-gray-500">
-                JPG, PNG, or WebP (max 5MB)
-              </div>
-            </div>
-          </button>
-        )}
-      </CldUploadWidget>
-
-      {/* Image count indicator */}
-      {images.length > 0 && (
-        <div className="text-sm text-gray-600">
-          {images.length}/{maxFiles} images
-        </div>
-      )}
-
-      {/* Sortable images grid */}
-      {images.length > 0 && (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext items={images} strategy={rectSortingStrategy}>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {images.map((url) => (
-                <SortableImage
-                  key={url}
-                  id={url}
-                  url={url}
-                  onRemove={handleRemove}
-                />
-              ))}
-            </div>
-          </SortableContext>
-        </DndContext>
+            </SortableContext>
+          </DndContext>
+        </>
       )}
     </div>
   );

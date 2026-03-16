@@ -5,6 +5,7 @@ import type { CategoryAttribute } from '@repo/types';
 import { PriceFilter } from './price-filter';
 import { AttributeFilter } from './attribute-filter';
 import { AvailabilityFilter } from './availability-filter';
+import { Checkbox } from '../ui/checkbox';
 import { useFilters } from '../../hooks/use-filters';
 
 interface FacetCount {
@@ -39,7 +40,7 @@ export interface FilterContentProps {
 }
 
 function Separator() {
-  return <hr className="border-gray-200" />;
+  return <hr className="border-border-secondary" />;
 }
 
 function BrandFilter({ brands }: { brands: BrandFacet[] }) {
@@ -57,30 +58,28 @@ function BrandFilter({ brands }: { brands: BrandFacet[] }) {
 
   return (
     <div className="space-y-2" data-testid="brand-filter">
-      <h3 className="text-sm font-semibold text-gray-900">Brand</h3>
-      <div className="space-y-1">
+      <h3 className="text-sm font-semibold text-primary">Brand</h3>
+      <div className="space-y-1.5">
         {brands.map(({ name, count }) => {
           const checked = filters.brands.includes(name);
           return (
-            <label
+            <div
               key={name}
-              className="flex items-center gap-2 cursor-pointer group"
+              className="flex items-center justify-between"
               data-testid={`brand-option-${name}`}
             >
-              <input
-                type="checkbox"
-                checked={checked}
+              <Checkbox
+                isSelected={checked}
                 onChange={() => toggle(name)}
-                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 aria-label={`Brand: ${name}`}
+                label={<span className="text-secondary">{name}</span>}
               />
-              <span className="text-sm text-gray-700 group-hover:text-gray-900 flex-1">{name}</span>
               {count !== undefined && (
-                <span className="text-xs text-gray-400" data-testid="brand-facet-count">
+                <span className="text-xs text-quaternary" data-testid="brand-facet-count">
                   ({count})
                 </span>
               )}
-            </label>
+            </div>
           );
         })}
       </div>
@@ -91,7 +90,6 @@ function BrandFilter({ brands }: { brands: BrandFacet[] }) {
 export function FilterContent({ categoryAttributes, facetCounts }: FilterContentProps) {
   return (
     <div className="space-y-4" data-testid="filter-content">
-      {/* Price Range */}
       <PriceFilter
         minPrice={facetCounts.priceRange.min}
         maxPrice={facetCounts.priceRange.max}
@@ -99,12 +97,10 @@ export function FilterContent({ categoryAttributes, facetCounts }: FilterContent
 
       <Separator />
 
-      {/* Brands */}
       <BrandFilter brands={facetCounts.brands} />
 
       {facetCounts.brands.length > 0 && <Separator />}
 
-      {/* Category Attributes */}
       {categoryAttributes
         .filter((attr) => attr.isFilterable)
         .sort((a, b) => a.position - b.position)
@@ -122,7 +118,6 @@ export function FilterContent({ categoryAttributes, facetCounts }: FilterContent
         <Separator />
       )}
 
-      {/* Availability */}
       <AvailabilityFilter facetCounts={facetCounts.availability} />
     </div>
   );

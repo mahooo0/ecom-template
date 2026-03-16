@@ -1,7 +1,19 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import { api } from '@/lib/api';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { DataTableFilters } from '@/components/DataTableFilters';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 
 interface StockMovement {
   id: string;
@@ -37,20 +49,28 @@ const REASON_BADGE_COLORS: Record<string, string> = {
 };
 
 export default function MovementsPage() {
+  const { getToken } = useAuth();
   const [movements, setMovements] = useState<StockMovement[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [reasonFilter, setReasonFilter] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [dateRange, setDateRange] = useState<{ from?: string; to?: string }>({});
   const [page, setPage] = useState(1);
   const limit = 20;
 
   const fetchMovements = async () => {
     try {
       setLoading(true);
+      const token = await getToken();
       const response = await api.inventory.movements.getAll({
         reason: reasonFilter || undefined,
+        search: searchQuery || undefined,
+        dateFrom: dateRange.from || undefined,
+        dateTo: dateRange.to || undefined,
         page,
         limit,
+        token: token || undefined,
       });
       if (response.success && response.data) {
         setMovements(response.data);
@@ -64,12 +84,7 @@ export default function MovementsPage() {
 
   useEffect(() => {
     fetchMovements();
-  }, [reasonFilter, page]);
-
-  const handleReasonChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setReasonFilter(e.target.value);
-    setPage(1);
-  };
+  }, [reasonFilter, searchQuery, dateRange, page]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('en-US', {
@@ -87,25 +102,50 @@ export default function MovementsPage() {
         <h1 className="text-3xl font-bold">Stock Movement History</h1>
       </div>
 
-      {/* Filter Bar */}
-      <div className="flex items-center gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-        <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">
-            Reason
-          </label>
-          <select
-            value={reasonFilter}
-            onChange={handleReasonChange}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          >
-            {REASON_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
+      <DataTableFilters
+        filters={[
+          {
+            key: 'search',
+            label: 'Search',
+            type: 'search',
+            placeholder: 'Search by product or SKU...',
+          },
+          {
+            key: 'reason',
+            label: 'Reason',
+            type: 'select',
+            placeholder: 'All Reasons',
+            options: REASON_OPTIONS.filter(o => o.value !== '').map(o => ({ value: o.value, label: o.label })),
+          },
+          {
+            key: 'date',
+            label: 'Date Range',
+            type: 'date-range',
+            placeholder: 'Filter by date...',
+          },
+        ]}
+        values={{ search: searchQuery, reason: reasonFilter, date: dateRange }}
+        onChange={(key, value) => {
+          if (key === 'reason') {
+            setReasonFilter(value as string);
+            setPage(1);
+          }
+          if (key === 'search') {
+            setSearchQuery(value as string);
+            setPage(1);
+          }
+          if (key === 'date') {
+            setDateRange(value as { from?: string; to?: string });
+            setPage(1);
+          }
+        }}
+        onReset={() => {
+          setReasonFilter('');
+          setSearchQuery('');
+          setDateRange({});
+          setPage(1);
+        }}
+      />
 
       {error && (
         <div className="rounded-md bg-red-50 p-4 text-sm text-red-800">{error}</div>
@@ -113,105 +153,92 @@ export default function MovementsPage() {
 
       {loading ? (
         <div className="flex h-48 items-center justify-center">
-          <div className="text-gray-500">Loading movements...</div>
+          <div className="text-muted-foreground">Loading movements...</div>
         </div>
       ) : movements.length === 0 ? (
-        <div className="rounded-lg border border-gray-200 bg-white p-8 text-center">
-          <p className="text-gray-500">No stock movements found.</p>
+        <div className="rounded-lg border bg-card p-8 text-center">
+          <p className="text-muted-foreground">No stock movements found.</p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Product / SKU
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Warehouse
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Quantity
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Reason
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Reference
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Note
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
+        <div className="overflow-hidden rounded-lg border bg-card shadow">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Product / SKU</TableHead>
+                <TableHead>Warehouse</TableHead>
+                <TableHead>Quantity</TableHead>
+                <TableHead>Reason</TableHead>
+                <TableHead>Reference</TableHead>
+                <TableHead>Note</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {movements.map((movement) => (
-                <tr key={movement.id} className="hover:bg-gray-50">
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                <TableRow key={movement.id}>
+                  <TableCell className="whitespace-nowrap text-muted-foreground">
                     {formatDate(movement.createdAt)}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
+                  </TableCell>
+                  <TableCell className="text-foreground">
                     <div className="font-medium">{movement.productName ?? '—'}</div>
                     {movement.sku && (
-                      <div className="text-xs text-gray-500 font-mono">{movement.sku}</div>
+                      <div className="font-mono text-xs text-muted-foreground">{movement.sku}</div>
                     )}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap text-muted-foreground">
                     {movement.warehouseName ?? '—'}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm font-semibold">
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap font-semibold">
                     <span
                       className={movement.quantity >= 0 ? 'text-green-600' : 'text-red-600'}
                     >
                       {movement.quantity >= 0 ? '+' : ''}{movement.quantity}
                     </span>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm">
-                    <span
-                      className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold leading-5 ${
-                        REASON_BADGE_COLORS[movement.reason] ?? 'bg-gray-100 text-gray-800'
-                      }`}
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    <Badge
+                      variant="secondary"
+                      className={`${REASON_BADGE_COLORS[movement.reason] ?? 'bg-gray-100 text-gray-800'} hover:opacity-90`}
                     >
                       {movement.reason.replace(/_/g, ' ')}
-                    </span>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap text-muted-foreground">
                     {movement.reference ?? '—'}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
+                  </TableCell>
+                  <TableCell className="max-w-xs truncate text-muted-foreground">
                     {movement.note ?? '—'}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
 
       {/* Pagination */}
       {!loading && (
         <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             Page {page} &bull; Showing {movements.length} movements
           </p>
           <div className="flex gap-2">
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Previous
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => setPage((p) => p + 1)}
               disabled={movements.length < limit}
-              className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Next
-            </button>
+            </Button>
           </div>
         </div>
       )}

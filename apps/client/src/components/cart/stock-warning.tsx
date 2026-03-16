@@ -12,7 +12,7 @@ export function StockWarning({ status, availableQty }: StockWarningProps) {
 
   if (status === 'low_stock') {
     return (
-      <span className="inline-flex items-center text-xs font-medium text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+      <span className="inline-flex items-center text-xs font-medium text-utility-warning-700 bg-utility-warning-50 border ring-utility-warning-200 px-2 py-0.5 rounded-full">
         Only {availableQty} left
       </span>
     );
@@ -20,7 +20,7 @@ export function StockWarning({ status, availableQty }: StockWarningProps) {
 
   // out_of_stock
   return (
-    <span className="inline-flex items-center text-xs font-medium text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full">
+    <span className="inline-flex items-center text-xs font-medium text-utility-error-700 bg-utility-error-50 border ring-utility-error-200 px-2 py-0.5 rounded-full">
       Out of Stock
     </span>
   );

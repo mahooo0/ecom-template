@@ -69,16 +69,16 @@ export function AddToCartButton({
 
   return (
     <div className="space-y-3">
-      {/* Quantity selector -- hidden for WEIGHTED products */}
+      {/* Quantity selector */}
       {!isWeighted && (
         <div className="flex items-center gap-3">
-          <span className="text-sm font-medium text-gray-700">Quantity</span>
-          <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+          <span className="text-xs font-medium tracking-wider text-neutral-500 uppercase">Quantity</span>
+          <div className="flex items-center border border-neutral-300">
             <button
               type="button"
               onClick={handleDecrement}
               disabled={quantity <= 1 || isOutOfStock}
-              className="px-3 py-2 text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-3 py-2 text-sm text-neutral-600 transition hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label="Decrease quantity"
             >
               -
@@ -90,14 +90,14 @@ export function AddToCartButton({
               min={1}
               max={maxQuantity}
               disabled={isOutOfStock}
-              className="w-14 text-center py-2 border-x border-gray-300 focus:outline-none disabled:bg-gray-50 disabled:text-gray-400"
+              className="w-12 border-x border-neutral-300 bg-transparent py-2 text-center text-sm focus:outline-none disabled:bg-neutral-50 disabled:text-neutral-300"
               aria-label="Quantity"
             />
             <button
               type="button"
               onClick={handleIncrement}
               disabled={quantity >= maxQuantity || isOutOfStock}
-              className="px-3 py-2 text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-3 py-2 text-sm text-neutral-600 transition hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label="Increase quantity"
             >
               +
@@ -111,15 +111,15 @@ export function AddToCartButton({
         type="button"
         onClick={handleAddToCart}
         disabled={isOutOfStock}
-        className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-colors ${
+        className={`w-full py-3.5 text-xs font-medium tracking-[0.2em] uppercase transition ${
           isOutOfStock
-            ? 'bg-gray-400 cursor-not-allowed'
+            ? 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
             : added
-              ? 'bg-green-600 hover:bg-green-700'
-              : 'bg-blue-600 hover:bg-blue-700'
+              ? 'bg-neutral-700 text-white'
+              : 'bg-neutral-900 text-white hover:bg-neutral-800'
         }`}
       >
-        {isOutOfStock ? 'Out of Stock' : added ? 'Added!' : 'Add to Cart'}
+        {isOutOfStock ? 'Out of Stock' : added ? 'Added to Cart' : 'Add to Cart'}
       </button>
     </div>
   );

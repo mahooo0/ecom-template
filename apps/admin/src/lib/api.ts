@@ -1,6 +1,7 @@
 import type { ApiResponse, PaginatedResponse, Product, Order, User, ShippingZone, ShippingMethod, Category, CategoryAttribute, Brand, Tag, Collection } from '@repo/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+const STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL || 'http://localhost:4001';
 
 async function fetcher<T>(
   url: string,
@@ -36,6 +37,8 @@ export const api = {
       search?: string;
       sortBy?: string;
       sortOrder?: string;
+      categoryId?: string;
+      brandId?: string;
       token?: string;
     }) => {
       const queryParams = new URLSearchParams();
@@ -46,6 +49,8 @@ export const api = {
       if (params?.search) queryParams.set('search', params.search);
       if (params?.sortBy) queryParams.set('sortBy', params.sortBy);
       if (params?.sortOrder) queryParams.set('sortOrder', params.sortOrder);
+      if (params?.categoryId) queryParams.set('categoryId', params.categoryId);
+      if (params?.brandId) queryParams.set('brandId', params.brandId);
 
       const queryString = queryParams.toString();
       const url = `/products${queryString ? `?${queryString}` : ''}`;
@@ -88,36 +93,79 @@ export const api = {
       }),
   },
   orders: {
-    getAll: (page = 1, limit = 20) =>
-      fetcher<PaginatedResponse<Order>>(`/orders?page=${page}&limit=${limit}`),
-    getById: (id: string) => fetcher<ApiResponse<Order>>(`/orders/${id}`),
-    updateStatus: (id: string, status: string) =>
+    getAll: (params?: {
+      page?: number;
+      limit?: number;
+      status?: string;
+      dateFrom?: string;
+      dateTo?: string;
+      minAmount?: number;
+      maxAmount?: number;
+      search?: string;
+      token?: string;
+    }) => {
+      const qp = new URLSearchParams();
+      if (params?.page) qp.set('page', String(params.page));
+      if (params?.limit) qp.set('limit', String(params.limit));
+      if (params?.status) qp.set('status', params.status);
+      if (params?.dateFrom) qp.set('dateFrom', params.dateFrom);
+      if (params?.dateTo) qp.set('dateTo', params.dateTo);
+      if (params?.minAmount) qp.set('minAmount', String(params.minAmount));
+      if (params?.maxAmount) qp.set('maxAmount', String(params.maxAmount));
+      if (params?.search) qp.set('search', params.search);
+      const qs = qp.toString();
+      return fetcher<PaginatedResponse<Order>>(`/orders${qs ? `?${qs}` : ''}`, { token: params?.token });
+    },
+    getById: (id: string, token?: string) => fetcher<ApiResponse<Order>>(`/orders/${id}`, { token }),
+    updateStatus: (id: string, status: string, token?: string) =>
       fetcher<ApiResponse<Order>>(`/orders/${id}/status`, {
         method: 'PATCH',
         body: JSON.stringify({ status }),
+        token,
       }),
-    addTracking: (id: string, data: { carrier: string; trackingNumber: string; estimatedDelivery?: string }) =>
+    addTracking: (id: string, data: { carrier: string; trackingNumber: string; estimatedDelivery?: string }, token?: string) =>
       fetcher<ApiResponse<Order>>(`/orders/${id}/tracking`, {
         method: 'PATCH',
         body: JSON.stringify(data),
+        token,
+      }),
+    getStats: (token?: string) =>
+      fetcher<ApiResponse<{
+        totalOrders: number;
+        revenue: number;
+        avgOrderValue: number;
+        byStatus: Record<string, number>;
+      }>>('/orders/stats', { token }),
+    refund: (id: string, amount?: number, token?: string) =>
+      fetcher<ApiResponse<{ id: string; amount: number; status: string }>>(`/orders/${id}/refund`, {
+        method: 'POST',
+        body: JSON.stringify({ amount }),
+        token,
       }),
   },
   users: {
-    getAll: (page = 1, limit = 20) =>
-      fetcher<PaginatedResponse<User>>(`/auth/users?page=${page}&limit=${limit}`),
+    getAll: (params?: { page?: number; limit?: number; search?: string; role?: string; token?: string }) => {
+      const qp = new URLSearchParams();
+      if (params?.page) qp.set('page', String(params.page));
+      if (params?.limit) qp.set('limit', String(params.limit));
+      if (params?.search) qp.set('search', params.search);
+      if (params?.role) qp.set('role', params.role);
+      const qs = qp.toString();
+      return fetcher<PaginatedResponse<User>>(`/auth/users${qs ? `?${qs}` : ''}`, { token: params?.token });
+    },
   },
   shipping: {
     zones: {
-      getAll: () => fetcher<ApiResponse<ShippingZone[]>>('/shipping/zones'),
-      getById: (id: string) => fetcher<ApiResponse<ShippingZone & { methods: ShippingMethod[] }>>(`/shipping/zones/${id}`),
-      create: (data: Partial<ShippingZone>) => fetcher<ApiResponse<ShippingZone>>('/shipping/zones', { method: 'POST', body: JSON.stringify(data) }),
-      update: (id: string, data: Partial<ShippingZone>) => fetcher<ApiResponse<ShippingZone>>(`/shipping/zones/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-      delete: (id: string) => fetcher<ApiResponse<void>>(`/shipping/zones/${id}`, { method: 'DELETE' }),
+      getAll: (token?: string) => fetcher<ApiResponse<ShippingZone[]>>('/shipping/zones', { token }),
+      getById: (id: string, token?: string) => fetcher<ApiResponse<ShippingZone & { methods: ShippingMethod[] }>>(`/shipping/zones/${id}`, { token }),
+      create: (data: Partial<ShippingZone>, token?: string) => fetcher<ApiResponse<ShippingZone>>('/shipping/zones', { method: 'POST', body: JSON.stringify(data), token }),
+      update: (id: string, data: Partial<ShippingZone>, token?: string) => fetcher<ApiResponse<ShippingZone>>(`/shipping/zones/${id}`, { method: 'PUT', body: JSON.stringify(data), token }),
+      delete: (id: string, token?: string) => fetcher<ApiResponse<void>>(`/shipping/zones/${id}`, { method: 'DELETE', token }),
     },
     methods: {
-      create: (zoneId: string, data: Partial<ShippingMethod>) => fetcher<ApiResponse<ShippingMethod>>(`/shipping/zones/${zoneId}/methods`, { method: 'POST', body: JSON.stringify(data) }),
-      update: (id: string, data: Partial<ShippingMethod>) => fetcher<ApiResponse<ShippingMethod>>(`/shipping/methods/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-      delete: (id: string) => fetcher<ApiResponse<void>>(`/shipping/methods/${id}`, { method: 'DELETE' }),
+      create: (zoneId: string, data: Partial<ShippingMethod>, token?: string) => fetcher<ApiResponse<ShippingMethod>>(`/shipping/zones/${zoneId}/methods`, { method: 'POST', body: JSON.stringify(data), token }),
+      update: (id: string, data: Partial<ShippingMethod>, token?: string) => fetcher<ApiResponse<ShippingMethod>>(`/shipping/methods/${id}`, { method: 'PUT', body: JSON.stringify(data), token }),
+      delete: (id: string, token?: string) => fetcher<ApiResponse<void>>(`/shipping/methods/${id}`, { method: 'DELETE', token }),
     },
   },
   categories: {
@@ -164,36 +212,93 @@ export const api = {
     delete: (id: string, token?: string) => fetcher<ApiResponse<void>>(`/brands/${id}`, { method: 'DELETE', token }),
   },
   tags: {
-    getAll: (token?: string) => fetcher<ApiResponse<Tag[]>>('/tags', { token }),
-    create: (data: { name: string }, token?: string) => fetcher<ApiResponse<Tag>>('/tags', { method: 'POST', body: JSON.stringify(data), token }),
+    getAll: (params?: { type?: string; token?: string } | string) => {
+      const token = typeof params === 'string' ? params : params?.token;
+      const type = typeof params === 'string' ? undefined : params?.type;
+      const qp = new URLSearchParams();
+      if (type) qp.set('type', type);
+      const qs = qp.toString();
+      return fetcher<ApiResponse<Tag[]>>(`/tags${qs ? `?${qs}` : ''}`, { token });
+    },
+    create: (data: { name: string; type?: string }, token?: string) =>
+      fetcher<ApiResponse<Tag>>('/tags', { method: 'POST', body: JSON.stringify(data), token }),
+    update: (id: string, data: { name?: string; type?: string }, token?: string) =>
+      fetcher<ApiResponse<Tag>>(`/tags/${id}`, { method: 'PUT', body: JSON.stringify(data), token }),
     delete: (id: string, token?: string) => fetcher<ApiResponse<void>>(`/tags/${id}`, { method: 'DELETE', token }),
   },
   inventory: {
-    dashboard: () => fetcher<ApiResponse<any>>('/inventory/dashboard'),
+    dashboard: (token?: string) => fetcher<ApiResponse<any>>('/inventory/dashboard', { token }),
     stock: {
-      getByVariant: (variantId: string) => fetcher<ApiResponse<any[]>>(`/inventory/stock?variantId=${variantId}`),
-      getLevel: (variantId: string, warehouseId: string) => fetcher<ApiResponse<any>>(`/inventory/stock?variantId=${variantId}&warehouseId=${warehouseId}`),
-      adjust: (data: { variantId: string; warehouseId: string; quantity: number; reason: string; note?: string; reference?: string }) =>
-        fetcher<ApiResponse<any>>('/inventory/adjust', { method: 'POST', body: JSON.stringify(data) }),
+      getByVariant: (variantId: string, token?: string) => fetcher<ApiResponse<any[]>>(`/inventory/stock?variantId=${variantId}`, { token }),
+      getLevel: (variantId: string, warehouseId: string, token?: string) => fetcher<ApiResponse<any>>(`/inventory/stock?variantId=${variantId}&warehouseId=${warehouseId}`, { token }),
+      adjust: (data: { variantId: string; warehouseId: string; quantity: number; reason: string; note?: string; reference?: string }, token?: string) =>
+        fetcher<ApiResponse<any>>('/inventory/adjust', { method: 'POST', body: JSON.stringify(data), token }),
     },
-    alerts: () => fetcher<ApiResponse<any[]>>('/inventory/alerts'),
+    alerts: (token?: string) => fetcher<ApiResponse<any[]>>('/inventory/alerts', { token }),
     warehouses: {
-      getAll: () => fetcher<ApiResponse<any[]>>('/inventory/warehouses'),
-      getById: (id: string) => fetcher<ApiResponse<any>>(`/inventory/warehouses/${id}`),
-      create: (data: any) => fetcher<ApiResponse<any>>('/inventory/warehouses', { method: 'POST', body: JSON.stringify(data) }),
-      update: (id: string, data: any) => fetcher<ApiResponse<any>>(`/inventory/warehouses/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-      delete: (id: string) => fetcher<ApiResponse<void>>(`/inventory/warehouses/${id}`, { method: 'DELETE' }),
+      getAll: (token?: string) => fetcher<ApiResponse<any[]>>('/inventory/warehouses', { token }),
+      getById: (id: string, token?: string) => fetcher<ApiResponse<any>>(`/inventory/warehouses/${id}`, { token }),
+      create: (data: any, token?: string) => fetcher<ApiResponse<any>>('/inventory/warehouses', { method: 'POST', body: JSON.stringify(data), token }),
+      update: (id: string, data: any, token?: string) => fetcher<ApiResponse<any>>(`/inventory/warehouses/${id}`, { method: 'PUT', body: JSON.stringify(data), token }),
+      delete: (id: string, token?: string) => fetcher<ApiResponse<void>>(`/inventory/warehouses/${id}`, { method: 'DELETE', token }),
     },
     movements: {
-      getAll: (params?: { inventoryItemId?: string; reason?: string; page?: number; limit?: number }) => {
+      getAll: (params?: { inventoryItemId?: string; reason?: string; search?: string; dateFrom?: string; dateTo?: string; page?: number; limit?: number; token?: string }) => {
         const qp = new URLSearchParams();
         if (params?.inventoryItemId) qp.set('inventoryItemId', params.inventoryItemId);
         if (params?.reason) qp.set('reason', params.reason);
+        if (params?.search) qp.set('search', params.search);
+        if (params?.dateFrom) qp.set('dateFrom', params.dateFrom);
+        if (params?.dateTo) qp.set('dateTo', params.dateTo);
         if (params?.page) qp.set('page', String(params.page));
         if (params?.limit) qp.set('limit', String(params.limit));
         const qs = qp.toString();
-        return fetcher<ApiResponse<any[]>>(`/inventory/movements${qs ? `?${qs}` : ''}`);
+        return fetcher<ApiResponse<any[]>>(`/inventory/movements${qs ? `?${qs}` : ''}`, { token: params?.token });
       },
+    },
+  },
+  optionGroups: {
+    getAll: (token?: string) => fetcher<ApiResponse<any[]>>('/products/option-groups', { token }),
+    create: (data: { name: string; displayName: string }, token?: string) =>
+      fetcher<ApiResponse<any>>('/products/option-groups', { method: 'POST', body: JSON.stringify(data), token }),
+    addValue: (id: string, data: { value: string; label: string }, token?: string) =>
+      fetcher<ApiResponse<any>>(`/products/option-groups/${id}/values`, { method: 'POST', body: JSON.stringify(data), token }),
+  },
+  upload: {
+    single: async (file: File | Blob, preset: string): Promise<{ url: string; id: string }> => {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch(`${STORAGE_URL}/upload?preset=${preset}`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({ error: 'Upload failed' }));
+        throw new Error(error.error || 'Upload failed');
+      }
+
+      return res.json();
+    },
+    multiple: async (files: (File | Blob)[], preset: string): Promise<{ url: string; id: string }[]> => {
+      const formData = new FormData();
+      files.forEach((file) => formData.append('files', file));
+
+      const res = await fetch(`${STORAGE_URL}/upload/multiple?preset=${preset}`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({ error: 'Upload failed' }));
+        throw new Error(error.error || 'Upload failed');
+      }
+
+      return res.json();
+    },
+    delete: async (id: string): Promise<void> => {
+      await fetch(`${STORAGE_URL}/files/${id}`, { method: 'DELETE' });
     },
   },
 };

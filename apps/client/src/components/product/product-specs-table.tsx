@@ -22,7 +22,7 @@ export function ProductSpecsTable({ attributes, categoryAttributes }: ProductSpe
 
   return (
     <section className="mt-8">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">Specifications</h2>
+      <h2 className="text-xl font-semibold text-primary mb-4">Specifications</h2>
       <table className="w-full border-collapse">
         <tbody>
           {rows.map(([key, value], index) => {
@@ -32,11 +32,11 @@ export function ProductSpecsTable({ attributes, categoryAttributes }: ProductSpe
               typeof value === 'object' ? JSON.stringify(value) : String(value);
 
             return (
-              <tr key={key} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                <td className="py-2 px-4 font-medium text-gray-600 w-1/3 border border-gray-200">
+              <tr key={key} className={index % 2 === 0 ? 'bg-secondary_subtle' : 'bg-primary'}>
+                <td className="py-2 px-4 font-medium text-tertiary w-1/3 border border-border-secondary">
                   {displayName}
                 </td>
-                <td className="py-2 px-4 text-gray-900 border border-gray-200">{displayValue}</td>
+                <td className="py-2 px-4 text-primary border border-border-secondary">{displayValue}</td>
               </tr>
             );
           })}

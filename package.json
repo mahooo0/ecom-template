@@ -7,6 +7,7 @@
     "dev:client": "turbo run dev --filter=client",
     "dev:admin": "turbo run dev --filter=admin",
     "dev:server": "turbo run dev --filter=server",
+    "dev:storage": "turbo run dev --filter=storage",
     "dev:web": "turbo run dev --filter=client --filter=admin",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
@@ -43,5 +44,16 @@
   "dependencies": {
     "nuqs": "^2.8.9",
     "use-debounce": "^10.1.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@tiptap/core": "3.20.2",
+      "@tiptap/pm": "3.20.2",
+      "@tiptap/react": "3.20.2",
+      "@tiptap/starter-kit": "3.20.2",
+      "@tiptap/extension-link": "3.20.2",
+      "@tiptap/extension-placeholder": "3.20.2",
+      "@tiptap/extension-underline": "3.20.2"
+    }
   }
 }

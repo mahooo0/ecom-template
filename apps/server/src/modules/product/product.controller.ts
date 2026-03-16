@@ -42,6 +42,19 @@ export class ProductController {
     }
   }
 
+  async getByIds(req: Request, res: Response, next: NextFunction) {
+    try {
+      const ids = req.body.ids as string[];
+      if (!Array.isArray(ids) || ids.length === 0) {
+        return res.status(400).json({ success: false, message: 'ids must be a non-empty array' });
+      }
+      const products = await productService.getByIds(ids);
+      res.json({ success: true, data: products });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async getBySlug(req: Request, res: Response, next: NextFunction) {
     try {
       const product = await productService.getBySlug(req.params.slug as string);

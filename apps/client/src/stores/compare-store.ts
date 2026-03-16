@@ -15,7 +15,6 @@ interface CompareStore {
   toggleItem: (item: CompareItem) => void;
   hasItem: (productId: string) => boolean;
   clearItems: () => void;
-  isFull: () => boolean; // max 4
 }
 
 export const useCompareStore = create<CompareStore>()(
@@ -25,11 +24,8 @@ export const useCompareStore = create<CompareStore>()(
 
       addItem: (item) =>
         set((state) => {
-          if (state.items.length >= 4) {
-            return state; // enforce max 4 — do nothing
-          }
           if (state.items.some((i) => i.productId === item.productId)) {
-            return state; // dedup — skip if already exists
+            return state;
           }
           return { items: [...state.items, item] };
         }),
@@ -44,15 +40,13 @@ export const useCompareStore = create<CompareStore>()(
         if (hasItem(item.productId)) {
           removeItem(item.productId);
         } else {
-          addItem(item); // respects max 4 via addItem
+          addItem(item);
         }
       },
 
       hasItem: (productId) => get().items.some((i) => i.productId === productId),
 
       clearItems: () => set({ items: [] }),
-
-      isFull: () => get().items.length >= 4,
     }),
     {
       name: 'compare-storage',

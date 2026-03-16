@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useFilters } from '../../hooks/use-filters';
+import { Checkbox } from '../ui/checkbox';
 import type { CategoryAttribute } from '@repo/types';
 
 interface FacetCount {
@@ -49,34 +50,30 @@ export function AttributeFilter({ attribute, facetCounts }: AttributeFilterProps
   if (attribute.type === 'SELECT') {
     return (
       <div className="space-y-2" data-testid={`attribute-filter-${attributeKey}`}>
-        <h3 className="text-sm font-semibold text-gray-900">{attribute.name}</h3>
-        <div className="space-y-1">
+        <h3 className="text-sm font-semibold text-primary">{attribute.name}</h3>
+        <div className="space-y-1.5">
           {attribute.values.map((value) => {
             const count = getFacetCount(facetCounts, value);
             const checked = isActive(value);
             return (
-              <label
-                key={value}
-                className="flex items-center gap-2 cursor-pointer group"
-                data-testid={`attribute-option-${value}`}
-              >
-                <input
-                  type="checkbox"
-                  checked={checked}
+              <div key={value} className="flex items-center justify-between" data-testid={`attribute-option-${value}`}>
+                <Checkbox
+                  isSelected={checked}
                   onChange={() => toggle(value)}
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                   aria-label={`${attribute.name}: ${value}`}
+                  label={
+                    <span className="text-secondary">
+                      {value}
+                      {attribute.unit && ` ${attribute.unit}`}
+                    </span>
+                  }
                 />
-                <span className="text-sm text-gray-700 group-hover:text-gray-900 flex-1">
-                  {value}
-                  {attribute.unit && ` ${attribute.unit}`}
-                </span>
                 {count !== undefined && (
-                  <span className="text-xs text-gray-400" data-testid="facet-count">
+                  <span className="text-xs text-quaternary" data-testid="facet-count">
                     ({count})
                   </span>
                 )}
-              </label>
+              </div>
             );
           })}
         </div>
@@ -87,17 +84,17 @@ export function AttributeFilter({ attribute, facetCounts }: AttributeFilterProps
   if (attribute.type === 'RANGE') {
     const values = attribute.values;
     const minVal = values[0] ? parseFloat(values[0]) : 0;
-    const maxVal = values[values.length - 1] ? parseFloat(values[values.length - 1]) : 100;
+    const lastValue = values[values.length - 1];
+    const maxVal = lastValue ? parseFloat(lastValue) : 100;
 
-    // Find current range selection
     const activeAttrs = filters.attributes.filter((a) => a.startsWith(`${attributeKey}:`));
-    const activeMax = activeAttrs.length > 0
-      ? parseFloat(activeAttrs[0].split(':')[1] || maxVal.toString())
+    const activeMax = activeAttrs.length > 0 && activeAttrs[0]
+      ? parseFloat(activeAttrs[0].split(':')[1] ?? maxVal.toString())
       : maxVal;
 
     return (
-      <div className="space-y-2" data-testid={`attribute-filter-${attributeKey}`}>
-        <h3 className="text-sm font-semibold text-gray-900">
+      <div className="space-y-3" data-testid={`attribute-filter-${attributeKey}`}>
+        <h3 className="text-sm font-semibold text-primary">
           {attribute.name}
           {attribute.unit && ` (${attribute.unit})`}
         </h3>
@@ -115,13 +112,16 @@ export function AttributeFilter({ attribute, facetCounts }: AttributeFilterProps
               .concat(filterValue);
             setFilters({ attributes: updated, page: 1 });
           }}
-          className="w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer"
+          className="w-full h-1.5 bg-secondary_subtle rounded-full appearance-none cursor-pointer accent-[var(--color-brand-600)]"
+          style={{
+            background: `linear-gradient(to right, var(--color-brand-600) ${((activeMax - minVal) / (maxVal - minVal)) * 100}%, var(--color-bg-secondary_subtle) ${((activeMax - minVal) / (maxVal - minVal)) * 100}%)`,
+          }}
           data-testid={`attribute-range-slider-${attributeKey}`}
           aria-label={`${attribute.name} range`}
         />
-        <div className="flex justify-between text-xs text-gray-500">
+        <div className="flex justify-between text-xs text-tertiary">
           <span>{minVal}{attribute.unit}</span>
-          <span>{activeMax}{attribute.unit}</span>
+          <span className="font-medium text-secondary">{activeMax}{attribute.unit}</span>
         </div>
       </div>
     );
@@ -130,18 +130,14 @@ export function AttributeFilter({ attribute, facetCounts }: AttributeFilterProps
   if (attribute.type === 'BOOLEAN') {
     const checked = isActive('true');
     return (
-      <div className="space-y-2" data-testid={`attribute-filter-${attributeKey}`}>
-        <label className="flex items-center gap-2 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={checked}
-            onChange={toggleBoolean}
-            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-            data-testid={`attribute-boolean-${attributeKey}`}
-            aria-label={attribute.name}
-          />
-          <span className="text-sm font-semibold text-gray-900">{attribute.name}</span>
-        </label>
+      <div data-testid={`attribute-filter-${attributeKey}`}>
+        <Checkbox
+          isSelected={checked}
+          onChange={toggleBoolean}
+          data-testid={`attribute-boolean-${attributeKey}`}
+          aria-label={attribute.name}
+          label={<span className="font-semibold text-primary">{attribute.name}</span>}
+        />
       </div>
     );
   }

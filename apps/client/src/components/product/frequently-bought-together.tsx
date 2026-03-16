@@ -81,13 +81,13 @@ export function FrequentlyBoughtTogether({
   };
 
   return (
-    <section className="mt-8 border border-gray-200 rounded-lg p-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">Frequently Bought Together</h2>
+    <section className="mt-8 border border-border-secondary rounded-lg p-6">
+      <h2 className="text-xl font-semibold text-primary mb-4">Frequently Bought Together</h2>
 
       <div className="flex flex-wrap items-center gap-3 mb-6">
         {/* Current product (always shown, not checkable) */}
         <div className="flex flex-col items-center gap-1">
-          <div className="relative w-16 h-16 bg-gray-100 rounded border border-gray-200 overflow-hidden">
+          <div className="relative w-16 h-16 bg-secondary_subtle rounded border border-border-secondary overflow-hidden">
             {currentProduct.image ? (
               <Image
                 src={currentProduct.image}
@@ -97,17 +97,17 @@ export function FrequentlyBoughtTogether({
                 sizes="64px"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-300">
+              <div className="w-full h-full flex items-center justify-center text-fg-quaternary">
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
             )}
           </div>
-          <p className="text-xs text-gray-700 text-center max-w-[80px] line-clamp-2">
+          <p className="text-xs text-secondary text-center max-w-[80px] line-clamp-2">
             {currentProduct.name}
           </p>
-          <p className="text-xs font-semibold text-gray-900">{formatPrice(currentProduct.price)}</p>
+          <p className="text-xs font-semibold text-primary">{formatPrice(currentProduct.price)}</p>
         </div>
 
         {/* FBT products with checkboxes and + separators */}
@@ -117,12 +117,12 @@ export function FrequentlyBoughtTogether({
 
           return (
             <React.Fragment key={product.id}>
-              <span className="text-lg text-gray-400 font-medium">+</span>
+              <span className="text-lg text-quaternary font-medium">+</span>
               <div className="flex flex-col items-center gap-1">
                 <label className="cursor-pointer relative">
                   <div
-                    className={`relative w-16 h-16 bg-gray-100 rounded border-2 overflow-hidden transition-colors ${
-                      isChecked ? 'border-blue-500' : 'border-gray-200'
+                    className={`relative w-16 h-16 bg-secondary_subtle rounded border-2 overflow-hidden transition-colors ${
+                      isChecked ? 'border-border-brand' : 'border-border-secondary'
                     }`}
                   >
                     {productImage ? (
@@ -134,7 +134,7 @@ export function FrequentlyBoughtTogether({
                         sizes="64px"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-300">
+                      <div className="w-full h-full flex items-center justify-center text-fg-quaternary">
                         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
@@ -145,14 +145,14 @@ export function FrequentlyBoughtTogether({
                     type="checkbox"
                     checked={isChecked}
                     onChange={() => toggleProduct(product.id)}
-                    className="absolute top-0.5 right-0.5 w-4 h-4 accent-blue-600"
+                    className="absolute top-0.5 right-0.5 w-4 h-4 accent-brand-solid"
                     aria-label={`Include ${product.name}`}
                   />
                 </label>
-                <p className="text-xs text-gray-700 text-center max-w-[80px] line-clamp-2">
+                <p className="text-xs text-secondary text-center max-w-[80px] line-clamp-2">
                   {product.name}
                 </p>
-                <p className="text-xs font-semibold text-gray-900">{formatPrice(product.price)}</p>
+                <p className="text-xs font-semibold text-primary">{formatPrice(product.price)}</p>
               </div>
             </React.Fragment>
           );
@@ -162,11 +162,11 @@ export function FrequentlyBoughtTogether({
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
         <button
           onClick={handleAddAll}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-5 rounded-lg transition-colors duration-200"
+          className="bg-brand-solid hover:bg-brand-solid_hover text-white font-medium py-2 px-5 rounded-lg transition-colors duration-100 ease-linear"
         >
           Add {totalItems} {totalItems === 1 ? 'item' : 'items'} &mdash; {formatPrice(totalPrice)}
         </button>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-tertiary">
           {checkedProducts.length > 0
             ? `Total price for ${totalItems} items`
             : 'Only current item will be added'}

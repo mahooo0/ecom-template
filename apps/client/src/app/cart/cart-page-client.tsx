@@ -86,7 +86,7 @@ export function CartPageClient() {
           void api.cart.updateQuantity(productId, variantId, quantity, token);
         }
       } catch {
-        // Fire-and-forget — optimistic UI already updated
+        // Fire-and-forget
       }
     }
   };
@@ -121,45 +121,30 @@ export function CartPageClient() {
     }
   };
 
-  // Skeleton while hydrating
   if (!mounted) {
     return (
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8">
-        <h1 className="text-2xl font-bold mb-8">Shopping Cart</h1>
-        <div className="animate-pulse space-y-4">
+      <div className="mx-auto max-w-container px-4 py-12 sm:px-6 lg:px-8">
+        <div className="h-8 w-48 animate-pulse bg-neutral-100" />
+        <div className="mt-8 space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-24 bg-gray-100 rounded-lg" />
+            <div key={i} className="h-24 animate-pulse bg-neutral-50" />
           ))}
         </div>
       </div>
     );
   }
 
-  // Empty state
   if (items.length === 0) {
     return (
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-16 text-center">
-        <div className="mb-6 text-gray-300">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="mx-auto h-20 w-20"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-            />
-          </svg>
-        </div>
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Your cart is empty</h1>
-        <p className="text-gray-500 mb-8">Add some items to get started.</p>
+      <div className="mx-auto max-w-container px-4 py-24 text-center sm:px-6 lg:px-8">
+        <svg className="mx-auto size-20 text-neutral-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+        <h1 className="mt-6 text-display-xs font-light text-neutral-900">Your cart is empty</h1>
+        <p className="mt-2 text-sm text-neutral-500">Add some items to get started.</p>
         <Link
           href="/"
-          className="inline-block bg-gray-900 text-white px-8 py-3 rounded-lg font-medium hover:bg-gray-700 transition-colors"
+          className="mt-8 inline-block bg-neutral-900 px-8 py-3 text-xs font-medium tracking-[0.2em] text-white uppercase transition hover:bg-neutral-800"
         >
           Continue Shopping
         </Link>
@@ -168,32 +153,36 @@ export function CartPageClient() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8">
+    <div className="mx-auto max-w-container px-4 py-12 sm:px-6 lg:px-8">
       {/* Page heading */}
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">
-          Shopping Cart{' '}
-          <span className="text-gray-400 font-normal text-lg">
-            ({items.length} {items.length === 1 ? 'item' : 'items'})
-          </span>
-        </h1>
+      <div className="flex items-end justify-between mb-8">
+        <div>
+          <p className="text-xs font-semibold tracking-[0.3em] text-neutral-400 uppercase">Your</p>
+          <h1 className="mt-1 text-display-xs font-light text-neutral-900">
+            Shopping Cart
+            <span className="ml-2 text-lg text-neutral-400">
+              ({items.length} {items.length === 1 ? 'item' : 'items'})
+            </span>
+          </h1>
+        </div>
         <button
           onClick={() => void handleClearCart()}
-          className="text-sm text-red-600 hover:text-red-800 transition-colors"
+          className="text-xs font-medium tracking-wider text-neutral-500 uppercase transition hover:text-neutral-900"
         >
           Clear Cart
         </button>
       </div>
 
-      {/* Two-column layout: lg = 2/3 + 1/3, mobile = single column */}
-      <div className="lg:grid lg:grid-cols-3 lg:gap-8">
-        {/* Item list (2/3 on lg) */}
-        <div className="lg:col-span-2">
-          <div className="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100">
+      <div className="h-px bg-neutral-200 mb-8" />
+
+      <div className="lg:grid lg:grid-cols-3 lg:gap-12">
+        {/* Item list */}
+        <div className="lg:col-span-2" data-tour="cart-items">
+          <div className="divide-y divide-neutral-100">
             {items.map((item) => {
               const stockResult = getStockResult(item.productId, item.variantId);
               return (
-                <div key={`${item.productId}-${item.variantId ?? 'no-variant'}`} className="px-4">
+                <div key={`${item.productId}-${item.variantId ?? 'no-variant'}`}>
                   <CartItemRow
                     item={item}
                     onUpdateQuantity={(qty) =>
@@ -203,7 +192,6 @@ export function CartPageClient() {
                       void handleRemoveItem(item.productId, item.variantId)
                     }
                   />
-                  {/* Stock warning below each item */}
                   {stockResult && !stockLoading && (
                     <div className="pb-3">
                       <StockWarning
@@ -218,13 +206,12 @@ export function CartPageClient() {
           </div>
         </div>
 
-        {/* Order summary (1/3 on lg) */}
+        {/* Order summary */}
         <div className="mt-8 lg:mt-0">
-          <div className="sticky top-4 bg-white border border-gray-200 rounded-xl p-6 space-y-4">
-            <h2 className="text-lg font-semibold text-gray-900">Order Summary</h2>
+          <div data-tour="order-summary" className="sticky top-20 border border-neutral-200 p-6 space-y-4">
+            <h2 className="text-xs font-semibold tracking-[0.2em] text-neutral-900 uppercase">Order Summary</h2>
 
-            {/* Coupon section */}
-            <div className="border-b border-gray-100 pb-1">
+            <div className="border-b border-neutral-100 pb-1">
               <CouponSection
                 onCouponApplied={(code, discount) => applyCoupon(code, discount)}
                 onCouponRemoved={() => removeCoupon()}
@@ -233,31 +220,30 @@ export function CartPageClient() {
               />
             </div>
 
-            {/* Price summary */}
             <PriceSummary
               subtotal={subtotal()}
               discountAmount={discountAmount}
               couponCode={couponCode}
             />
 
-            {/* Checkout button */}
             <div className="pt-2 space-y-3">
               {hasOutOfStockItems ? (
                 <div>
                   <button
                     disabled
-                    className="w-full bg-gray-300 text-gray-500 py-3 rounded-lg font-medium cursor-not-allowed"
+                    className="w-full bg-neutral-200 py-3 text-xs font-medium tracking-wider text-neutral-400 uppercase cursor-not-allowed"
                   >
                     Proceed to Checkout
                   </button>
-                  <p className="text-xs text-red-600 text-center mt-2">
+                  <p className="mt-2 text-center text-xs text-red-600">
                     Remove out-of-stock items to continue
                   </p>
                 </div>
               ) : (
                 <Link
+                  data-tour="checkout-btn"
                   href="/checkout"
-                  className="block w-full bg-gray-900 text-white py-3 rounded-lg font-medium text-center hover:bg-gray-700 transition-colors"
+                  className="block w-full bg-neutral-900 py-3.5 text-center text-xs font-medium tracking-[0.2em] text-white uppercase transition hover:bg-neutral-800"
                 >
                   Proceed to Checkout
                 </Link>
@@ -265,7 +251,7 @@ export function CartPageClient() {
 
               <Link
                 href="/"
-                className="block w-full text-center text-sm text-gray-600 hover:text-gray-900 transition-colors py-1"
+                className="block w-full py-2 text-center text-xs font-medium tracking-wider text-neutral-500 uppercase transition hover:text-neutral-900"
               >
                 Continue Shopping
               </Link>

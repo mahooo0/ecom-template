@@ -1,7 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import { api } from '@/lib/api';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface Warehouse {
   id: string;
@@ -18,6 +24,7 @@ const ADJUSTMENT_REASONS = [
 ];
 
 export default function AdjustmentsPage() {
+  const { getToken } = useAuth();
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [formData, setFormData] = useState({
     variantId: '',
@@ -34,7 +41,8 @@ export default function AdjustmentsPage() {
   useEffect(() => {
     const fetchWarehouses = async () => {
       try {
-        const response = await api.inventory.warehouses.getAll();
+        const token = await getToken();
+        const response = await api.inventory.warehouses.getAll(token || undefined);
         if (response.success && response.data) {
           setWarehouses(response.data.filter((w: Warehouse) => w.isActive));
         }
@@ -74,13 +82,14 @@ export default function AdjustmentsPage() {
 
     try {
       setSubmitting(true);
+      const token = await getToken();
       await api.inventory.stock.adjust({
         variantId: formData.variantId.trim(),
         warehouseId: formData.warehouseId,
         quantity: Number(formData.quantity),
         reason: formData.reason,
         note: formData.note.trim() || undefined,
-      });
+      }, token || undefined);
       setSuccessMessage('Stock adjusted successfully.');
       setFormData({
         variantId: '',
@@ -102,7 +111,7 @@ export default function AdjustmentsPage() {
         <h1 className="text-3xl font-bold">Manual Stock Adjustment</h1>
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-lg border bg-card p-6 shadow-sm">
         <div className="mb-4 rounded-md bg-blue-50 p-3 text-sm text-blue-800">
           Positive quantity adds stock, negative removes stock (e.g., -5 removes 5 units).
         </div>
@@ -121,99 +130,93 @@ export default function AdjustmentsPage() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <Label>
               Variant ID <span className="text-red-500">*</span>
-            </label>
-            <input
+            </Label>
+            <Input
               type="text"
               name="variantId"
               value={formData.variantId}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="mt-1"
               placeholder="Enter variant ID"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <Label>
               Warehouse <span className="text-red-500">*</span>
-            </label>
+            </Label>
             {loadingWarehouses ? (
-              <p className="mt-1 text-sm text-gray-500">Loading warehouses...</p>
+              <p className="mt-1 text-sm text-muted-foreground">Loading warehouses...</p>
             ) : (
-              <select
-                name="warehouseId"
-                value={formData.warehouseId}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              >
-                <option value="">Select a warehouse</option>
-                {warehouses.map((warehouse) => (
-                  <option key={warehouse.id} value={warehouse.id}>
-                    {warehouse.name} ({warehouse.code})
-                  </option>
-                ))}
-              </select>
+              <Select value={formData.warehouseId} onValueChange={(v) => setFormData(prev => ({ ...prev, warehouseId: v }))}>
+                <SelectTrigger className="mt-1"><SelectValue placeholder="Select a warehouse" /></SelectTrigger>
+                <SelectContent>
+                  {warehouses.map((warehouse) => (
+                    <SelectItem key={warehouse.id} value={warehouse.id}>
+                      {warehouse.name} ({warehouse.code})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <Label>
               Quantity <span className="text-red-500">*</span>
-            </label>
-            <input
+            </Label>
+            <Input
               type="number"
               name="quantity"
               value={formData.quantity}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="mt-1"
               placeholder="e.g., 10 or -5"
             />
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-muted-foreground">
               Use a positive number to add stock, negative to remove.
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <Label>
               Reason <span className="text-red-500">*</span>
-            </label>
-            <select
-              name="reason"
-              value={formData.reason}
-              onChange={handleChange}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            >
-              {ADJUSTMENT_REASONS.map((r) => (
-                <option key={r.value} value={r.value}>
-                  {r.label}
-                </option>
-              ))}
-            </select>
+            </Label>
+            <Select value={formData.reason} onValueChange={(v) => setFormData(prev => ({ ...prev, reason: v }))}>
+              <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {ADJUSTMENT_REASONS.map((r) => (
+                  <SelectItem key={r.value} value={r.value}>
+                    {r.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <Label>
               Note (optional)
-            </label>
-            <textarea
+            </Label>
+            <Textarea
               name="note"
               value={formData.note}
               onChange={handleChange}
               rows={3}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="mt-1"
               placeholder="Optional note about this adjustment"
             />
           </div>
 
           <div className="pt-2">
-            <button
+            <Button
               type="submit"
               disabled={submitting || loadingWarehouses}
-              className="rounded-md bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
             >
               {submitting ? 'Adjusting...' : 'Apply Adjustment'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

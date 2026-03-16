@@ -17,6 +17,7 @@ import type { Product } from '@repo/types';
 import { columns } from './columns';
 import { api } from '@/lib/api';
 import Link from 'next/link';
+import { showError } from '@/lib/toast';
 
 interface ProductsTableProps {
   data: Product[];
@@ -76,7 +77,7 @@ export function ProductsTable({
     const ids = selectedRows.map((row) => row.original.id);
 
     if (ids.length === 0) {
-      alert('Please select products to update');
+      showError('Please select products to update');
       return;
     }
 
@@ -89,7 +90,7 @@ export function ProductsTable({
       router.refresh();
       setRowSelection({});
     } catch (error) {
-      alert('Failed to update products: ' + (error as Error).message);
+      showError('Failed to update products: ' + (error as Error).message);
     }
   };
 
@@ -98,7 +99,7 @@ export function ProductsTable({
     const ids = selectedRows.map((row) => row.original.id);
 
     if (ids.length === 0) {
-      alert('Please select products to delete');
+      showError('Please select products to delete');
       return;
     }
 
@@ -111,7 +112,7 @@ export function ProductsTable({
       router.refresh();
       setRowSelection({});
     } catch (error) {
-      alert('Failed to delete products: ' + (error as Error).message);
+      showError('Failed to delete products: ' + (error as Error).message);
     }
   };
 

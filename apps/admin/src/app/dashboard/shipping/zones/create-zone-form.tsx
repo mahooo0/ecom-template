@@ -1,10 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import { api } from '@/lib/api';
+import type { ShippingZone } from '@repo/types';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface CreateZoneFormProps {
   onSuccess: () => void;
+  zone?: ShippingZone | null;
 }
 
 const COUNTRIES = [
@@ -46,14 +53,27 @@ const CA_PROVINCES = [
   'AB', 'BC', 'MB', 'NB', 'NL', 'NS', 'NT', 'NU', 'ON', 'PE', 'QC', 'SK', 'YT',
 ];
 
-export function CreateZoneForm({ onSuccess }: CreateZoneFormProps) {
-  const [name, setName] = useState('');
-  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
-  const [selectedStates, setSelectedStates] = useState<string[]>([]);
-  const [freeShippingThreshold, setFreeShippingThreshold] = useState('');
-  const [isActive, setIsActive] = useState(true);
+export function CreateZoneForm({ onSuccess, zone }: CreateZoneFormProps) {
+  const { getToken } = useAuth();
+  const isEditing = !!zone;
+
+  const [name, setName] = useState(zone?.name ?? '');
+  const [selectedCountries, setSelectedCountries] = useState<string[]>(zone?.countries ?? []);
+  const [selectedStates, setSelectedStates] = useState<string[]>(zone?.states ?? []);
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState(
+    zone?.freeShippingThreshold ? String(zone.freeShippingThreshold / 100) : ''
+  );
+  const [isActive, setIsActive] = useState(zone?.isActive ?? true);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setName(zone?.name ?? '');
+    setSelectedCountries(zone?.countries ?? []);
+    setSelectedStates(zone?.states ?? []);
+    setFreeShippingThreshold(zone?.freeShippingThreshold ? String(zone.freeShippingThreshold / 100) : '');
+    setIsActive(zone?.isActive ?? true);
+  }, [zone]);
 
   const showStateSelection = selectedCountries.includes('US') || selectedCountries.includes('CA');
 
@@ -89,6 +109,7 @@ export function CreateZoneForm({ onSuccess }: CreateZoneFormProps) {
 
     try {
       setLoading(true);
+      const token = await getToken();
 
       const data: any = {
         name: name.trim(),
@@ -106,17 +127,20 @@ export function CreateZoneForm({ onSuccess }: CreateZoneFormProps) {
         data.freeShippingThreshold = Math.round(threshold * 100);
       }
 
-      const response = await api.shipping.zones.create(data);
-      if (response.success) {
-        setName('');
-        setSelectedCountries([]);
-        setSelectedStates([]);
-        setFreeShippingThreshold('');
-        setIsActive(true);
-        onSuccess();
+      if (isEditing && zone) {
+        await api.shipping.zones.update(zone.id, data, token || undefined);
+      } else {
+        await api.shipping.zones.create(data, token || undefined);
       }
+
+      setName('');
+      setSelectedCountries([]);
+      setSelectedStates([]);
+      setFreeShippingThreshold('');
+      setIsActive(true);
+      onSuccess();
     } catch (err: any) {
-      setError(err.message || 'Failed to create zone');
+      setError(err.message || `Failed to ${isEditing ? 'update' : 'create'} zone`);
     } finally {
       setLoading(false);
     }
@@ -129,52 +153,52 @@ export function CreateZoneForm({ onSuccess }: CreateZoneFormProps) {
       )}
 
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+        <Label htmlFor="name">
           Zone Name <span className="text-red-500">*</span>
-        </label>
-        <input
+        </Label>
+        <Input
           type="text"
           id="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+          className="mt-1"
           placeholder="e.g., North America, Europe, Domestic"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <Label>
           Countries <span className="text-red-500">*</span>
-        </label>
-        <div className="mt-2 grid max-h-60 grid-cols-2 gap-2 overflow-y-auto rounded-md border border-gray-300 p-3">
+        </Label>
+        <div className="mt-2 grid max-h-60 grid-cols-2 gap-2 overflow-y-auto rounded-md border p-3">
           {COUNTRIES.map((country) => (
             <label key={country.code} className="flex items-center space-x-2">
               <input
                 type="checkbox"
                 checked={selectedCountries.includes(country.code)}
                 onChange={() => handleCountryToggle(country.code)}
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 rounded border-input"
               />
-              <span className="text-sm text-gray-700">
+              <span className="text-sm text-foreground">
                 {country.name} ({country.code})
               </span>
             </label>
           ))}
         </div>
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs text-muted-foreground">
           Select one or more countries for this zone
         </p>
       </div>
 
       {showStateSelection && (
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <Label>
             States/Provinces (Optional)
-          </label>
-          <div className="mt-2 grid max-h-48 grid-cols-3 gap-2 overflow-y-auto rounded-md border border-gray-300 p-3">
+          </Label>
+          <div className="mt-2 grid max-h-48 grid-cols-3 gap-2 overflow-y-auto rounded-md border p-3">
             {selectedCountries.includes('US') && (
               <>
-                <div className="col-span-3 mb-1 text-xs font-semibold text-gray-600">
+                <div className="col-span-3 mb-1 text-xs font-semibold text-muted-foreground">
                   US States
                 </div>
                 {US_STATES.map((state) => (
@@ -183,16 +207,16 @@ export function CreateZoneForm({ onSuccess }: CreateZoneFormProps) {
                       type="checkbox"
                       checked={selectedStates.includes(state)}
                       onChange={() => handleStateToggle(state)}
-                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="h-4 w-4 rounded border-input"
                     />
-                    <span className="text-sm text-gray-700">{state}</span>
+                    <span className="text-sm text-foreground">{state}</span>
                   </label>
                 ))}
               </>
             )}
             {selectedCountries.includes('CA') && (
               <>
-                <div className="col-span-3 mb-1 mt-2 text-xs font-semibold text-gray-600">
+                <div className="col-span-3 mb-1 mt-2 text-xs font-semibold text-muted-foreground">
                   Canadian Provinces
                 </div>
                 {CA_PROVINCES.map((province) => (
@@ -201,65 +225,59 @@ export function CreateZoneForm({ onSuccess }: CreateZoneFormProps) {
                       type="checkbox"
                       checked={selectedStates.includes(province)}
                       onChange={() => handleStateToggle(province)}
-                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="h-4 w-4 rounded border-input"
                     />
-                    <span className="text-sm text-gray-700">{province}</span>
+                    <span className="text-sm text-foreground">{province}</span>
                   </label>
                 ))}
               </>
             )}
           </div>
-          <p className="mt-1 text-xs text-gray-500">
+          <p className="mt-1 text-xs text-muted-foreground">
             Leave empty to apply to all states/provinces in selected countries
           </p>
         </div>
       )}
 
       <div>
-        <label htmlFor="threshold" className="block text-sm font-medium text-gray-700">
+        <Label htmlFor="threshold">
           Free Shipping Threshold
-        </label>
+        </Label>
         <div className="relative mt-1">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-            <span className="text-gray-500">$</span>
+            <span className="text-muted-foreground">$</span>
           </div>
-          <input
+          <Input
             type="number"
             id="threshold"
             value={freeShippingThreshold}
             onChange={(e) => setFreeShippingThreshold(e.target.value)}
             step="0.01"
             min="0"
-            className="block w-full rounded-md border border-gray-300 py-2 pl-7 pr-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            className="pl-7"
             placeholder="0.00"
           />
         </div>
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs text-muted-foreground">
           Orders above this amount get free shipping. Leave empty for no free shipping.
         </p>
       </div>
 
-      <div className="flex items-center">
-        <input
-          type="checkbox"
+      <div className="flex items-center space-x-2">
+        <Checkbox
           id="isActive"
           checked={isActive}
-          onChange={(e) => setIsActive(e.target.checked)}
-          className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          onCheckedChange={(checked) => setIsActive(!!checked)}
         />
-        <label htmlFor="isActive" className="ml-2 text-sm text-gray-700">
+        <Label htmlFor="isActive" className="text-sm">
           Active
-        </label>
+        </Label>
       </div>
 
       <div className="flex justify-end gap-3 pt-4">
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-        >
-          {loading ? 'Creating...' : 'Create Zone'}
-        </button>
+        <Button type="submit" disabled={loading}>
+          {loading ? 'Saving...' : isEditing ? 'Update Zone' : 'Create Zone'}
+        </Button>
       </div>
     </form>
   );

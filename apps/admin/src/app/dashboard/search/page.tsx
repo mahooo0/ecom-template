@@ -10,11 +10,11 @@ export default async function SearchSettingsPage() {
   ]);
 
   return (
-    <div className="p-8">
+    <div className="space-y-6">
       <div className="max-w-4xl">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Search Settings</h1>
-          <p className="text-gray-600">
+          <h1 className="text-2xl font-bold text-foreground mb-2">Search Settings</h1>
+          <p className="text-muted-foreground">
             Configure Meilisearch behavior for product search. Manage synonyms, stop words,
             ranking rules, and trigger full product re-indexing.
           </p>

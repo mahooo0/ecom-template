@@ -328,10 +328,19 @@ export interface Brand {
   updatedAt: Date;
 }
 
+export const TagType = {
+  PRODUCT: 'PRODUCT',
+  COLLECTION: 'COLLECTION',
+  BLOG: 'BLOG',
+  CUSTOM: 'CUSTOM',
+} as const;
+export type TagType = (typeof TagType)[keyof typeof TagType];
+
 export interface Tag {
   id: string;
   name: string;
   slug: string;
+  type: TagType;
   createdAt: Date;
 }
 
@@ -589,4 +598,4 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
 // PRODUCT SCHEMAS
 // ============================================================================
 
-export * from './product-schemas.js';
+export * from './product-schemas';

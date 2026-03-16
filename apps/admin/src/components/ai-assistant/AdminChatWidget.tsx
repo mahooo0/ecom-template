@@ -9,8 +9,8 @@ export function AdminChatWidget() {
   const [open, setOpen] = useState(false);
 
   const { messages, sendMessage, status } = useChat({
-    api: '/api/chat',
-  });
+    fetch: (input: any, init: any) => fetch('/api/chat', init),
+  } as any);
 
   const isLoading = status === 'submitted' || status === 'streaming';
 

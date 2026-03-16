@@ -1,21 +1,50 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useAuth } from '@clerk/nextjs';
 import { api } from '@/lib/api';
-import { CreateZoneForm } from './create-zone-form';
 import type { ShippingZone } from '@repo/types';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from '@/components/ui/table';
+import { DataTableRowActions } from '@/components/DataTableRowActions';
+import { DataTableFilters, type FilterConfig } from '@/components/DataTableFilters';
+import { AnalyticsPanel, StatCard } from '@/components/AnalyticsPanel';
+import { Eye, Pencil, Trash2, MapPin, CheckCircle, Truck } from 'lucide-react';
+import { ZoneSheet } from './zone-sheet';
+
+const zoneFilterConfigs: FilterConfig[] = [
+  { key: 'search', label: 'Search', type: 'search', placeholder: 'Search zones...' },
+];
 
 export default function ShippingZonesPage() {
+  const { getToken } = useAuth();
   const [zones, setZones] = useState<ShippingZone[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [editingZone, setEditingZone] = useState<ShippingZone | null>(null);
+  const [filterValues, setFilterValues] = useState<Record<string, any>>({ search: '' });
+
+  const filteredZones = useMemo(() => {
+    const search = (filterValues.search as string || '').toLowerCase();
+    if (!search) return zones;
+    return zones.filter((z) => z.name.toLowerCase().includes(search));
+  }, [zones, filterValues.search]);
 
   const fetchZones = async () => {
     try {
       setLoading(true);
-      const response = await api.shipping.zones.getAll();
+      const token = await getToken();
+      const response = await api.shipping.zones.getAll(token || undefined);
       if (response.success && response.data) {
         setZones(response.data);
       }
@@ -31,133 +60,129 @@ export default function ShippingZonesPage() {
   }, []);
 
   const handleDelete = async (id: string, name: string) => {
-    if (!window.confirm(`Are you sure you want to delete zone "${name}"?`)) {
-      return;
-    }
-
     try {
-      await api.shipping.zones.delete(id);
+      const token = await getToken();
+      await api.shipping.zones.delete(id, token || undefined);
       await fetchZones();
     } catch (err: any) {
-      alert(err.message || 'Failed to delete zone');
+      setError(err.message || 'Failed to delete zone');
     }
   };
 
-  const handleCreateSuccess = () => {
-    setShowCreateForm(false);
+  const handleEdit = (zone: ShippingZone) => {
+    setEditingZone(zone);
+    setSheetOpen(true);
+  };
+
+  const handleFormSuccess = () => {
+    setSheetOpen(false);
+    setEditingZone(null);
     fetchZones();
   };
 
   if (loading) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <div className="text-gray-500">Loading zones...</div>
+        <div className="text-muted-foreground">Loading zones...</div>
       </div>
     );
   }
+
+  const activeZones = zones.filter((z) => z.isActive).length;
+  const freeShippingZones = zones.filter((z) => z.freeShippingThreshold).length;
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Shipping Zones</h1>
-        <button
-          onClick={() => setShowCreateForm(!showCreateForm)}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-        >
-          {showCreateForm ? 'Cancel' : 'Create Zone'}
-        </button>
+        <Button onClick={() => { setEditingZone(null); setSheetOpen(true); }}>
+          Create Zone
+        </Button>
       </div>
+
+      {/* Analytics */}
+      {zones.length > 0 && (
+        <AnalyticsPanel title="Shipping Analytics">
+          <div className="grid grid-cols-3 gap-3">
+            <StatCard label="Total Zones" value={zones.length} icon={<MapPin className="h-4 w-4 text-blue-600" />} color="bg-blue-50" />
+            <StatCard label="Active Zones" value={activeZones} icon={<CheckCircle className="h-4 w-4 text-green-600" />} color="bg-green-50" subtitle={`${zones.length > 0 ? Math.round((activeZones / zones.length) * 100) : 0}%`} />
+            <StatCard label="Free Shipping" value={freeShippingZones} icon={<Truck className="h-4 w-4 text-purple-600" />} color="bg-purple-50" subtitle={`${zones.length > 0 ? Math.round((freeShippingZones / zones.length) * 100) : 0}% of zones`} />
+          </div>
+        </AnalyticsPanel>
+      )}
+
+      <DataTableFilters
+        filters={zoneFilterConfigs}
+        values={filterValues}
+        onChange={(key, value) => setFilterValues((prev) => ({ ...prev, [key]: value }))}
+        onReset={() => setFilterValues({ search: '' })}
+      />
 
       {error && (
         <div className="rounded-md bg-red-50 p-4 text-sm text-red-800">{error}</div>
       )}
 
-      {showCreateForm && (
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow">
-          <h2 className="mb-4 text-xl font-semibold">Create New Zone</h2>
-          <CreateZoneForm onSuccess={handleCreateSuccess} />
-        </div>
-      )}
-
-      {zones.length === 0 ? (
-        <div className="rounded-lg border border-gray-200 bg-white p-8 text-center">
-          <p className="text-gray-500">
+      {filteredZones.length === 0 && !loading ? (
+        <div className="rounded-lg border bg-card p-8 text-center">
+          <p className="text-muted-foreground">
             No shipping zones configured. Create one to get started.
           </p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Zone Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Countries
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  States
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Free Shipping
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
-              {zones.map((zone) => (
-                <tr key={zone.id} className="hover:bg-gray-50">
-                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+        <div className="overflow-hidden rounded-lg border bg-card shadow">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Zone Name</TableHead>
+                <TableHead>Countries</TableHead>
+                <TableHead>States</TableHead>
+                <TableHead>Free Shipping</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredZones.map((zone) => (
+                <TableRow key={zone.id}>
+                  <TableCell className="font-medium text-foreground">
                     {zone.name}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
                     {zone.countries.join(', ')}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
                     {zone.states.length > 0 ? `${zone.states.length} states` : 'All'}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
                     {zone.freeShippingThreshold
                       ? `$${(zone.freeShippingThreshold / 100).toFixed(2)}`
                       : 'None'}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4">
-                    <span
-                      className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold leading-5 ${
-                        zone.isActive
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-gray-100 text-gray-800'
-                      }`}
-                    >
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="secondary">
                       {zone.isActive ? 'Active' : 'Inactive'}
-                    </span>
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
-                    <Link
-                      href={`/dashboard/shipping/zones/${zone.id}`}
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      View
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(zone.id, zone.name)}
-                      className="ml-4 text-red-600 hover:text-red-900"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <DataTableRowActions actions={[
+                      { label: 'View', href: `/dashboard/shipping/zones/${zone.id}`, icon: <Eye className="h-4 w-4" /> },
+                      { label: 'Edit', onClick: () => handleEdit(zone), icon: <Pencil className="h-4 w-4" /> },
+                      { label: 'Delete', onClick: () => handleDelete(zone.id, zone.name), variant: 'destructive', icon: <Trash2 className="h-4 w-4" />, confirm: `Are you sure you want to delete zone "${zone.name}"?` },
+                    ]} />
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
+
+      <ZoneSheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        zone={editingZone}
+        onSuccess={handleFormSuccess}
+      />
     </div>
   );
 }

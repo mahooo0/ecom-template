@@ -115,7 +115,7 @@ export function SearchSettingsForm({
     if (index === 0) return;
     setRankingRules(prev => {
       const newRules = [...prev];
-      [newRules[index - 1], newRules[index]] = [newRules[index], newRules[index - 1]];
+      [newRules[index - 1], newRules[index]] = [newRules[index]!, newRules[index - 1]!];
       return newRules;
     });
   };
@@ -124,7 +124,7 @@ export function SearchSettingsForm({
     if (index === rankingRules.length - 1) return;
     setRankingRules(prev => {
       const newRules = [...prev];
-      [newRules[index], newRules[index + 1]] = [newRules[index + 1], newRules[index]];
+      [newRules[index], newRules[index + 1]] = [newRules[index + 1]!, newRules[index]!];
       return newRules;
     });
   };

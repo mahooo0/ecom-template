@@ -9,8 +9,8 @@ interface StockStatusProps {
 export function StockStatus({ stock }: StockStatusProps) {
   if (stock <= 0) {
     return (
-      <span className="inline-flex items-center gap-1.5 text-sm font-medium text-red-600">
-        <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
+      <span className="inline-flex items-center gap-1.5 text-sm font-medium text-error-primary">
+        <span className="w-2 h-2 rounded-full bg-error-solid shrink-0" />
         Out of Stock
       </span>
     );
@@ -18,16 +18,16 @@ export function StockStatus({ stock }: StockStatusProps) {
 
   if (stock <= LOW_STOCK_THRESHOLD) {
     return (
-      <span className="inline-flex items-center gap-1.5 text-sm font-medium text-amber-600">
-        <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+      <span className="inline-flex items-center gap-1.5 text-sm font-medium text-utility-warning-700">
+        <span className="w-2 h-2 rounded-full bg-utility-warning-500 shrink-0" />
         Low Stock ({stock} left)
       </span>
     );
   }
 
   return (
-    <span className="inline-flex items-center gap-1.5 text-sm font-medium text-green-600">
-      <span className="w-2 h-2 rounded-full bg-green-500 shrink-0" />
+    <span className="inline-flex items-center gap-1.5 text-sm font-medium text-utility-success-700">
+      <span className="w-2 h-2 rounded-full bg-utility-success-600 shrink-0" />
       In Stock
     </span>
   );

@@ -22,6 +22,7 @@
     "node-cron": "^4.2.1",
     "papaparse": "^5.5.3",
     "slugify": "^1.6.6",
+    "stripe": "^20.4.1",
     "svix": "^1.87.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",

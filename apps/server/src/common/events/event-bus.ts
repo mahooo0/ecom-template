@@ -6,6 +6,7 @@ type EventMap = {
   'order.shipped': { orderId: string; userId: string; carrier: string; trackingNumber: string };
   'payment.completed': { orderId: string; paymentIntentId: string };
   'payment.failed': { orderId: string; error: string };
+  'order.refunded': { orderId: string; refundId: string; amount: number };
   'product.created': { productId: string };
   'product.updated': { productId: string };
   'product.deleted': { productId: string };

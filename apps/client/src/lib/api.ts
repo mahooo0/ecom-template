@@ -13,6 +13,11 @@ async function fetcher<T>(url: string, options?: RequestInit): Promise<T> {
     throw new Error(error.error || 'Request failed');
   }
 
+  // Handle 204 No Content (e.g. DELETE responses)
+  if (res.status === 204) {
+    return {} as T;
+  }
+
   return res.json();
 }
 
@@ -83,6 +88,11 @@ export const api = {
       return fetcher<PaginatedResponse<Product>>(`/products?${queryParams.toString()}`);
     },
     getById: (id: string) => fetcher<ApiResponse<Product>>(`/products/${id}`),
+    getByIds: (ids: string[]) =>
+      fetcher<ApiResponse<Product[]>>('/products/batch', {
+        method: 'POST',
+        body: JSON.stringify({ ids }),
+      }),
     getBySlug: (slug: string) => fetcher<ApiResponse<Product>>(`/products/slug/${slug}`),
     getRelated: (productId: string, limit = 5) =>
       fetcher<ApiResponse<Product[]>>(`/products/${productId}/related?limit=${limit}`),
@@ -116,11 +126,38 @@ export const api = {
     },
   },
   orders: {
-    getById: (id: string) => fetcher<ApiResponse<Order>>(`/orders/${id}`),
-    getByUser: (userId: string) =>
-      fetcher<ApiResponse<Order[]>>(`/orders/user/${userId}`),
-    create: (data: Partial<Order>) =>
+    getById: (id: string, token?: string) =>
+      fetcher<ApiResponse<Order>>(`/orders/${id}`, {
+        ...(token ? { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } } : {}),
+      }),
+    getByUser: (userId: string, params?: { page?: number; limit?: number; status?: string }, token?: string) => {
+      const qp = new URLSearchParams();
+      if (params?.page) qp.set('page', String(params.page));
+      if (params?.limit) qp.set('limit', String(params.limit));
+      if (params?.status) qp.set('status', params.status);
+      const qs = qp.toString();
+      return fetcher<ApiResponse<Order[]> & { total?: number; totalPages?: number }>(`/orders/user/${userId}${qs ? `?${qs}` : ''}`, {
+        ...(token ? { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } } : {}),
+      });
+    },
+    create: (data: Partial<Order>, token?: string) =>
       fetcher<ApiResponse<Order>>('/orders', {
+        method: 'POST',
+        ...(token ? { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } } : {}),
+        body: JSON.stringify(data),
+      }),
+  },
+  payments: {
+    createIntent: (data: { amount: number; orderId: string }, token: string) =>
+      fetcher<ApiResponse<{ clientSecret: string; paymentIntentId: string }>>('/payments/create-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(data),
+      }),
+  },
+  shipping: {
+    calculate: (data: { country: string; state: string; cartSubtotal: number; cartWeight?: number }) =>
+      fetcher<ApiResponse<Array<{ id: string; name: string; cost: number; estimatedDays?: string }>>>('/shipping/calculate', {
         method: 'POST',
         body: JSON.stringify(data),
       }),
@@ -136,6 +173,29 @@ export const api = {
   brands: {
     getAll: () => fetcher<ApiResponse<Brand[]>>('/brands'),
     getBySlug: (slug: string) => fetcher<ApiResponse<Brand>>(`/brands/slug/${slug}`),
+  },
+  wishlist: {
+    get: (token: string) =>
+      fetcher<ApiResponse<Array<{ productId: string; priceAtAdd: number }>>>('/wishlist', {
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      }),
+    addItem: (productId: string, priceAtAdd: number, token: string) =>
+      fetcher<ApiResponse<unknown>>('/wishlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ productId, priceAtAdd }),
+      }),
+    removeItem: (productId: string, token: string) =>
+      fetcher<ApiResponse<unknown>>(`/wishlist/${productId}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      }),
+    sync: (items: Array<{ productId: string; priceAtAdd: number }>, token: string) =>
+      fetcher<ApiResponse<unknown>>('/wishlist/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ items }),
+      }),
   },
   cart: {
     get: (token: string) =>

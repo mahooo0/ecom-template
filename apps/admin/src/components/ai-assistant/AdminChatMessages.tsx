@@ -58,7 +58,7 @@ export function AdminChatMessages({
       })}
       {isStreaming &&
         messages.length > 0 &&
-        messages[messages.length - 1].role === 'user' && (
+        messages[messages.length - 1]!.role === 'user' && (
           <div className="flex justify-start">
             <div className="max-w-[80%] rounded-lg px-3 py-2 text-sm bg-gray-100 text-gray-500">
               Thinking...

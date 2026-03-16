@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCompareStore } from '@/stores/compare-store';
@@ -13,43 +13,257 @@ interface CategoryAttribute {
   key: string;
   type: string;
   values: string[];
+  unit?: string;
 }
 
-interface ProductWithCategory extends Product {
+interface CompareProduct extends Product {
   category?: {
     id: string;
     name: string;
+    slug: string;
     attributes?: CategoryAttribute[];
   };
   brand?: {
     id: string;
     name: string;
   };
+  tags?: Array<{ tagId: string; tag: { id: string; name: string } }>;
+  variants?: Array<{ id: string; sku: string; price: number; stock: number; isActive: boolean }>;
+}
+
+interface CategoryGroup {
+  categoryId: string;
+  categoryName: string;
+  products: CompareProduct[];
+  attributes: CategoryAttribute[];
 }
 
 function formatPrice(cents: number): string {
   return `$${(cents / 100).toFixed(2)}`;
 }
 
-function isDifferent(key: string, products: ProductWithCategory[]): boolean {
-  const values = products.map((p) => String((p.attributes as Record<string, unknown>)?.[key] ?? ''));
-  return new Set(values).size > 1;
-}
-
 function isFieldDifferent(values: string[]): boolean {
   return new Set(values).size > 1;
 }
 
+// ─── Comparison Row ──────────────────────────────────────────────────────────
+
+function CompareRow({
+  label,
+  values,
+  unit,
+}: {
+  label: string;
+  values: string[];
+  unit?: string;
+}) {
+  const differs = isFieldDifferent(values);
+  return (
+    <tr>
+      <td className="sticky left-0 z-10 bg-primary border-b border-border-secondary p-3 text-sm font-medium text-tertiary min-w-[180px] whitespace-nowrap">
+        {label}
+        {unit && <span className="text-quaternary ml-1 font-normal">({unit})</span>}
+      </td>
+      {values.map((val, i) => (
+        <td
+          key={i}
+          className={`border-b border-border-secondary p-3 text-sm text-center min-w-[200px] ${differs ? 'bg-utility-warning-50' : ''}`}
+        >
+          {val || '-'}
+        </td>
+      ))}
+    </tr>
+  );
+}
+
+// ─── Category Comparison Table ───────────────────────────────────────────────
+
+function CategoryCompareTable({
+  group,
+  onRemove,
+}: {
+  group: CategoryGroup;
+  onRemove: (productId: string) => void;
+}) {
+  const { products, attributes } = group;
+
+  // Build display name map from category attributes
+  const displayNames = useMemo(() => {
+    const map: Record<string, { name: string; unit?: string }> = {};
+    for (const attr of attributes) {
+      map[attr.key] = { name: attr.name, unit: attr.unit };
+    }
+    return map;
+  }, [attributes]);
+
+  // Collect all attribute keys across products in this category
+  const allAttrKeys = useMemo(() => {
+    const keys = new Set<string>();
+    for (const p of products) {
+      if (p.attributes && typeof p.attributes === 'object') {
+        for (const key of Object.keys(p.attributes as Record<string, unknown>)) {
+          keys.add(key);
+        }
+      }
+    }
+    // Sort: category-defined attributes first (by position), then remaining alphabetically
+    const catKeyOrder = new Map(attributes.map((a, i) => [a.key, i]));
+    return Array.from(keys).sort((a, b) => {
+      const aOrder = catKeyOrder.get(a) ?? 9999;
+      const bOrder = catKeyOrder.get(b) ?? 9999;
+      if (aOrder !== bOrder) return aOrder - bOrder;
+      return a.localeCompare(b);
+    });
+  }, [products, attributes]);
+
+  const getDisplayName = (key: string) =>
+    displayNames[key]?.name ?? key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ');
+
+  const totalStock = (p: CompareProduct) =>
+    p.variants?.reduce((sum, v) => sum + v.stock, 0) ?? 0;
+
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border-secondary">
+      <table className="w-full border-collapse">
+        {/* Product header row */}
+        <thead>
+          <tr className="bg-secondary_subtle">
+            <th className="sticky left-0 z-10 bg-secondary_subtle min-w-[180px] border-b border-border-secondary p-3 text-left text-xs font-semibold text-tertiary uppercase tracking-wider">
+              Characteristics
+            </th>
+            {products.map((product) => (
+              <td
+                key={product.id}
+                className="border-b border-border-secondary p-4 text-center align-top min-w-[200px]"
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <Link href={`/products/${product.slug}`} className="block">
+                    {product.images?.[0] ? (
+                      <Image
+                        src={product.images[0]}
+                        alt={product.name}
+                        width={140}
+                        height={140}
+                        className="rounded-lg object-cover mx-auto"
+                      />
+                    ) : (
+                      <div className="w-[140px] h-[140px] bg-secondary_subtle rounded-lg flex items-center justify-center text-quaternary text-xs mx-auto">
+                        No image
+                      </div>
+                    )}
+                  </Link>
+                  <Link
+                    href={`/products/${product.slug}`}
+                    className="text-sm font-semibold text-primary hover:underline text-center leading-tight"
+                  >
+                    {product.name}
+                  </Link>
+                  <span className="text-lg font-bold text-primary">
+                    {formatPrice(product.price)}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => onRemove(product.id)}
+                    className="flex items-center gap-1 text-xs text-quaternary hover:text-error-primary transition-colors"
+                    aria-label={`Remove ${product.name}`}
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Remove
+                  </button>
+                </div>
+              </td>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {/* Fixed rows */}
+          <CompareRow
+            label="Price"
+            values={products.map((p) => formatPrice(p.price))}
+          />
+          <CompareRow
+            label="Sale Price"
+            values={products.map((p) =>
+              p.compareAtPrice ? formatPrice(p.compareAtPrice) : '-',
+            )}
+          />
+          <CompareRow
+            label="Brand"
+            values={products.map((p) => p.brand?.name ?? '-')}
+          />
+          <CompareRow
+            label="SKU"
+            values={products.map((p) => p.sku ?? '-')}
+          />
+          <CompareRow
+            label="Product Type"
+            values={products.map((p) =>
+              (p.productType ?? '-').toLowerCase().replace(/_/g, ' '),
+            )}
+          />
+          <CompareRow
+            label="Stock"
+            values={products.map((p) => {
+              const stock = totalStock(p);
+              return stock > 0 ? `${stock} in stock` : 'Out of stock';
+            })}
+          />
+          <CompareRow
+            label="Tags"
+            values={products.map((p) =>
+              p.tags && p.tags.length > 0
+                ? p.tags.map((t) => t.tag.name).join(', ')
+                : '-',
+            )}
+          />
+
+          {/* Separator */}
+          {allAttrKeys.length > 0 && (
+            <tr>
+              <td
+                colSpan={products.length + 1}
+                className="bg-secondary_subtle p-2 text-xs font-semibold text-tertiary uppercase tracking-wider border-b border-border-secondary"
+              >
+                Specifications
+              </td>
+            </tr>
+          )}
+
+          {/* Dynamic attribute rows */}
+          {allAttrKeys.map((key) => (
+            <CompareRow
+              key={key}
+              label={getDisplayName(key)}
+              unit={displayNames[key]?.unit}
+              values={products.map((p) => {
+                const val = (p.attributes as Record<string, unknown>)?.[key];
+                return val !== undefined && val !== null ? String(val) : '-';
+              })}
+            />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// ─── Main Page ───────────────────────────────────────────────────────────────
+
 export function ComparePageClient() {
-  const { items, removeItem } = useCompareStore();
-  const [products, setProducts] = useState<ProductWithCategory[]>([]);
+  const items = useCompareStore((s) => s.items);
+  const removeItem = useCompareStore((s) => s.removeItem);
+  const [products, setProducts] = useState<CompareProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Fetch products via batch endpoint
   useEffect(() => {
     if (!mounted) return;
     if (items.length === 0) {
@@ -59,32 +273,61 @@ export function ComparePageClient() {
     }
 
     setLoading(true);
-    Promise.all(
-      items.map((item) =>
-        api.products.getBySlug(item.slug)
-          .then((res) => res.data as ProductWithCategory)
-          .catch(() => null),
-      ),
-    ).then((results) => {
-      setProducts(results.filter((p): p is ProductWithCategory => p !== null));
-      setLoading(false);
-    });
+    const ids = items.map((item) => item.productId);
+    api.products
+      .getByIds(ids)
+      .then((res) => {
+        setProducts(res.data as CompareProduct[]);
+      })
+      .catch(() => {
+        setProducts([]);
+      })
+      .finally(() => setLoading(false));
   }, [mounted, items]);
+
+  // Group products by category
+  const categoryGroups = useMemo<CategoryGroup[]>(() => {
+    const groupMap = new Map<string, CategoryGroup>();
+    for (const product of products) {
+      const catId = product.category?.id ?? 'uncategorized';
+      const catName = product.category?.name ?? 'Other';
+      if (!groupMap.has(catId)) {
+        groupMap.set(catId, {
+          categoryId: catId,
+          categoryName: catName,
+          products: [],
+          attributes: product.category?.attributes ?? [],
+        });
+      }
+      groupMap.get(catId)!.products.push(product);
+    }
+    return Array.from(groupMap.values());
+  }, [products]);
+
+  // Auto-select first category
+  useEffect(() => {
+    if (categoryGroups.length > 0 && !activeCategory) {
+      setActiveCategory(categoryGroups[0]!.categoryId);
+    }
+    // If active category no longer has products, switch to first available
+    if (activeCategory && !categoryGroups.find((g) => g.categoryId === activeCategory)) {
+      setActiveCategory(categoryGroups[0]?.categoryId ?? null);
+    }
+  }, [categoryGroups, activeCategory]);
+
+  const activeGroup = categoryGroups.find((g) => g.categoryId === activeCategory) ?? null;
 
   // Loading skeleton
   if (!mounted || loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="h-8 w-48 bg-gray-200 rounded animate-pulse mb-8" />
-        <div className="grid grid-cols-3 gap-4">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="space-y-3">
-              <div className="h-32 bg-gray-200 rounded animate-pulse" />
-              <div className="h-4 bg-gray-200 rounded animate-pulse" />
-              <div className="h-4 w-2/3 bg-gray-200 rounded animate-pulse" />
-            </div>
+        <div className="h-8 w-48 bg-secondary_subtle rounded animate-pulse mb-8" />
+        <div className="flex gap-3 mb-6">
+          {[1, 2].map((i) => (
+            <div key={i} className="h-9 w-28 bg-secondary_subtle rounded-full animate-pulse" />
           ))}
         </div>
+        <div className="h-[400px] bg-secondary_subtle rounded-lg animate-pulse" />
       </div>
     );
   }
@@ -95,7 +338,7 @@ export function ComparePageClient() {
       <div className="max-w-7xl mx-auto px-4 py-16 text-center">
         <div className="flex justify-center mb-6">
           <svg
-            className="w-20 h-20 text-gray-300"
+            className="w-20 h-20 text-fg-quaternary"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -108,15 +351,15 @@ export function ComparePageClient() {
             />
           </svg>
         </div>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+        <h2 className="text-2xl font-semibold text-primary mb-2">
           No products selected for comparison
         </h2>
-        <p className="text-gray-500 mb-6">
+        <p className="text-tertiary mb-6">
           Browse products and use the compare checkbox to select items
         </p>
         <Link
           href="/products"
-          className="inline-block bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors"
+          className="inline-block bg-primary-solid text-white px-6 py-3 rounded-lg hover:bg-primary-solid_hover transition-colors"
         >
           Browse Products
         </Link>
@@ -124,230 +367,94 @@ export function ComparePageClient() {
     );
   }
 
-  // Minimum products check
-  if (items.length < 2) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-16 text-center">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-          Select at least 2 products to compare
-        </h2>
-        <p className="text-gray-500 mb-6">You have {items.length} product selected</p>
-        <div className="flex justify-center gap-4 mb-8">
-          {items.map((item) => (
-            <div key={item.productId} className="flex flex-col items-center gap-2">
-              {item.imageUrl && (
-                <Image
-                  src={item.imageUrl}
-                  alt={item.name}
-                  width={80}
-                  height={80}
-                  className="rounded-lg object-cover"
-                />
-              )}
-              <span className="text-sm text-gray-700">{item.name}</span>
-            </div>
-          ))}
-        </div>
-        <Link
-          href="/products"
-          className="inline-block bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors"
-        >
-          Browse More Products
-        </Link>
-      </div>
-    );
-  }
-
-  // Build unified attribute key list from all products
-  const allAttributeKeys = Array.from(
-    new Set(
-      products.flatMap((p) => Object.keys((p.attributes as Record<string, unknown>) ?? {})),
-    ),
-  );
-
-  // Build display name map from category attributes (use first product's category as reference)
-  const categoryAttributes: CategoryAttribute[] =
-    products[0]?.category?.attributes ?? [];
-  const attributeDisplayNames = categoryAttributes.reduce<Record<string, string>>(
-    (acc, attr) => {
-      acc[attr.key] = attr.name;
-      return acc;
-    },
-    {},
-  );
-
-  const getDisplayName = (key: string) =>
-    attributeDisplayNames[key] ?? key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ');
-
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
+      {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Compare Products</h1>
-        <Link href="/products" className="text-sm text-gray-500 hover:text-gray-700 underline">
+        <h1 className="text-2xl font-bold text-primary">
+          Compare Products
+          <span className="text-quaternary text-lg font-normal ml-2">
+            ({products.length})
+          </span>
+        </h1>
+        <Link href="/products" className="text-sm text-tertiary hover:text-secondary underline">
           Continue Shopping
         </Link>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse min-w-[640px]">
-          <thead>
-            <tr>
-              {/* Sticky attribute name column header */}
-              <th className="sticky left-0 bg-white w-40 min-w-[160px] border-b border-gray-200 p-3 text-left" />
-              {products.map((product) => (
-                <td
-                  key={product.id}
-                  className="border-b border-gray-200 p-3 text-center align-top min-w-[180px]"
-                >
-                  <div className="flex flex-col items-center gap-2">
-                    {product.images?.[0] ? (
-                      <Image
-                        src={product.images[0]}
-                        alt={product.name}
-                        width={120}
-                        height={120}
-                        className="rounded-lg object-cover"
-                      />
-                    ) : (
-                      <div className="w-[120px] h-[120px] bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs">
-                        No image
-                      </div>
-                    )}
-                    <Link
-                      href={`/products/${product.slug}`}
-                      className="text-sm font-semibold text-gray-900 hover:text-black hover:underline text-center"
-                    >
-                      {product.name}
-                    </Link>
-                    <span className="text-base font-bold text-gray-900">
-                      {formatPrice(product.price)}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => removeItem(product.id)}
-                      className="flex items-center gap-1 text-xs text-gray-400 hover:text-red-500 transition-colors mt-1"
-                      aria-label={`Remove ${product.name} from comparison`}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                      Remove
-                    </button>
-                  </div>
-                </td>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {/* Price row */}
-            {(() => {
-              const priceValues = products.map((p) => formatPrice(p.price));
-              const priceDiffers = isFieldDifferent(priceValues);
-              return (
-                <tr>
-                  <td className="sticky left-0 bg-white border-b border-gray-100 p-3 text-sm font-medium text-gray-600 w-40 min-w-[160px]">
-                    Price
-                  </td>
-                  {products.map((product) => (
-                    <td
-                      key={product.id}
-                      className={`border-b border-gray-100 p-3 text-sm text-center ${priceDiffers ? 'bg-yellow-50' : ''}`}
-                    >
-                      {formatPrice(product.price)}
-                    </td>
-                  ))}
-                </tr>
-              );
-            })()}
+      {/* Category tabs */}
+      {categoryGroups.length > 1 && (
+        <div className="flex flex-wrap gap-2 mb-6">
+          {categoryGroups.map((group) => (
+            <button
+              key={group.categoryId}
+              type="button"
+              onClick={() => setActiveCategory(group.categoryId)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                activeCategory === group.categoryId
+                  ? 'bg-primary-solid text-white'
+                  : 'bg-secondary_subtle text-tertiary hover:bg-primary_hover'
+              }`}
+            >
+              {group.categoryName}
+              <span className="ml-1.5 text-xs opacity-70">
+                ({group.products.length})
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
 
-            {/* Product Type row */}
-            {(() => {
-              const typeValues = products.map((p) => p.productType ?? '-');
-              const differs = isFieldDifferent(typeValues);
-              return (
-                <tr>
-                  <td className="sticky left-0 bg-white border-b border-gray-100 p-3 text-sm font-medium text-gray-600 w-40 min-w-[160px]">
-                    Product Type
-                  </td>
-                  {products.map((product) => (
-                    <td
-                      key={product.id}
-                      className={`border-b border-gray-100 p-3 text-sm text-center capitalize ${differs ? 'bg-yellow-50' : ''}`}
-                    >
-                      {product.productType?.toLowerCase().replace(/_/g, ' ') ?? '-'}
-                    </td>
-                  ))}
-                </tr>
-              );
-            })()}
+      {/* Single category note (when only one category) */}
+      {categoryGroups.length === 1 && (
+        <p className="text-sm text-tertiary mb-4">
+          Category: <span className="font-medium text-secondary">{categoryGroups[0]!.categoryName}</span>
+        </p>
+      )}
 
-            {/* Brand row */}
-            {(() => {
-              const brandValues = products.map((p) => p.brand?.name ?? '-');
-              const differs = isFieldDifferent(brandValues);
-              return (
-                <tr>
-                  <td className="sticky left-0 bg-white border-b border-gray-100 p-3 text-sm font-medium text-gray-600 w-40 min-w-[160px]">
-                    Brand
-                  </td>
-                  {products.map((product) => (
-                    <td
-                      key={product.id}
-                      className={`border-b border-gray-100 p-3 text-sm text-center ${differs ? 'bg-yellow-50' : ''}`}
-                    >
-                      {product.brand?.name ?? '-'}
-                    </td>
-                  ))}
-                </tr>
-              );
-            })()}
-
-            {/* Category row */}
-            {(() => {
-              const catValues = products.map((p) => p.category?.name ?? '-');
-              const differs = isFieldDifferent(catValues);
-              return (
-                <tr>
-                  <td className="sticky left-0 bg-white border-b border-gray-100 p-3 text-sm font-medium text-gray-600 w-40 min-w-[160px]">
-                    Category
-                  </td>
-                  {products.map((product) => (
-                    <td
-                      key={product.id}
-                      className={`border-b border-gray-100 p-3 text-sm text-center ${differs ? 'bg-yellow-50' : ''}`}
-                    >
-                      {product.category?.name ?? '-'}
-                    </td>
-                  ))}
-                </tr>
-              );
-            })()}
-
-            {/* Dynamic attribute rows */}
-            {allAttributeKeys.map((key) => {
-              const differs = isDifferent(key, products);
-              return (
-                <tr key={key}>
-                  <td className="sticky left-0 bg-white border-b border-gray-100 p-3 text-sm font-medium text-gray-600 w-40 min-w-[160px]">
-                    {getDisplayName(key)}
-                  </td>
-                  {products.map((product) => {
-                    const value = (product.attributes as Record<string, unknown>)?.[key];
-                    return (
-                      <td
-                        key={product.id}
-                        className={`border-b border-gray-100 p-3 text-sm text-center ${differs ? 'bg-yellow-50' : ''}`}
-                      >
-                        {value !== undefined && value !== null ? String(value) : '-'}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      {/* Comparison table for active category */}
+      {activeGroup && activeGroup.products.length >= 2 ? (
+        <CategoryCompareTable group={activeGroup} onRemove={removeItem} />
+      ) : activeGroup && activeGroup.products.length === 1 ? (
+        <div className="rounded-lg border border-border-secondary p-8 text-center">
+          <p className="text-tertiary mb-2">
+            Only 1 product in <span className="font-medium">{activeGroup.categoryName}</span>.
+          </p>
+          <p className="text-sm text-quaternary">
+            Add another product from this category to compare.
+          </p>
+          {/* Still show the single product */}
+          {(() => {
+            const singleProduct = activeGroup.products[0]!;
+            return (
+              <div className="flex justify-center mt-6">
+                <div className="flex flex-col items-center gap-2">
+                  {singleProduct.images?.[0] && (
+                    <Image
+                      src={singleProduct.images[0]}
+                      alt={singleProduct.name}
+                      width={100}
+                      height={100}
+                      className="rounded-lg object-cover"
+                    />
+                  )}
+                  <Link
+                    href={`/products/${singleProduct.slug}`}
+                    className="text-sm font-medium hover:underline"
+                  >
+                    {singleProduct.name}
+                  </Link>
+                  <span className="text-sm font-bold">{formatPrice(singleProduct.price)}</span>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+      ) : (
+        <div className="rounded-lg border border-border-secondary p-8 text-center text-tertiary">
+          Select a category above to compare products.
+        </div>
+      )}
     </div>
   );
 }

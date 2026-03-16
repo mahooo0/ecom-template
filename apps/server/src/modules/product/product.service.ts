@@ -122,7 +122,6 @@ export class ProductService {
                 option: {
                   include: {
                     group: true,
-                    value: true,
                   },
                 },
               },
@@ -153,8 +152,23 @@ export class ProductService {
     return product;
   }
 
+  async getByIds(ids: string[]) {
+    if (ids.length === 0) return [];
+    return prisma.product.findMany({
+      where: { id: { in: ids } },
+      include: {
+        category: { include: { attributes: true } },
+        brand: true,
+        tags: { include: { tag: true } },
+        variants: {
+          select: { id: true, sku: true, price: true, stock: true, isActive: true },
+        },
+      },
+    });
+  }
+
   async getBySlug(slug: string) {
-    const product = await prisma.product.findUnique({
+    const product = await prisma.product.findFirst({
       where: {
         slug,
         status: 'ACTIVE' as const,
@@ -170,7 +184,6 @@ export class ProductService {
                 option: {
                   include: {
                     group: true,
-                    value: true,
                   },
                 },
               },

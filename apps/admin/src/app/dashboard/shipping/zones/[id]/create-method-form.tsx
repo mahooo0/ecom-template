@@ -1,8 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { useAuth } from '@clerk/nextjs';
 import { api } from '@/lib/api';
 import { ShippingRateType } from '@repo/types';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface CreateMethodFormProps {
   zoneId: string;
@@ -15,6 +21,7 @@ interface PriceTier {
 }
 
 export function CreateMethodForm({ zoneId, onSuccess }: CreateMethodFormProps) {
+  const { getToken } = useAuth();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [rateType, setRateType] = useState<keyof typeof ShippingRateType>('FLAT_RATE');
@@ -137,7 +144,8 @@ export function CreateMethodForm({ zoneId, onSuccess }: CreateMethodFormProps) {
         data.priceThresholds = tiers;
       }
 
-      const response = await api.shipping.methods.create(zoneId, data);
+      const token = await getToken();
+      const response = await api.shipping.methods.create(zoneId, data, token || undefined);
       if (response.success) {
         // Reset form
         setName('');
@@ -168,39 +176,39 @@ export function CreateMethodForm({ zoneId, onSuccess }: CreateMethodFormProps) {
       )}
 
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+        <Label htmlFor="name">
           Method Name <span className="text-red-500">*</span>
-        </label>
-        <input
+        </Label>
+        <Input
           type="text"
           id="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+          className="mt-1"
           placeholder="e.g., Standard Shipping, Express, Economy"
         />
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+        <Label htmlFor="description">
           Description
-        </label>
-        <textarea
+        </Label>
+        <Textarea
           id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={2}
           maxLength={500}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+          className="mt-1"
           placeholder="Optional description of this shipping method"
         />
-        <p className="mt-1 text-xs text-gray-500">{description.length}/500 characters</p>
+        <p className="mt-1 text-xs text-muted-foreground">{description.length}/500 characters</p>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <Label>
           Rate Type <span className="text-red-500">*</span>
-        </label>
+        </Label>
         <div className="mt-2 space-y-2">
           <label className="flex items-center">
             <input
@@ -210,7 +218,7 @@ export function CreateMethodForm({ zoneId, onSuccess }: CreateMethodFormProps) {
               onChange={(e) => setRateType(e.target.value as keyof typeof ShippingRateType)}
               className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
             />
-            <span className="ml-2 text-sm text-gray-700">Flat Rate</span>
+            <span className="ml-2 text-sm text-muted-foreground">Flat Rate</span>
           </label>
           <label className="flex items-center">
             <input
@@ -220,7 +228,7 @@ export function CreateMethodForm({ zoneId, onSuccess }: CreateMethodFormProps) {
               onChange={(e) => setRateType(e.target.value as keyof typeof ShippingRateType)}
               className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
             />
-            <span className="ml-2 text-sm text-gray-700">Weight-Based</span>
+            <span className="ml-2 text-sm text-muted-foreground">Weight-Based</span>
           </label>
           <label className="flex items-center">
             <input
@@ -230,7 +238,7 @@ export function CreateMethodForm({ zoneId, onSuccess }: CreateMethodFormProps) {
               onChange={(e) => setRateType(e.target.value as keyof typeof ShippingRateType)}
               className="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
             />
-            <span className="ml-2 text-sm text-gray-700">Price-Based</span>
+            <span className="ml-2 text-sm text-muted-foreground">Price-Based</span>
           </label>
         </div>
       </div>
@@ -238,21 +246,21 @@ export function CreateMethodForm({ zoneId, onSuccess }: CreateMethodFormProps) {
       {/* Rate Type Specific Fields */}
       {rateType === 'FLAT_RATE' && (
         <div>
-          <label htmlFor="flatRate" className="block text-sm font-medium text-gray-700">
+          <Label htmlFor="flatRate">
             Flat Rate <span className="text-red-500">*</span>
-          </label>
+          </Label>
           <div className="relative mt-1">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <span className="text-gray-500">$</span>
+              <span className="text-muted-foreground">$</span>
             </div>
-            <input
+            <Input
               type="number"
               id="flatRate"
               value={flatRate}
               onChange={(e) => setFlatRate(e.target.value)}
               step="0.01"
               min="0"
-              className="block w-full rounded-md border border-gray-300 py-2 pl-7 pr-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+              className="pl-7"
               placeholder="0.00"
             />
           </div>
@@ -262,21 +270,21 @@ export function CreateMethodForm({ zoneId, onSuccess }: CreateMethodFormProps) {
       {rateType === 'WEIGHT_BASED' && (
         <div className="space-y-4">
           <div>
-            <label htmlFor="weightRate" className="block text-sm font-medium text-gray-700">
+            <Label htmlFor="weightRate">
               Weight Rate (per kg) <span className="text-red-500">*</span>
-            </label>
+            </Label>
             <div className="relative mt-1">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <span className="text-gray-500">$</span>
+                <span className="text-muted-foreground">$</span>
               </div>
-              <input
+              <Input
                 type="number"
                 id="weightRate"
                 value={weightRate}
                 onChange={(e) => setWeightRate(e.target.value)}
                 step="0.01"
                 min="0"
-                className="block w-full rounded-md border border-gray-300 py-2 pl-7 pr-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="pl-7"
                 placeholder="0.00"
               />
             </div>
@@ -284,33 +292,33 @@ export function CreateMethodForm({ zoneId, onSuccess }: CreateMethodFormProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="minWeight" className="block text-sm font-medium text-gray-700">
+              <Label htmlFor="minWeight">
                 Min Weight (kg)
-              </label>
-              <input
+              </Label>
+              <Input
                 type="number"
                 id="minWeight"
                 value={minWeight}
                 onChange={(e) => setMinWeight(e.target.value)}
                 step="0.01"
                 min="0"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="mt-1"
                 placeholder="Optional"
               />
             </div>
 
             <div>
-              <label htmlFor="maxWeight" className="block text-sm font-medium text-gray-700">
+              <Label htmlFor="maxWeight">
                 Max Weight (kg)
-              </label>
-              <input
+              </Label>
+              <Input
                 type="number"
                 id="maxWeight"
                 value={maxWeight}
                 onChange={(e) => setMaxWeight(e.target.value)}
                 step="0.01"
                 min="0"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="mt-1"
                 placeholder="Optional"
               />
             </div>
@@ -320,65 +328,67 @@ export function CreateMethodForm({ zoneId, onSuccess }: CreateMethodFormProps) {
 
       {rateType === 'PRICE_BASED' && (
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <Label>
             Price Tiers <span className="text-red-500">*</span>
-          </label>
+          </Label>
           <div className="mt-2 space-y-2">
             {priceTiers.map((tier, index) => (
               <div key={index} className="flex items-center gap-2">
                 <div className="flex-1">
                   <div className="relative">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                      <span className="text-gray-500">$</span>
+                      <span className="text-muted-foreground">$</span>
                     </div>
-                    <input
+                    <Input
                       type="number"
                       value={tier.minAmount}
                       onChange={(e) => handleTierChange(index, 'minAmount', e.target.value)}
                       step="0.01"
                       min="0"
-                      className="block w-full rounded-md border border-gray-300 py-2 pl-7 pr-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                      className="pl-7"
                       placeholder="Cart minimum"
                     />
                   </div>
                 </div>
-                <span className="text-gray-500">→</span>
+                <span className="text-muted-foreground">{'\u2192'}</span>
                 <div className="flex-1">
                   <div className="relative">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                      <span className="text-gray-500">$</span>
+                      <span className="text-muted-foreground">$</span>
                     </div>
-                    <input
+                    <Input
                       type="number"
                       value={tier.shippingCost}
                       onChange={(e) => handleTierChange(index, 'shippingCost', e.target.value)}
                       step="0.01"
                       min="0"
-                      className="block w-full rounded-md border border-gray-300 py-2 pl-7 pr-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                      className="pl-7"
                       placeholder="Shipping cost"
                     />
                   </div>
                 </div>
                 {priceTiers.length > 1 && (
-                  <button
+                  <Button
                     type="button"
+                    variant="outline"
                     onClick={() => handleRemoveTier(index)}
-                    className="rounded-md border border-red-300 px-2 py-2 text-sm text-red-600 hover:bg-red-50"
+                    className="border-red-300 text-red-600 hover:bg-red-50"
                   >
                     Remove
-                  </button>
+                  </Button>
                 )}
               </div>
             ))}
           </div>
-          <button
+          <Button
             type="button"
+            variant="link"
             onClick={handleAddTier}
-            className="mt-2 text-sm text-blue-600 hover:text-blue-900"
+            className="mt-2 px-0 text-sm"
           >
             + Add Tier
-          </button>
-          <p className="mt-1 text-xs text-gray-500">
+          </Button>
+          <p className="mt-1 text-xs text-muted-foreground">
             Set shipping cost based on cart total. Lower thresholds will be matched first.
           </p>
         </div>
@@ -386,72 +396,69 @@ export function CreateMethodForm({ zoneId, onSuccess }: CreateMethodFormProps) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="estimatedDaysMin" className="block text-sm font-medium text-gray-700">
+          <Label htmlFor="estimatedDaysMin">
             Estimated Days (Min)
-          </label>
-          <input
+          </Label>
+          <Input
             type="number"
             id="estimatedDaysMin"
             value={estimatedDaysMin}
             onChange={(e) => setEstimatedDaysMin(e.target.value)}
             min="0"
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            className="mt-1"
             placeholder="Optional"
           />
         </div>
 
         <div>
-          <label htmlFor="estimatedDaysMax" className="block text-sm font-medium text-gray-700">
+          <Label htmlFor="estimatedDaysMax">
             Estimated Days (Max)
-          </label>
-          <input
+          </Label>
+          <Input
             type="number"
             id="estimatedDaysMax"
             value={estimatedDaysMax}
             onChange={(e) => setEstimatedDaysMax(e.target.value)}
             min="0"
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+            className="mt-1"
             placeholder="Optional"
           />
         </div>
       </div>
 
       <div>
-        <label htmlFor="position" className="block text-sm font-medium text-gray-700">
+        <Label htmlFor="position">
           Position
-        </label>
-        <input
+        </Label>
+        <Input
           type="number"
           id="position"
           value={position}
           onChange={(e) => setPosition(e.target.value)}
           min="0"
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+          className="mt-1"
         />
-        <p className="mt-1 text-xs text-gray-500">Display order (lower numbers appear first)</p>
+        <p className="mt-1 text-xs text-muted-foreground">Display order (lower numbers appear first)</p>
       </div>
 
-      <div className="flex items-center">
-        <input
-          type="checkbox"
+      <div className="flex items-center space-x-2">
+        <Checkbox
           id="isActive"
           checked={isActive}
-          onChange={(e) => setIsActive(e.target.checked)}
-          className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          onCheckedChange={(checked) => setIsActive(!!checked)}
         />
-        <label htmlFor="isActive" className="ml-2 text-sm text-gray-700">
+        <Label htmlFor="isActive" className="text-sm">
           Active
-        </label>
+        </Label>
       </div>
 
       <div className="flex justify-end gap-3 pt-4">
-        <button
+        <Button
           type="submit"
           disabled={loading}
-          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
         >
           {loading ? 'Creating...' : 'Create Method'}
-        </button>
+        </Button>
       </div>
     </form>
   );

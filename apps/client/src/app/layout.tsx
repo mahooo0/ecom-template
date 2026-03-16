@@ -6,13 +6,17 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { MegaMenu } from '@/components/navigation/mega-menu';
 import { SearchBar } from '@/components/search/search-bar';
 import { WishlistHeaderBadge } from '@/components/wishlist/wishlist-header-badge';
+import { CompareHeaderBadge } from '@/components/compare/compare-header-badge';
 import { CartHeaderButton } from '@/components/cart/cart-header-button';
 import { ChatWidget } from '@/components/ai-assistant/ChatWidget';
+import { Footer } from '@/components/layout/footer';
+import { TourProvider } from '@/components/guidance/tour-provider';
+import { TourButton } from '@/components/guidance/tour-button';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'E-Commerce Store',
-  description: 'Modern e-commerce application',
+  title: 'STORE — Premium E-Commerce',
+  description: 'Discover curated products with fast shipping and exceptional quality.',
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -21,42 +25,80 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className="min-h-screen bg-white text-gray-900 antialiased">
+        <body className="min-h-screen bg-primary text-primary antialiased">
           <NuqsAdapter>
-          <header className="border-b border-gray-200">
-            <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-              <a href="/" className="text-xl font-bold">
-                Store
-              </a>
-              <div className="flex-1 max-w-md mx-4">
-                <SearchBar />
-              </div>
-              <div className="flex items-center gap-6">
-                <a href="/products" className="text-sm hover:text-gray-600">
-                  Products
+            <TourProvider>
+              {/* Promo banner */}
+              <div data-tour="promo-banner" className="bg-brand-solid px-4 py-2 text-center text-xs font-medium tracking-widest text-white uppercase">
+                Free shipping on all orders over $50 —{' '}
+                <a href="/products" className="underline underline-offset-2">
+                  Shop now
                 </a>
-                <WishlistHeaderBadge />
-                <CartHeaderButton />
-                {userId ? (
-                  <>
-                    <a href="/profile" className="text-sm hover:text-gray-600">
-                      Profile
-                    </a>
-                    <UserButton />
-                  </>
-                ) : (
-                  <SignInButton mode="redirect">
-                    <button className="text-sm hover:text-gray-600">Sign In</button>
-                  </SignInButton>
-                )}
               </div>
-            </nav>
-            <Suspense fallback={<div className="h-12" />}>
-              <MegaMenu />
-            </Suspense>
-          </header>
-          <main>{children}</main>
-          <ChatWidget />
+
+              {/* Header */}
+              <header className="sticky top-0 z-40 border-b border-neutral-200 bg-white">
+                <nav className="mx-auto flex max-w-container items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+                  {/* Logo */}
+                  <a href="/" className="flex items-center gap-2">
+                    <span className="text-xl font-bold tracking-[0.2em] text-neutral-900 uppercase">Store</span>
+                  </a>
+
+                  {/* Center: Mega Menu */}
+                  <div className="hidden lg:block" data-tour="mega-menu">
+                    <Suspense fallback={<div className="h-6" />}>
+                      <MegaMenu />
+                    </Suspense>
+                  </div>
+
+                  {/* Right actions */}
+                  <div className="flex items-center gap-4" data-tour="header-actions">
+                    <div data-tour="search">
+                      <SearchBar />
+                    </div>
+                    <CompareHeaderBadge />
+                    <WishlistHeaderBadge />
+                    <CartHeaderButton />
+                    {userId ? (
+                      <div className="flex items-center gap-3">
+                        <a
+                          href="/profile"
+                          className="hidden text-xs font-medium tracking-wider text-neutral-600 uppercase transition hover:text-neutral-900 md:block"
+                        >
+                          Account
+                        </a>
+                        <UserButton />
+                      </div>
+                    ) : (
+                      <SignInButton mode="redirect">
+                        <button className="text-xs font-medium tracking-wider text-neutral-600 uppercase transition hover:text-neutral-900">
+                          Sign In
+                        </button>
+                      </SignInButton>
+                    )}
+                  </div>
+                </nav>
+
+                {/* Mobile Mega Menu */}
+                <div className="lg:hidden border-t border-neutral-100">
+                  <Suspense fallback={<div className="h-10" />}>
+                    <MegaMenu />
+                  </Suspense>
+                </div>
+              </header>
+
+              {/* Main content */}
+              <main className="min-h-[calc(100vh-200px)]">{children}</main>
+
+              {/* Footer */}
+              <Footer />
+
+              {/* Tour Button */}
+              <TourButton />
+
+              {/* Chat Widget */}
+              <ChatWidget />
+            </TourProvider>
           </NuqsAdapter>
         </body>
       </html>
